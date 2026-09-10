@@ -24,3 +24,12 @@
 - ADAPTER-02: Claude, Codex, Copilot, and Talkaris seams are independently registerable.
 - DOC-01: Document boundaries, dependency directions, trust zones, and extension paths.
 - TEST-01: Compile the project and test route resolution plus chatbot capability isolation.
+
+## WhatsApp channel adapter
+
+- WHATSAPP-01: Connect locally through Baileys with QR/pairing startup flow.
+- WHATSAPP-02: Persist and restore WhatsApp authentication state across process restarts.
+- WHATSAPP-03: Translate authorized inbound messages into the core `Message` model, including sender, conversation, group, text, timestamp, and basic attachment metadata.
+- WHATSAPP-04: Reject and log unauthorized senders/chats before routing using validated allowlist configuration.
+- WHATSAPP-05: Route inbound messages through the gateway and deliver `AgentResponse` to the originating conversation.
+- WHATSAPP-06: Expose reconnect, graceful shutdown, structured logging, and sanitized health state without agent-specific code in the WhatsApp package.
