@@ -138,6 +138,25 @@ test("developer runtime serializes one conversation without blocking another", a
   assert.equal(claude.calls[1].request.sessionId, "claude-session-1");
 });
 
+test("developer runtime serializes equivalent approved workspace paths on one queue", async () => {
+  let release!: () => void;
+  const waiting = new Promise<void>(resolve => { release = resolve; });
+  const claude = fakeAdapter("claude", { wait: waiting });
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: claude.adapter }, sessions: new InMemoryDeveloperSessionStore(), defaultWorkspaceRoot: root, runner: fakeRunner(), events: new InMemoryEventBus()
+  });
+
+  const first = runtime.execute(context("same-path", "claude", root), agent("claude"));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const second = runtime.execute(context("same-path", "claude", `${root}/.`), agent("claude"));
+  await new Promise(resolve => setTimeout(resolve, 0));
+
+  assert.equal(claude.calls.length, 1);
+  release();
+  await Promise.all([first, second]);
+  assert.equal(claude.calls[1].request.sessionId, "claude-session-1");
+});
+
 test("developer runtime publishes one terminal event and returns safe adapter failures", async () => {
   const events = new InMemoryEventBus();
   const observed: string[] = [];

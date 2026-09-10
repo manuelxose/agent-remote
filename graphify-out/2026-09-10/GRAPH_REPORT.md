@@ -1,16 +1,16 @@
 # Graph Report - developer-agent-runtime  (2026-09-10)
 
 ## Corpus Check
-- 57 files · ~22,467 words
+- 57 files · ~22,907 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 471 nodes · 671 edges · 39 communities (23 shown, 10 thin omitted)
+- 473 nodes · 676 edges · 39 communities (23 shown, 10 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `22fb0c3a`
+- Built from commit: `e88d94f0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -46,7 +46,7 @@
 - node-path.d.ts
 - adapters.test.ts
 - Task 3 Report
-- gateway/src/index.ts
+- core/src/index.ts
 - developer-agent-smoke.test.ts
 
 ## God Nodes (most connected - your core abstractions)
@@ -62,12 +62,12 @@
 10. `AgentResponse` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `GatewayDependencies` --references--> `AgentRuntime`  [EXTRACTED]
+- `GatewayDependencies` --references--> `ConversationStore`  [EXTRACTED]
+  apps/gateway/src/index.ts → packages/conversations/src/index.ts
+- `GatewayDependencies` --references--> `Channel`  [EXTRACTED]
   apps/gateway/src/index.ts → packages/core/src/index.ts
-- `GatewayDependencies` --references--> `ConversationAgent`  [EXTRACTED]
-  apps/gateway/src/index.ts → packages/core/src/index.ts
-- `GatewayDependencies` --references--> `EventBus`  [EXTRACTED]
-  apps/gateway/src/index.ts → packages/events/src/index.ts
+- `GatewayDependencies` --references--> `RouteResolver`  [EXTRACTED]
+  apps/gateway/src/index.ts → packages/routing/src/index.ts
 - `Worker` --references--> `EventBus`  [EXTRACTED]
   apps/worker/src/index.ts → packages/events/src/index.ts
 - `WhatsAppChannel` --implements--> `Channel`  [EXTRACTED]
@@ -83,8 +83,8 @@ Cohesion: 0.07
 Nodes (27): Gateway, createWhatsAppGateway(), WhatsAppGatewayApplication, WhatsAppGatewayOptions, authorizeWhatsAppMessage(), parseList(), parsePositiveInteger(), parseWhatsAppConfig() (+19 more)
 
 ### Community 1 - "developer-agent/src/index.ts"
-Cohesion: 0.09
-Nodes (23): Worker, talkarisAgent, AgentResponse, AgentRuntime, AgentType, ConversationAgent, ConversationContext, Metadata (+15 more)
+Cohesion: 0.10
+Nodes (21): GatewayDependencies, Worker, AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, DomainEvent, DomainEventType (+13 more)
 
 ### Community 3 - "contracts.ts"
 Cohesion: 0.06
@@ -159,36 +159,36 @@ Cohesion: 0.40
 Nodes (4): Acceptance coverage, Evidence, Phase 1 Verification, Result
 
 ### Community 25 - "Roadmap"
-Cohesion: 0.50
-Nodes (3): Phase 1: Architectural foundation — Complete, Phase 2: Local WhatsApp channel adapter — Complete, Roadmap
+Cohesion: 0.40
+Nodes (4): Phase 1: Architectural foundation — Complete, Phase 2: Local WhatsApp channel adapter — Complete, Phase 3: Developer-agent runtime — Complete, Roadmap
 
 ### Community 36 - "Task 3 Report"
 Cohesion: 0.11
 Nodes (17): Changes, Changes, Changes, Changes, Changes, Concerns, Review Fix Round 1, Review Fix Round 2 (+9 more)
 
-### Community 37 - "gateway/src/index.ts"
-Cohesion: 0.13
-Nodes (13): GatewayConfigurationError, GatewayDependencies, ConversationStore, createConversationContext(), InMemoryConversationStore, Channel, Conversation, ExecutionContext (+5 more)
+### Community 37 - "core/src/index.ts"
+Cohesion: 0.10
+Nodes (16): GatewayConfigurationError, talkarisAgent, ConversationStore, createConversationContext(), InMemoryConversationStore, AgentType, Channel, Conversation (+8 more)
 
 ## Knowledge Gaps
-- **153 isolated node(s):** `defaultLogger`, `RawMessageKey`, `RawWhatsAppMessage`, `attachmentKinds`, `Resolver` (+148 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 278 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **154 isolated node(s):** `defaultLogger`, `RawMessageKey`, `RawWhatsAppMessage`, `attachmentKinds`, `Resolver` (+149 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 279 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `AgentResponse` connect `developer-agent/src/index.ts` to `lifecycle.ts`?**
+- **Why does `AgentResponse` connect `developer-agent/src/index.ts` to `lifecycle.ts`, `core/src/index.ts`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `EventBus` connect `developer-agent/src/index.ts` to `contracts.ts`, `gateway/src/index.ts`, `ToolRegistry`?**
+- **Why does `EventBus` connect `developer-agent/src/index.ts` to `contracts.ts`, `core/src/index.ts`, `ToolRegistry`?**
   _High betweenness centrality (0.026) - this node is a cross-community bridge._
-- **Why does `WhatsAppChannel` connect `lifecycle.ts` to `gateway/src/index.ts`?**
+- **Why does `WhatsAppChannel` connect `lifecycle.ts` to `core/src/index.ts`?**
   _High betweenness centrality (0.022) - this node is a cross-community bridge._
 - **What connects `defaultLogger`, `RawMessageKey`, `RawWhatsAppMessage` to the rest of the system?**
-  _153 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _154 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `lifecycle.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.07402597402597402 - nodes in this community are weakly interconnected._
 - **Should `developer-agent/src/index.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.08695652173913043 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10256410256410256 - nodes in this community are weakly interconnected._
 - **Should `contracts.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.0611764705882353 - nodes in this community are weakly interconnected._

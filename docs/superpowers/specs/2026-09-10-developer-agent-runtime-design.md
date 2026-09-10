@@ -5,7 +5,7 @@ Status: Approved design, pending implementation plan
 
 ## Goal
 
-Provide a safe local runtime for invoking Claude Code, Codex CLI, and GitHub Copilot CLI from channel-neutral typed APIs while preserving one native agent session per conversation.
+Provide a safe local runtime for invoking Claude Code, Codex CLI, and GitHub Copilot CLI from channel-neutral typed APIs while preserving one native agent session per channel/conversation/agent/workspace tuple.
 
 ## Scope
 
@@ -16,7 +16,7 @@ In scope:
 - working-directory and approved-workspace enforcement;
 - timeout, cancellation, stdout/stderr capture, exit status, and output limits;
 - execution lifecycle events;
-- per-conversation session mapping with restart persistence;
+- per-channel/conversation/agent/workspace session mapping with restart persistence;
 - truthful CLI availability reporting;
 - routing successful output back through the existing gateway response pipeline.
 
@@ -143,7 +143,7 @@ The runtime may select a workspace beneath an approved root, but no incoming Wha
 
 ## Session persistence and isolation
 
-The store is keyed by an unambiguous JSON tuple `[channel, conversationId, agentId, workspaceRoot]` and stores only:
+The store is keyed by an unambiguous JSON tuple `[channel, conversationId, agentId, canonicalWorkspaceRoot]` and stores only:
 
 ```json
 {
@@ -155,7 +155,7 @@ The store is keyed by an unambiguous JSON tuple `[channel, conversationId, agent
 
 The default path is `data/developer-agent-sessions.json`, configurable through trusted runtime setup. The file is loaded at startup and written after successful execution using a same-directory temporary file and rename. Missing state starts empty. Malformed state fails startup/configuration clearly instead of silently creating cross-session ambiguity.
 
-The runtime canonicalizes the approved workspace root before constructing the tuple. Agent or workspace changes produce a different key and start a new native session; no redundant agent or workspace metadata is persisted. Legacy metadata-shaped records are malformed and fail clearly rather than being interpreted as a session. Concurrent turns for the same tuple are serialized; different tuples remain independent.
+The runtime canonicalizes the approved workspace root before constructing the tuple and before adding it to the per-session queue. Equivalent approved path forms therefore serialize on the same queue. Agent or workspace changes produce a different key and start a new native session; no redundant agent or workspace metadata is persisted. Legacy metadata-shaped records are malformed and fail clearly rather than being interpreted as a session. Concurrent turns for the same tuple are serialized; different tuples remain independent.
 
 ## Events and response pipeline
 

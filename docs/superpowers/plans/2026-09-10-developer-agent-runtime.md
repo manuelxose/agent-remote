@@ -16,7 +16,7 @@
 - Developer agents may operate only inside configured workspace roots.
 - Do not automatically install agents or fake availability.
 - Store only conversation-to-native-session mappings in `data/developer-agent-sessions.json` by default.
-- Preserve separate state for each `(channel, conversationId)` and never cross agent/workspace mappings.
+- Preserve separate state for each JSON tuple `(channel, conversationId, agentId, canonicalWorkspaceRoot)` and never cross agent/workspace mappings.
 - Emit `AgentExecutionStarted` and exactly one terminal `AgentExecutionCompleted` or `AgentExecutionFailed` event per attempt.
 - Keep chatbot runtime and WhatsApp transport free of developer-agent imports/product knowledge.
 - Use the standard library and existing dependencies; do not add a CLI SDK.
@@ -42,14 +42,10 @@
 
   ```ts
   const store = new InMemoryDeveloperSessionStore();
-  await store.set("whatsapp:conversation-a", {
-    agentId: "claude",
-    nativeSessionId: "session-a",
-    workspaceRoot: "/approved/workspace",
-    updatedAt: "2026-09-10T00:00:00.000Z"
-  });
-  assert.deepEqual(await store.get("whatsapp:conversation-a"), expected);
-  assert.equal(await store.get("whatsapp:conversation-b"), undefined);
+  const key = createDeveloperSessionKey("whatsapp", "conversation-a", "claude", "/approved/workspace");
+  await store.set(key, { nativeSessionId: "session-a" });
+  assert.deepEqual(await store.get(key), { nativeSessionId: "session-a" });
+  assert.equal(await store.get(createDeveloperSessionKey("whatsapp", "conversation-b", "claude", "/approved/workspace")), undefined);
   ```
 
   Also assert that `JsonDeveloperSessionStore` reloads the mapping in a new instance, writes a valid JSON object, rejects malformed JSON with a named error, and keeps keys containing `:` isolated.
@@ -81,9 +77,9 @@
 
 - [ ] **Step 4: Implement in-memory and atomic JSON session stores**
 
-  Use the key `${channel}:${conversationId}`. `JsonDeveloperSessionStore.load()` reads an absent file as empty, parses an object of `DeveloperSessionState`, and throws `DeveloperSessionStateError` for malformed data. `set()` creates the parent directory, writes `${path}.tmp` in the same directory, then renames it over the target. Do not persist prompts, stdout, stderr, credentials, or arbitrary metadata.
+  Use the exported `createDeveloperSessionKey(channel, conversationId, agentId, canonicalWorkspaceRoot)`, implemented as an unambiguous JSON tuple. `JsonDeveloperSessionStore` values are exactly `{ nativeSessionId }`; agent and workspace identity live in the key. `load()` reads an absent file as empty, parses an object of `DeveloperSessionState`, and throws `DeveloperSessionStateError` for malformed data, including old metadata-shaped records. `set()` creates the parent directory, writes `${path}.tmp` in the same directory, then renames it over the target. Do not persist prompts, stdout, stderr, credentials, or arbitrary metadata.
 
-  Use a small in-process per-conversation lock and document its ceiling at the queue declaration: `// ponytail: in-process queue; use distributed per-conversation locks if the runtime becomes multi-process.`
+  Use a small in-process per-canonical-session queue and document its ceiling at the queue declaration: `// ponytail: in-process queue; use distributed per-session locks if the runtime becomes multi-process.`
 
 - [ ] **Step 5: Add trusted workspace selection to `Route` and preserve existing callers**
 
@@ -243,9 +239,9 @@
 
 - [ ] **Step 3: Implement runtime orchestration**
 
-  Look up the adapter by `agent.id`; resolve the trusted workspace from `context.execution.workspaceRoot`, route `workspaceRoot`, or the runtime default, then call `capabilities.policy.assertPath`. Load the session by `${context.message.channel}:${context.conversation.id}` and resume only when agent ID and workspace match.
+  Look up the adapter by `agent.id`; resolve and canonicalize the trusted workspace from `context.execution.workspaceRoot`, route `workspaceRoot`, or the runtime default, then call `capabilities.policy.assertPath` before constructing the queue key. Load the session by `createDeveloperSessionKey(context.message.channel, context.conversation.id, agent.id, canonicalWorkspaceRoot)`; agent/workspace identity is encoded in the key and the stored value contains only the native session ID.
 
-  Serialize turns per conversation with a small in-process promise queue so two WhatsApp messages cannot overwrite a session mapping. Different conversation keys may run concurrently. Emit `AgentExecutionStarted` before adapter execution and exactly one terminal event after it. On success, persist the returned session ID and return `{ text, metadata }`. On structured adapter failure, return a safe human-readable error response with stable metadata and publish `AgentExecutionFailed`; do not expose credentials or unlimited stderr.
+  Serialize turns per canonical session tuple with a small in-process promise queue so equivalent approved workspace paths cannot run the same session concurrently or overwrite its mapping. Different tuple keys may run concurrently. Invalid roots bypass queue construction but still return the clean `workspace-rejected` response. Emit `AgentExecutionStarted` before adapter execution and exactly one terminal event after it. On success, persist the returned session ID and return `{ text, metadata }`. On structured adapter failure, return a safe human-readable error response with stable metadata and publish `AgentExecutionFailed`; do not expose credentials or unlimited stderr.
 
   Update the existing developer-runtime test to inject a fake adapter. The runtime must not fall back to `ConversationAgent.handleMessage` for configured developer routes; an unregistered adapter is a configuration failure.
 

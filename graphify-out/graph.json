@@ -1622,7 +1622,7 @@
       "file_type": "code",
       "norm_label": ".executeturn()",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L65"
+      "source_location": "L71"
     },
     {
       "id": "runtime_developer_agent_src_index_developeragentruntime_failure",
@@ -1634,7 +1634,7 @@
       "file_type": "code",
       "norm_label": ".failure()",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L115"
+      "source_location": "L123"
     },
     {
       "id": "runtime_developer_agent_src_index_developeragentruntime_getavailability",
@@ -1658,7 +1658,7 @@
       "file_type": "code",
       "norm_label": ".publish()",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L131"
+      "source_location": "L139"
     },
     {
       "id": "runtime_developer_agent_src_sessions_createdevelopersessionkey",
@@ -2018,7 +2018,7 @@
       "file_type": "code",
       "norm_label": "execute()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L269"
+      "source_location": "L288"
     },
     {
       "id": "test_developer_agent_runtime_test_fakeadapter",
@@ -2054,7 +2054,7 @@
       "file_type": "code",
       "norm_label": "get()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L197"
+      "source_location": "L216"
     },
     {
       "id": "test_developer_agent_runtime_test_getavailability",
@@ -2066,7 +2066,7 @@
       "file_type": "code",
       "norm_label": "getavailability()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L268"
+      "source_location": "L287"
     },
     {
       "id": "test_developer_agent_runtime_test_isavailable",
@@ -2078,7 +2078,7 @@
       "file_type": "code",
       "norm_label": "isavailable()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L267"
+      "source_location": "L286"
     },
     {
       "id": "test_developer_agent_runtime_test_load",
@@ -2090,7 +2090,7 @@
       "file_type": "code",
       "norm_label": "load()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L197"
+      "source_location": "L216"
     },
     {
       "id": "test_developer_agent_runtime_test_set",
@@ -2102,7 +2102,7 @@
       "file_type": "code",
       "norm_label": "set()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L197"
+      "source_location": "L216"
     },
     {
       "id": "test_gateway_test_execute",
@@ -3770,7 +3770,7 @@
       "node_kind": "heading",
       "norm_label": "final verification checklist",
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L306"
+      "source_location": "L302"
     },
     {
       "id": "docs_superpowers_plans_2026_09_10_developer_agent_runtime_global_constraints",
@@ -3806,7 +3806,7 @@
       "node_kind": "heading",
       "norm_label": "task 2: implement the direct process runner and executable availability lookup",
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L100"
+      "source_location": "L96"
     },
     {
       "id": "docs_superpowers_plans_2026_09_10_developer_agent_runtime_task_3_implement_claude_codex_and_copilot_adapters",
@@ -3818,7 +3818,7 @@
       "node_kind": "heading",
       "norm_label": "task 3: implement claude, codex, and copilot adapters",
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L154"
+      "source_location": "L150"
     },
     {
       "id": "docs_superpowers_plans_2026_09_10_developer_agent_runtime_task_4_integrate_adapters_workspace_policy_session_isolation_lifecycle_events_and_gateway_output",
@@ -3830,7 +3830,7 @@
       "node_kind": "heading",
       "norm_label": "task 4: integrate adapters, workspace policy, session isolation, lifecycle events, and gateway output",
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L205"
+      "source_location": "L201"
     },
     {
       "id": "docs_superpowers_plans_2026_09_10_developer_agent_runtime_task_5_document_configuration_run_full_verification_and_refresh_project_knowledge",
@@ -3842,7 +3842,7 @@
       "node_kind": "heading",
       "norm_label": "task 5: document configuration, run full verification, and refresh project knowledge",
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L268"
+      "source_location": "L264"
     },
     {
       "id": "docs_superpowers_plans_2026_09_10_whatsapp_channel_adapter",
@@ -4211,7 +4211,7 @@
       "node_kind": "heading",
       "norm_label": "next action",
       "source_file": ".planning/STATE.md",
-      "source_location": "L31"
+      "source_location": "L28"
     },
     {
       "id": "planning_state_state",
@@ -6365,18 +6365,6 @@
     },
     {
       "source": "runtime_developer_agent_src_index_developeragentruntime_execute",
-      "target": "runtime_developer_agent_src_sessions_createdevelopersessionkey",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L54",
-      "weight": 1.0
-    },
-    {
-      "source": "runtime_developer_agent_src_index_developeragentruntime_execute",
       "target": "runtime_developer_agent_src_index_developeragentruntime_executeturn",
       "relation": "calls",
       "_origin": "ast",
@@ -6384,7 +6372,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L56",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "runtime_developer_agent_src_index_developeragentruntime_execute",
+      "target": "runtime_developer_agent_src_sessions_createdevelopersessionkey",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L60",
       "weight": 1.0
     },
     {
@@ -6396,7 +6396,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L68",
+      "source_location": "L74",
       "weight": 1.0
     },
     {
@@ -6408,7 +6408,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L71",
+      "source_location": "L77",
       "weight": 1.0
     },
     {
@@ -6420,7 +6420,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L83",
+      "source_location": "L91",
       "weight": 1.0
     },
     {
@@ -6432,7 +6432,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L122",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -6900,7 +6900,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L65",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -6912,7 +6912,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L115",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -6924,7 +6924,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L131",
+      "source_location": "L139",
       "weight": 1.0
     },
     {
@@ -8446,7 +8446,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L65",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -8458,7 +8458,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L65",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -8470,7 +8470,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L115",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -9666,18 +9666,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L306",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_superpowers_plans_2026_09_10_developer_agent_runtime_global_constraints",
-      "target": "docs_superpowers_plans_2026_09_10_developer_agent_runtime_task_2_implement_the_direct_process_runner_and_executable_availability_lookup",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L100",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -9688,7 +9677,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L154",
+      "source_location": "L150",
       "weight": 1.0
     },
     {
@@ -9699,7 +9688,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L205",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -9710,7 +9699,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
-      "source_location": "L268",
+      "source_location": "L264",
       "weight": 1.0
     },
     {
@@ -9722,6 +9711,17 @@
       "confidence_score": 1.0,
       "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
       "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_superpowers_plans_2026_09_10_developer_agent_runtime_global_constraints",
+      "target": "docs_superpowers_plans_2026_09_10_developer_agent_runtime_task_2_implement_the_direct_process_runner_and_executable_availability_lookup",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md",
+      "source_location": "L96",
       "weight": 1.0
     },
     {
@@ -11013,6 +11013,17 @@
     },
     {
       "source": "planning_state_state",
+      "target": "planning_state_next_action",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".planning/STATE.md",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "planning_state_state",
       "target": "planning_state_current_position",
       "relation": "contains",
       "_origin": "ast",
@@ -11020,17 +11031,6 @@
       "confidence_score": 1.0,
       "source_file": ".planning/STATE.md",
       "source_location": "L3",
-      "weight": 1.0
-    },
-    {
-      "source": "planning_state_state",
-      "target": "planning_state_next_action",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".planning/STATE.md",
-      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -11596,39 +11596,6 @@
     },
     {
       "source": "test_developer_agent_runtime_test",
-      "target": "test_developer_agent_runtime_test_get",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L197",
-      "weight": 1.0
-    },
-    {
-      "source": "test_developer_agent_runtime_test",
-      "target": "test_developer_agent_runtime_test_load",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L197",
-      "weight": 1.0
-    },
-    {
-      "source": "test_developer_agent_runtime_test",
-      "target": "test_developer_agent_runtime_test_set",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L197",
-      "weight": 1.0
-    },
-    {
-      "source": "test_developer_agent_runtime_test",
       "target": "test_developer_agent_runtime_test_context",
       "relation": "contains",
       "_origin": "ast",
@@ -11640,13 +11607,46 @@
     },
     {
       "source": "test_developer_agent_runtime_test",
+      "target": "test_developer_agent_runtime_test_get",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/developer-agent-runtime.test.ts",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "test_developer_agent_runtime_test",
+      "target": "test_developer_agent_runtime_test_load",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/developer-agent-runtime.test.ts",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "test_developer_agent_runtime_test",
+      "target": "test_developer_agent_runtime_test_set",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/developer-agent-runtime.test.ts",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "test_developer_agent_runtime_test",
       "target": "test_developer_agent_runtime_test_isavailable",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L267",
+      "source_location": "L286",
       "weight": 1.0
     },
     {
@@ -11657,7 +11657,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L268",
+      "source_location": "L287",
       "weight": 1.0
     },
     {
@@ -11668,7 +11668,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L269",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -13070,7 +13070,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L115",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -13081,7 +13081,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L131",
+      "source_location": "L139",
       "weight": 1.0
     },
     {
@@ -13125,7 +13125,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L65",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -13399,5 +13399,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e88d94f03f6c06613dfacb187621ab5c45737719"
+  "built_at_commit": "7c87eff844f7d7a2b91ea4182324e2d1d0c1173a"
 }

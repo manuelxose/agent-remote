@@ -251,6 +251,19 @@
       "source_location": "L11"
     },
     {
+      "id": "apps_gateway_src_index_gatewaydependencies",
+      "label": "GatewayDependencies",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "gatewaydependencies",
+      "source_file": "apps/gateway/src/index.ts",
+      "source_location": "L6"
+    },
+    {
       "id": "apps_worker_src_index_worker",
       "label": "Worker",
       "_callable": true,
@@ -290,19 +303,6 @@
       "source_location": "L67"
     },
     {
-      "id": "packages_core_src_index_agenttype",
-      "label": "AgentType",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "agenttype",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L3"
-    },
-    {
       "id": "packages_core_src_index_conversationagent",
       "label": "ConversationAgent",
       "_callable": true,
@@ -327,32 +327,6 @@
       "norm_label": "conversationcontext",
       "source_file": "packages/core/src/index.ts",
       "source_location": "L49"
-    },
-    {
-      "id": "packages_core_src_index_metadata",
-      "label": "Metadata",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "metadata",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "packages_core_src_index_runtimetype",
-      "label": "RuntimeType",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "runtimetype",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L1"
     },
     {
       "id": "packages_events_src_index_domainevent",
@@ -790,24 +764,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "gatewayconfigurationerror",
       "source_file": "apps/gateway/src/index.ts",
       "source_location": "L15"
-    },
-    {
-      "id": "apps_gateway_src_index_gatewaydependencies",
-      "label": "GatewayDependencies",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "gateway/src/index.ts",
-      "file_type": "code",
-      "norm_label": "gatewaydependencies",
-      "source_file": "apps/gateway/src/index.ts",
-      "source_location": "L6"
     },
     {
       "id": "packages_conversations_src_index_conversationstore",
@@ -816,7 +777,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "conversationstore",
       "source_file": "packages/conversations/src/index.ts",
@@ -829,11 +790,24 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "inmemoryconversationstore",
       "source_file": "packages/conversations/src/index.ts",
       "source_location": "L7"
+    },
+    {
+      "id": "packages_core_src_index_agenttype",
+      "label": "AgentType",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "agenttype",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L3"
     },
     {
       "id": "packages_core_src_index_channel",
@@ -842,7 +816,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "channel",
       "source_file": "packages/core/src/index.ts",
@@ -855,7 +829,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "conversation",
       "source_file": "packages/core/src/index.ts",
@@ -868,7 +842,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "executioncontext",
       "source_file": "packages/core/src/index.ts",
@@ -881,11 +855,24 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "message",
       "source_file": "packages/core/src/index.ts",
       "source_location": "L14"
+    },
+    {
+      "id": "packages_core_src_index_metadata",
+      "label": "Metadata",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "metadata",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L5"
     },
     {
       "id": "packages_core_src_index_route",
@@ -894,11 +881,24 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "route",
       "source_file": "packages/core/src/index.ts",
       "source_location": "L33"
+    },
+    {
+      "id": "packages_core_src_index_runtimetype",
+      "label": "RuntimeType",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "runtimetype",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L1"
     },
     {
       "id": "packages_routing_src_index_configurationrouter",
@@ -907,7 +907,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "configurationrouter",
       "source_file": "packages/routing/src/index.ts",
@@ -920,7 +920,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "routenotfounderror",
       "source_file": "packages/routing/src/index.ts",
@@ -933,7 +933,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "routeresolver",
       "source_file": "packages/routing/src/index.ts",
@@ -963,7 +963,7 @@
       "file_type": "code",
       "norm_label": "developersessionstateerror",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L17"
+      "source_location": "L18"
     },
     {
       "id": "runtime_developer_agent_src_sessions_developersessionstore",
@@ -976,7 +976,7 @@
       "file_type": "code",
       "norm_label": "developersessionstore",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L11"
+      "source_location": "L12"
     },
     {
       "id": "runtime_developer_agent_src_sessions_inmemorydevelopersessionstore",
@@ -989,7 +989,7 @@
       "file_type": "code",
       "norm_label": "inmemorydevelopersessionstore",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L24"
+      "source_location": "L25"
     },
     {
       "id": "runtime_developer_agent_src_sessions_jsondevelopersessionstore",
@@ -1002,7 +1002,7 @@
       "file_type": "code",
       "norm_label": "jsondevelopersessionstore",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L38"
+      "source_location": "L39"
     },
     {
       "id": "packages_tools_src_index_allowlistedtoolregistry",
@@ -1622,7 +1622,7 @@
       "file_type": "code",
       "norm_label": ".executeturn()",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L64"
+      "source_location": "L65"
     },
     {
       "id": "runtime_developer_agent_src_index_developeragentruntime_failure",
@@ -1634,7 +1634,7 @@
       "file_type": "code",
       "norm_label": ".failure()",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L118"
+      "source_location": "L115"
     },
     {
       "id": "runtime_developer_agent_src_index_developeragentruntime_getavailability",
@@ -1658,19 +1658,19 @@
       "file_type": "code",
       "norm_label": ".publish()",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L134"
+      "source_location": "L131"
     },
     {
-      "id": "test_core_test_handlemessage",
-      "label": "handleMessage()",
+      "id": "runtime_developer_agent_src_sessions_createdevelopersessionkey",
+      "label": "createDeveloperSessionKey()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
       "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
-      "norm_label": "handlemessage()",
-      "source_file": "test/core.test.ts",
-      "source_location": "L9"
+      "norm_label": "createdevelopersessionkey()",
+      "source_file": "runtime/developer-agent/src/sessions.ts",
+      "source_location": "L8"
     },
     {
       "id": "test_whatsapp_gateway_test_end",
@@ -2018,7 +2018,7 @@
       "file_type": "code",
       "norm_label": "execute()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L250"
+      "source_location": "L269"
     },
     {
       "id": "test_developer_agent_runtime_test_fakeadapter",
@@ -2054,7 +2054,7 @@
       "file_type": "code",
       "norm_label": "get()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L178"
+      "source_location": "L197"
     },
     {
       "id": "test_developer_agent_runtime_test_getavailability",
@@ -2066,7 +2066,7 @@
       "file_type": "code",
       "norm_label": "getavailability()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L249"
+      "source_location": "L268"
     },
     {
       "id": "test_developer_agent_runtime_test_isavailable",
@@ -2078,7 +2078,7 @@
       "file_type": "code",
       "norm_label": "isavailable()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L248"
+      "source_location": "L267"
     },
     {
       "id": "test_developer_agent_runtime_test_load",
@@ -2090,7 +2090,7 @@
       "file_type": "code",
       "norm_label": "load()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L178"
+      "source_location": "L197"
     },
     {
       "id": "test_developer_agent_runtime_test_set",
@@ -2102,7 +2102,7 @@
       "file_type": "code",
       "norm_label": "set()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L178"
+      "source_location": "L197"
     },
     {
       "id": "test_gateway_test_execute",
@@ -2578,7 +2578,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".handle()",
       "source_file": "apps/gateway/src/index.ts",
@@ -2590,7 +2590,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "apps/gateway/src/index.ts",
@@ -2602,7 +2602,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".getorcreate()",
       "source_file": "packages/conversations/src/index.ts",
@@ -2614,7 +2614,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "createconversationcontext()",
       "source_file": "packages/conversations/src/index.ts",
@@ -2626,7 +2626,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".getorcreate()",
       "source_file": "packages/conversations/src/index.ts",
@@ -2638,7 +2638,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".receive()",
       "source_file": "packages/core/src/index.ts",
@@ -2650,7 +2650,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".send()",
       "source_file": "packages/core/src/index.ts",
@@ -2662,7 +2662,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "packages/routing/src/index.ts",
@@ -2674,7 +2674,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".resolve()",
       "source_file": "packages/routing/src/index.ts",
@@ -2686,7 +2686,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "packages/routing/src/index.ts",
@@ -2698,11 +2698,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": ".resolve()",
       "source_file": "packages/routing/src/index.ts",
       "source_location": "L4"
+    },
+    {
+      "id": "test_core_test_handlemessage",
+      "label": "handleMessage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "handlemessage()",
+      "source_file": "test/core.test.ts",
+      "source_location": "L9"
     },
     {
       "id": "runtime_developer_agent_src_sessions_developersessionstateerror_constructor",
@@ -2714,7 +2726,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L18"
+      "source_location": "L19"
     },
     {
       "id": "runtime_developer_agent_src_sessions_developersessionstore_get",
@@ -2726,7 +2738,7 @@
       "file_type": "code",
       "norm_label": ".get()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L13"
+      "source_location": "L14"
     },
     {
       "id": "runtime_developer_agent_src_sessions_developersessionstore_load",
@@ -2738,7 +2750,7 @@
       "file_type": "code",
       "norm_label": ".load()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L12"
+      "source_location": "L13"
     },
     {
       "id": "runtime_developer_agent_src_sessions_developersessionstore_set",
@@ -2750,7 +2762,7 @@
       "file_type": "code",
       "norm_label": ".set()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L14"
+      "source_location": "L15"
     },
     {
       "id": "runtime_developer_agent_src_sessions_inmemorydevelopersessionstore_get",
@@ -2762,7 +2774,7 @@
       "file_type": "code",
       "norm_label": ".get()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L29"
+      "source_location": "L30"
     },
     {
       "id": "runtime_developer_agent_src_sessions_inmemorydevelopersessionstore_load",
@@ -2774,7 +2786,7 @@
       "file_type": "code",
       "norm_label": ".load()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L27"
+      "source_location": "L28"
     },
     {
       "id": "runtime_developer_agent_src_sessions_inmemorydevelopersessionstore_set",
@@ -2786,7 +2798,7 @@
       "file_type": "code",
       "norm_label": ".set()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L33"
+      "source_location": "L34"
     },
     {
       "id": "runtime_developer_agent_src_sessions_issessionmap",
@@ -2798,7 +2810,7 @@
       "file_type": "code",
       "norm_label": "issessionmap()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L99"
+      "source_location": "L100"
     },
     {
       "id": "runtime_developer_agent_src_sessions_jsondevelopersessionstore_constructor",
@@ -2810,7 +2822,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L45"
+      "source_location": "L46"
     },
     {
       "id": "runtime_developer_agent_src_sessions_jsondevelopersessionstore_get",
@@ -2822,7 +2834,7 @@
       "file_type": "code",
       "norm_label": ".get()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L59"
+      "source_location": "L60"
     },
     {
       "id": "runtime_developer_agent_src_sessions_jsondevelopersessionstore_load",
@@ -2834,7 +2846,7 @@
       "file_type": "code",
       "norm_label": ".load()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L47"
+      "source_location": "L48"
     },
     {
       "id": "runtime_developer_agent_src_sessions_jsondevelopersessionstore_read",
@@ -2846,7 +2858,7 @@
       "file_type": "code",
       "norm_label": ".read()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L79"
+      "source_location": "L80"
     },
     {
       "id": "runtime_developer_agent_src_sessions_jsondevelopersessionstore_set",
@@ -2858,7 +2870,7 @@
       "file_type": "code",
       "norm_label": ".set()",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L64"
+      "source_location": "L65"
     },
     {
       "id": "packages_tools_src_index_allowlistedtoolregistry_constructor",
@@ -3178,39 +3190,6 @@
       "source_location": "L1"
     },
     {
-      "id": "integrations_talkaris_src_index",
-      "label": "talkaris/src/index.ts",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "talkaris/src/index.ts",
-      "source_file": "integrations/talkaris/src/index.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "integrations_talkaris_src_index_talkarisagent",
-      "label": "talkarisAgent",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "talkarisagent",
-      "source_file": "integrations/talkaris/src/index.ts",
-      "source_location": "L3"
-    },
-    {
-      "id": "packages_core_src_index",
-      "label": "core/src/index.ts",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "core/src/index.ts",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "packages_events_src_index",
       "label": "events/src/index.ts",
       "_origin": "ast",
@@ -3263,17 +3242,6 @@
       "file_type": "code",
       "norm_label": "developer-agent/src/index.ts",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "test_core_test",
-      "label": "core.test.ts",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "core.test.ts",
-      "source_file": "test/core.test.ts",
       "source_location": "L1"
     },
     {
@@ -4243,7 +4211,7 @@
       "node_kind": "heading",
       "norm_label": "next action",
       "source_file": ".planning/STATE.md",
-      "source_location": "L27"
+      "source_location": "L31"
     },
     {
       "id": "planning_state_state",
@@ -4449,6 +4417,18 @@
       "source_location": "L19"
     },
     {
+      "id": "planning_roadmap_phase_3_developer_agent_runtime_complete",
+      "label": "Phase 3: Developer-agent runtime \u2014 Complete",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "Roadmap",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "phase 3: developer-agent runtime \u2014 complete",
+      "source_file": ".planning/ROADMAP.md",
+      "source_location": "L34"
+    },
+    {
       "id": "planning_roadmap_roadmap",
       "label": "Roadmap",
       "_origin": "ast",
@@ -4502,7 +4482,7 @@
       "file_type": "code",
       "norm_label": "expected",
       "source_file": "test/developer-agent-sessions.test.ts",
-      "source_location": "L12"
+      "source_location": "L13"
     },
     {
       "id": "test_security_test",
@@ -4991,21 +4971,54 @@
       "label": "gateway/src/index.ts",
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "gateway/src/index.ts",
       "source_file": "apps/gateway/src/index.ts",
       "source_location": "L1"
     },
     {
+      "id": "integrations_talkaris_src_index",
+      "label": "talkaris/src/index.ts",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "talkaris/src/index.ts",
+      "source_file": "integrations/talkaris/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "integrations_talkaris_src_index_talkarisagent",
+      "label": "talkarisAgent",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "talkarisagent",
+      "source_file": "integrations/talkaris/src/index.ts",
+      "source_location": "L3"
+    },
+    {
       "id": "packages_conversations_src_index",
       "label": "conversations/src/index.ts",
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "conversations/src/index.ts",
       "source_file": "packages/conversations/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "packages_core_src_index",
+      "label": "core/src/index.ts",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "core/src/index.ts",
+      "source_file": "packages/core/src/index.ts",
       "source_location": "L1"
     },
     {
@@ -5013,10 +5026,21 @@
       "label": "routing/src/index.ts",
       "_origin": "ast",
       "community": 37,
-      "community_name": "gateway/src/index.ts",
+      "community_name": "core/src/index.ts",
       "file_type": "code",
       "norm_label": "routing/src/index.ts",
       "source_file": "packages/routing/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "test_core_test",
+      "label": "core.test.ts",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "core.test.ts",
+      "source_file": "test/core.test.ts",
       "source_location": "L1"
     },
     {
@@ -5401,7 +5425,7 @@
       "node_kind": "heading",
       "norm_label": "events and response pipeline",
       "source_file": "docs/superpowers/specs/2026-09-10-developer-agent-runtime-design.md",
-      "source_location": "L161"
+      "source_location": "L160"
     },
     {
       "id": "docs_superpowers_specs_2026_09_10_developer_agent_runtime_design_goal",
@@ -5461,7 +5485,7 @@
       "node_kind": "heading",
       "norm_label": "verification",
       "source_file": "docs/superpowers/specs/2026-09-10-developer-agent-runtime-design.md",
-      "source_location": "L167"
+      "source_location": "L166"
     },
     {
       "id": "docs_superpowers_specs_2026_09_10_developer_agent_runtime_design_workspace_security",
@@ -6341,6 +6365,18 @@
     },
     {
       "source": "runtime_developer_agent_src_index_developeragentruntime_execute",
+      "target": "runtime_developer_agent_src_sessions_createdevelopersessionkey",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "runtime_developer_agent_src_index_developeragentruntime_execute",
       "target": "runtime_developer_agent_src_index_developeragentruntime_executeturn",
       "relation": "calls",
       "_origin": "ast",
@@ -6348,7 +6384,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L55",
+      "source_location": "L56",
       "weight": 1.0
     },
     {
@@ -6360,7 +6396,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L67",
+      "source_location": "L68",
       "weight": 1.0
     },
     {
@@ -6372,7 +6408,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L70",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "runtime_developer_agent_src_index_developeragentruntime_executeturn",
+      "target": "runtime_developer_agent_src_sessions_createdevelopersessionkey",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L83",
       "weight": 1.0
     },
     {
@@ -6384,7 +6432,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L125",
+      "source_location": "L122",
       "weight": 1.0
     },
     {
@@ -6420,7 +6468,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L60",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -6432,7 +6480,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L50",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -6444,7 +6492,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L85",
+      "source_location": "L86",
       "weight": 1.0
     },
     {
@@ -6456,7 +6504,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L94",
+      "source_location": "L95",
       "weight": 1.0
     },
     {
@@ -6468,7 +6516,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L65",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -6852,7 +6900,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L64",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -6864,7 +6912,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L118",
+      "source_location": "L115",
       "weight": 1.0
     },
     {
@@ -6876,7 +6924,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L134",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
@@ -7709,6 +7757,18 @@
     },
     {
       "source": "runtime_developer_agent_src_index",
+      "target": "runtime_developer_agent_src_sessions_createdevelopersessionkey",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "runtime_developer_agent_src_index",
       "target": "runtime_developer_agent_src_sessions_developersessionstore",
       "relation": "imports",
       "_origin": "ast",
@@ -8386,7 +8446,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L64",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -8398,7 +8458,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L64",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -8410,7 +8470,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L118",
+      "source_location": "L115",
       "weight": 1.0
     },
     {
@@ -8758,7 +8818,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -8770,7 +8830,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L38",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -9947,7 +10007,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/superpowers/specs/2026-09-10-developer-agent-runtime-design.md",
-      "source_location": "L161",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -9958,7 +10018,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/superpowers/specs/2026-09-10-developer-agent-runtime-design.md",
-      "source_location": "L167",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -10908,6 +10968,17 @@
       "weight": 1.0
     },
     {
+      "source": "planning_roadmap_roadmap",
+      "target": "planning_roadmap_phase_3_developer_agent_runtime_complete",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".planning/ROADMAP.md",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
       "source": "planning_state",
       "target": "planning_state_state",
       "relation": "contains",
@@ -10942,17 +11013,6 @@
     },
     {
       "source": "planning_state_state",
-      "target": "planning_state_next_action",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".planning/STATE.md",
-      "source_location": "L27",
-      "weight": 1.0
-    },
-    {
-      "source": "planning_state_state",
       "target": "planning_state_current_position",
       "relation": "contains",
       "_origin": "ast",
@@ -10960,6 +11020,17 @@
       "confidence_score": 1.0,
       "source_file": ".planning/STATE.md",
       "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "planning_state_state",
+      "target": "planning_state_next_action",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".planning/STATE.md",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -11195,13 +11266,24 @@
     },
     {
       "source": "runtime_developer_agent_src_sessions",
+      "target": "runtime_developer_agent_src_sessions_issessionmap",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/developer-agent/src/sessions.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "runtime_developer_agent_src_sessions",
       "target": "runtime_developer_agent_src_sessions_developersessionstore",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -11212,7 +11294,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -11223,7 +11305,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -11234,7 +11316,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L38",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -11250,13 +11332,13 @@
     },
     {
       "source": "runtime_developer_agent_src_sessions",
-      "target": "runtime_developer_agent_src_sessions_issessionmap",
+      "target": "runtime_developer_agent_src_sessions_createdevelopersessionkey",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L99",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -11520,7 +11602,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L178",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -11531,7 +11613,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L178",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -11542,7 +11624,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L178",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -11564,7 +11646,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L248",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -11575,7 +11657,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L249",
+      "source_location": "L268",
       "weight": 1.0
     },
     {
@@ -11586,7 +11668,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L250",
+      "source_location": "L269",
       "weight": 1.0
     },
     {
@@ -11630,7 +11712,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-sessions.test.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -12988,7 +13070,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L118",
+      "source_location": "L115",
       "weight": 1.0
     },
     {
@@ -12999,7 +13081,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L134",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
@@ -13043,7 +13125,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L64",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -13076,7 +13158,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -13087,7 +13169,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -13098,7 +13180,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -13109,7 +13191,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -13120,7 +13202,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -13131,7 +13213,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -13142,7 +13224,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -13153,7 +13235,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -13164,7 +13246,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0
     },
     {
@@ -13175,7 +13257,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L59",
+      "source_location": "L60",
       "weight": 1.0
     },
     {
@@ -13186,7 +13268,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L64",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -13197,7 +13279,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/sessions.ts",
-      "source_location": "L79",
+      "source_location": "L80",
       "weight": 1.0
     },
     {
@@ -13317,5 +13399,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "22fb0c3a9481984c7d778e1da0a1224339628b0e"
+  "built_at_commit": "e88d94f03f6c06613dfacb187621ab5c45737719"
 }

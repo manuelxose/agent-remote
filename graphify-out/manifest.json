@@ -132,9 +132,9 @@
     "semantic_hash": ""
   },
   "runtime/developer-agent/src/index.ts": {
-    "mtime": 1789071267.4779656,
-    "seen": 1789071328.3862743,
-    "ast_hash": "f9f6a9425404416b31a62235564053e2",
+    "mtime": 1789071703.6173308,
+    "seen": 1789071811.868922,
+    "ast_hash": "aaf75ae9effbc8ed5d8061ca636c7cf5",
     "semantic_hash": ""
   },
   "runtime/developer-agent/src/sessions.ts": {
@@ -234,15 +234,15 @@
     "semantic_hash": ""
   },
   ".planning/ROADMAP.md": {
-    "mtime": 1789070830.9001231,
-    "seen": 1789071328.3862917,
-    "ast_hash": "e74f89cce86601a46bd93efcca59377d",
+    "mtime": 1789071650.0612543,
+    "seen": 1789071811.8689387,
+    "ast_hash": "8a1b79881d0d0696725d6aaa97ea264f",
     "semantic_hash": ""
   },
   ".planning/STATE.md": {
-    "mtime": 1789070829.6833673,
-    "seen": 1789071328.3862925,
-    "ast_hash": "183cba0ffee4ffc63c8d4a2344eb0259",
+    "mtime": 1789071648.9408338,
+    "seen": 1789071811.8689396,
+    "ast_hash": "afcb4344c797a139ae2c18d7eced7d21",
     "semantic_hash": ""
   },
   ".planning/phases/01-architectural-foundation/01-01-PLAN.md": {
@@ -270,9 +270,9 @@
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md": {
-    "mtime": 1789065289.140394,
-    "seen": 1789065532.8576827,
-    "ast_hash": "307458f40b03baff81fd21a3d034cfbe",
+    "mtime": 1789071755.9935133,
+    "seen": 1789071811.8689442,
+    "ast_hash": "6a9100a1de53a9170a8c5d0a1d9cbf8c",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-10-whatsapp-channel-adapter.md": {
@@ -288,9 +288,9 @@
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-10-developer-agent-runtime-design.md": {
-    "mtime": 1789071296.103459,
-    "seen": 1789071328.3863,
-    "ast_hash": "8d00c629cd5f3752d198e1040d5ced9a",
+    "mtime": 1789071754.654316,
+    "seen": 1789071811.868946,
+    "ast_hash": "e4299d84ab1e2b651ee21b57a5d4dc48",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-10-whatsapp-channel-adapter-design.md": {
@@ -330,9 +330,9 @@
     "semantic_hash": ""
   },
   "test/developer-agent-runtime.test.ts": {
-    "mtime": 1789071233.8316164,
-    "seen": 1789071328.3862803,
-    "ast_hash": "13df3f5d1beedfa505cafb7d45ef0cc6",
+    "mtime": 1789071681.0623438,
+    "seen": 1789071811.8689277,
+    "ast_hash": "dcef42c86f11685459f6095bd2cc789c",
     "semantic_hash": ""
   },
   "test/developer-agent-smoke.test.ts": {
