@@ -18,6 +18,20 @@ Implemented Claude, Codex, and Copilot developer-agent adapters.
 - Focused: `npm run build && node --test --experimental-strip-types test/adapters.test.ts` — 9 passing.
 - Full: `npm test` — 54 passing.
 - `git diff --check` — passed.
+
+## Review Fix Round 2
+
+### Changes
+
+- Copilot now enables the documented experimental capability with `--experimental` before its fixed `--sandbox` flag; it never attempts an unsandboxed workspace-required run.
+- Extended nonzero-exit coverage to Claude, Codex, and Copilot, preserving bounded stderr diagnostics.
+- Added a runner-rejection test verifying `execution-failed` diagnostics are capped to the request output limit.
+
+### Verification
+
+- Red: focused tests failed because Copilot omitted `--experimental` from its sandboxed invocation.
+- Green focused: `npm run build && node --test --experimental-strip-types test/adapters.test.ts` — 12 passing.
+- Full: `npm test` — 57 passing.
 - `graphify update .` — completed.
 
 ## Concerns

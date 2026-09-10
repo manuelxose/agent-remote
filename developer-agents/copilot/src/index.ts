@@ -19,7 +19,7 @@ export function createCopilotAdapter(resolve: Resolver = () => resolveDeveloperE
       if (!availability.available) return { status: "failed", reason: "unavailable" };
       try { context.workspacePolicy.assertPath(context.workingDirectory); } catch { return { status: "failed", reason: "workspace-rejected" }; }
       const sessionId = request.sessionId ?? makeSessionId();
-      const argv = [`--prompt=${request.prompt}`, "--silent", `--session-id=${sessionId}`, "--sandbox"];
+      const argv = [`--prompt=${request.prompt}`, "--silent", `--session-id=${sessionId}`, "--experimental", "--sandbox"];
       let process;
       try {
         process = await context.processRunner.run({ executable: availability.executable, argv, workingDirectory: context.workingDirectory, signal: context.signal, timeoutMs: request.timeoutMs, maxOutputBytes: request.maxOutputBytes });
