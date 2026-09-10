@@ -1,6 +1,7 @@
 import { execFile as execFileCallback, spawn } from "node:child_process";
 import { stat } from "node:fs/promises";
 import { promisify } from "node:util";
+import type { WorkspacePolicy } from "../../../packages/security/src/index.js";
 import {
   DeveloperProcessError,
   type DeveloperProcessResult,
@@ -11,9 +12,13 @@ import {
 const execFile = promisify(execFileCallback);
 
 export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
+  constructor(private readonly workspacePolicy: WorkspacePolicy) {}
+
   async run(spec: DeveloperProcessSpec): Promise<DeveloperProcessResult> {
+    let workingDirectory: string;
     try {
-      if (!(await stat(spec.workingDirectory)).isDirectory()) {
+      workingDirectory = this.workspacePolicy.assertPath(spec.workingDirectory);
+      if (!(await stat(workingDirectory)).isDirectory()) {
         throw new Error("working directory is not a directory");
       }
     } catch (error) {
@@ -33,7 +38,7 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
     }
 
     const maxOutputBytes = spec.maxOutputBytes ?? Number.POSITIVE_INFINITY;
-    const child = spawn(spec.executable, spec.argv, { cwd: spec.workingDirectory });
+    const child = spawn(spec.executable, spec.argv, { cwd: workingDirectory });
     let stdout = Buffer.alloc(0);
     let stderr = Buffer.alloc(0);
     let stdoutTruncated = false;
@@ -51,11 +56,11 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
         resolve(result);
       };
       const abort = () => {
-        terminationReason = "cancelled";
-        child.kill();
+        terminate("cancelled");
       };
-      const terminateForOutput = () => {
-        terminationReason = "output-limit";
+      const terminate = (reason: NonNullable<DeveloperProcessResult["terminationReason"]>) => {
+        if (terminationReason) return;
+        terminationReason = reason;
         child.kill();
       };
       const append = (current: Buffer, chunk: Buffer, stream: "stdout" | "stderr") => {
@@ -66,7 +71,7 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
         if (kept.byteLength < chunk.byteLength) {
           if (stream === "stdout") stdoutTruncated = true;
           else stderrTruncated = true;
-          terminateForOutput();
+          terminate("output-limit");
         }
       };
 
@@ -92,8 +97,7 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
 
       spec.signal?.addEventListener("abort", abort, { once: true });
       if (spec.timeoutMs !== undefined) timer = setTimeout(() => {
-        terminationReason = "timeout";
-        child.kill();
+        terminate("timeout");
       }, spec.timeoutMs);
     });
   }

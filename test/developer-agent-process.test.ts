@@ -3,6 +3,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
+import { WorkspacePolicy } from "../dist/packages/security/src/index.js";
 import {
   DeveloperProcessError,
   NodeDeveloperProcessRunner,
@@ -14,7 +15,7 @@ const script = (source: string) => ["-e", source] as const;
 test("runs a process with separate executable and arguments", async () => {
   const root = await mkdtemp(join(tmpdir(), "developer-process-"));
   try {
-    const result = await new NodeDeveloperProcessRunner().run({
+    const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([root])).run({
       executable: process.execPath,
       argv: script("process.stdout.write('ok')"),
       workingDirectory: root,
@@ -34,7 +35,7 @@ test("runs a process with separate executable and arguments", async () => {
 });
 
 test("captures stderr and non-zero exit codes", async () => {
-  const result = await new NodeDeveloperProcessRunner().run({
+  const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
     executable: process.execPath,
     argv: script("process.stderr.write('bad'); process.exit(3)"),
     workingDirectory: process.cwd(),
@@ -45,7 +46,7 @@ test("captures stderr and non-zero exit codes", async () => {
 });
 
 test("terminates a process on timeout", async () => {
-  const result = await new NodeDeveloperProcessRunner().run({
+  const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
     executable: process.execPath,
     argv: script("setTimeout(() => {}, 10_000)"),
     workingDirectory: process.cwd(),
@@ -61,7 +62,7 @@ test("does not spawn when the signal is already aborted", async () => {
   const controller = new AbortController();
   controller.abort();
 
-  const result = await new NodeDeveloperProcessRunner().run({
+  const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
     executable: process.execPath,
     argv: script("process.stdout.write('unexpected')"),
     workingDirectory: process.cwd(),
@@ -74,7 +75,7 @@ test("does not spawn when the signal is already aborted", async () => {
 });
 
 test("caps stdout and reports truncation", async () => {
-  const result = await new NodeDeveloperProcessRunner().run({
+  const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
     executable: process.execPath,
     argv: script("process.stdout.write('0123456789')"),
     workingDirectory: process.cwd(),
@@ -87,11 +88,56 @@ test("caps stdout and reports truncation", async () => {
 });
 
 test("rejects an invalid working directory", async () => {
+  const root = await mkdtemp(join(tmpdir(), "developer-process-root-"));
+  const outside = await mkdtemp(join(tmpdir(), "developer-process-outside-"));
+  try {
   await assert.rejects(
-    new NodeDeveloperProcessRunner().run({
+    new NodeDeveloperProcessRunner(new WorkspacePolicy([root])).run({
       executable: process.execPath,
       argv: script("process.stdout.write('unexpected')"),
-      workingDirectory: join(tmpdir(), "does-not-exist-developer-process"),
+      workingDirectory: outside,
+    }),
+    (error: unknown) => error instanceof DeveloperProcessError,
+  );
+  } finally {
+    await rm(root, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
+  }
+});
+
+test("cancels a running child", async () => {
+  const controller = new AbortController();
+  const running = new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
+    executable: process.execPath,
+    argv: script("setTimeout(() => {}, 10_000)"),
+    workingDirectory: process.cwd(),
+    signal: controller.signal,
+  });
+  setTimeout(() => controller.abort(), 25);
+
+  const result = await running;
+  assert.equal(result.terminationReason, "cancelled");
+});
+
+test("caps stderr and reports stderr truncation", async () => {
+  const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
+    executable: process.execPath,
+    argv: script("process.stderr.write('0123456789')"),
+    workingDirectory: process.cwd(),
+    maxOutputBytes: 4,
+  });
+
+  assert.equal(result.stderr, "0123");
+  assert.equal(result.stderrTruncated, true);
+  assert.equal(result.terminationReason, "output-limit");
+});
+
+test("reports a spawn error", async () => {
+  await assert.rejects(
+    new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
+      executable: join(process.cwd(), "does-not-exist"),
+      argv: [],
+      workingDirectory: process.cwd(),
     }),
     (error: unknown) => error instanceof DeveloperProcessError,
   );
