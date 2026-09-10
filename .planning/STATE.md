@@ -17,7 +17,7 @@ Implementation complete; verification is recorded in the Phase 1 handoff.
 
 ## Verification
 
-- `npm test`: 18 passing, 0 failing.
+- `npm test`: 20 passing, 0 failing.
 - `npm run build`: passes as part of `npm test`.
 - `graphify update .`: completed successfully.
 - Static tests confirm core and WhatsApp dependency boundaries.

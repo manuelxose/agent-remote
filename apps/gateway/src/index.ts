@@ -12,6 +12,13 @@ export interface GatewayDependencies {
   events: EventBus;
 }
 
+export class GatewayConfigurationError extends Error {
+  constructor(routeId: string, dependency: "runtime" | "agent", name: string) {
+    super(`Route ${routeId} references an unregistered ${dependency}: ${name}`);
+    this.name = "GatewayConfigurationError";
+  }
+}
+
 export class Gateway {
   constructor(private readonly dependencies: GatewayDependencies) {}
 
@@ -24,7 +31,8 @@ export class Gateway {
     await events.publish({ type: "RouteResolved", occurredAt: new Date(), correlationId: message.id, payload: route });
     const runtime = runtimes[route.runtime];
     const agent = agents[route.agent];
-    if (!runtime || !agent) throw new Error(`No runtime or agent registered for route ${route.id}`);
+    if (!runtime) throw new GatewayConfigurationError(route.id, "runtime", route.runtime);
+    if (!agent) throw new GatewayConfigurationError(route.id, "agent", route.agent);
     const response = await runtime.execute(createConversationContext(message, conversation, route, {
       correlationId: message.id,
       conversationId: conversation.id

@@ -31,6 +31,8 @@ integrations/talkaris future registration placeholder only
 
 Imports point toward the domain. `packages/core` imports no channel, CLI, or chatbot code. `channels/whatsapp` depends on channel/core contracts only. Developer adapters are reachable only from the developer runtime composition root; chatbot runtime has no developer adapter imports.
 
+The in-memory conversation store keys state by `(channel, conversationId)`, so two channels can use the same provider-local ID without sharing state. The gateway fails with `GatewayConfigurationError` when a route names an unregistered runtime or agent.
+
 ## Core contracts
 
 The core defines `Message`, `Conversation`, `ConversationContext`, `AgentResponse`, `ConversationAgent`, `AgentRuntime`, `Channel`, `Route`, `ExecutionContext`, and the route/runtime/agent discriminated unions. These contracts carry channel-neutral IDs, metadata, tenant identity, and correlation IDs.
@@ -45,7 +47,7 @@ message -> conversation context -> route -> runtime -> agent -> response
 
 ### Trusted local developer zone
 
-The developer-agent runtime can use shell, filesystem, and git, but capabilities are injected and workspace-root restricted. The Claude, Codex, and Copilot adapters are intentionally thin placeholders: they implement the agent seam without coupling WhatsApp to a CLI product.
+The developer-agent runtime can use shell, filesystem, and git, but capabilities are injected and every explicit working-directory/file path is checked against approved workspace roots. The actual local shell executor remains an injected trusted implementation; CLI process execution is deliberately out of V1. The Claude, Codex, and Copilot adapters are intentionally thin placeholders: they implement the agent seam without coupling WhatsApp to a CLI product.
 
 ### Untrusted chatbot zone
 
@@ -57,7 +59,7 @@ Routes are keyed by a stable channel conversation key, for example `whatsapp-gro
 
 ## Events
 
-`EventBus` is the broker abstraction. V1 uses `InMemoryEventBus`; its contract is suitable for a later Redis Streams, NATS, or Kafka implementation. Events include `MessageReceived`, `RouteResolved`, `AgentExecutionStarted`, `ToolExecutionRequested`, `ApprovalRequested`, `AgentExecutionCompleted`, `AgentExecutionFailed`, and `MessageSent`.
+`EventBus` is the broker abstraction. V1 uses `InMemoryEventBus`; its contract is suitable for a later Redis Streams, NATS, or Kafka implementation. Events include `MessageReceived`, `RouteResolved`, `AgentExecutionStarted`, `ToolExecutionRequested`, `ApprovalRequested`, `AgentExecutionCompleted`, `AgentExecutionFailed`, and `MessageSent`. Placeholder adapters do not synthesize tool or approval events yet; concrete adapters will publish those through the same bus.
 
 ## Future extensions
 

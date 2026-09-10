@@ -47,6 +47,7 @@ test("restricted developer capability wrappers validate every workspace operatio
   await capabilities.readFile("/approved/workspace/file");
   await capabilities.writeFile("/approved/workspace/file", "content");
   await capabilities.git([], "/approved/workspace");
+  assert.throws(() => capabilities.shell("pwd", "/outside"), /outside approved workspace roots/);
   assert.throws(() => capabilities.readFile("/outside/file"), /outside approved workspace roots/);
   assert.equal(calls.length, 4);
 });

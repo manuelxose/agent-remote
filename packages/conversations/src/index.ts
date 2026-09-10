@@ -8,7 +8,8 @@ export class InMemoryConversationStore implements ConversationStore {
   private readonly conversations = new Map<string, Conversation>();
 
   async getOrCreate(message: Message): Promise<Conversation> {
-    const existing = this.conversations.get(message.conversationId);
+    const key = `${message.channel}:${message.conversationId}`;
+    const existing = this.conversations.get(key);
     if (existing) return existing;
     const conversation: Conversation = {
       id: message.conversationId,
@@ -16,7 +17,7 @@ export class InMemoryConversationStore implements ConversationStore {
       participantIds: [message.senderId],
       metadata: {}
     };
-    this.conversations.set(conversation.id, conversation);
+    this.conversations.set(key, conversation);
     return conversation;
   }
 }
