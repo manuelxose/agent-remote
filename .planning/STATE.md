@@ -2,11 +2,11 @@
 
 ## Current Position
 
-Phase 1 — Architectural foundation (implemented)
+Phase 2 — Local WhatsApp channel adapter (implemented)
 
 ## Status
 
-Implementation complete; verification is recorded in the Phase 1 handoff.
+Implementation complete; verification is recorded in the Phase 2 handoff.
 
 ## Decisions
 
@@ -22,7 +22,8 @@ Implementation complete; verification is recorded in the Phase 1 handoff.
 - `graphify update .`: completed successfully.
 - Static tests confirm core and WhatsApp dependency boundaries.
 - Runtime tests confirm chatbot allowlisting and developer workspace restrictions.
+- Baileys channel tests cover translation, attachment metadata, allowlists, QR handling, auth persistence, reconnect, logout, shutdown, health, and gateway response delivery.
 
 ## Next Action
 
-Review the foundation before adding a concrete WhatsApp provider or CLI adapter.
+Operate the local WhatsApp gateway with a configured auth path and allowlist; production-grade auth storage and distributed event delivery remain future concerns.
