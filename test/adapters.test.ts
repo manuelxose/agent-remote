@@ -1,9 +1,6 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { WhatsAppChannel, InvalidWhatsAppPayloadError } from "../dist/channels/whatsapp/src/index.js";
-import { claudeAgent } from "../dist/developer-agents/claude/src/index.js";
-import { codexAgent } from "../dist/developer-agents/codex/src/index.js";
-import { copilotAgent } from "../dist/developer-agents/copilot/src/index.js";
 import { createClaudeAdapter } from "../dist/developer-agents/claude/src/index.js";
 import { createCodexAdapter } from "../dist/developer-agents/codex/src/index.js";
 import { createCopilotAdapter } from "../dist/developer-agents/copilot/src/index.js";
@@ -27,16 +24,16 @@ test("WhatsApp channel rejects malformed transport payloads", async () => {
   await assert.rejects(() => channel.receive({ text: "missing identity" }), InvalidWhatsAppPayloadError);
 });
 
-test("agent adapters register independently of the WhatsApp channel", () => {
+test("canonical adapters register independently of the WhatsApp channel", () => {
   assert.deepEqual(
-    [claudeAgent, codexAgent, copilotAgent].map(agent => [agent.id, agent.type]),
-    [["claude", "developer-agent"], ["codex", "developer-agent"], ["copilot", "developer-agent"]]
+    [createClaudeAdapter(), createCodexAdapter(), createCopilotAdapter()].map(adapter => adapter.id),
+    ["claude", "codex", "copilot"]
   );
   assert.equal(talkarisAgent.id, "talkaris");
   assert.equal(talkarisAgent.type, "chatbot");
 });
 
-const request = { prompt: "prompt with --not-a-flag", conversationId: "conversation", timeoutMs: 1000, maxOutputBytes: 1000 };
+const request = { prompt: "--dangerously-bypass-approvals-and-sandbox", conversationId: "conversation", timeoutMs: 1000, maxOutputBytes: 1000 };
 const context = {
   correlationId: "correlation",
   conversationId: request.conversationId,
@@ -55,6 +52,7 @@ test("adapters report missing executables without spawning", async () => {
   ]) {
     assert.deepEqual(await adapter.getAvailability(), { available: false, reason: "executable-missing", executable: adapter.id });
     assert.equal(await adapter.isAvailable(), false);
+    assert.deepEqual(await adapter.execute(request, context), { status: "failed", reason: "unavailable" });
   }
 });
 
@@ -66,12 +64,12 @@ test("Claude builds fixed argv, parses JSON, and resumes its native session", as
     return { stdout: JSON.stringify({ type: "result", session_id: "claude-session", result: "answer" }), stderr: "", exitCode: 0, signal: null, durationMs: 2 };
   }};
   const result = await adapter.execute(request, { ...context, processRunner: runner });
-  assert.deepEqual(calls[0], { executable: "/bin/claude", argv: ["-p", "--output-format", "json", request.prompt], workingDirectory: process.cwd(), signal: context.signal, timeoutMs: 1000, maxOutputBytes: 1000 });
+  assert.deepEqual(calls[0], { executable: "/bin/claude", argv: ["-p", "--output-format", "json", "--add-dir", process.cwd(), "--", request.prompt], workingDirectory: process.cwd(), signal: context.signal, timeoutMs: 1000, maxOutputBytes: 1000 });
   assert.equal(result.status, "completed");
   assert.equal((result as any).text, "answer");
   assert.equal((result as any).sessionId, "claude-session");
   await adapter.execute({ ...request, sessionId: "claude-session" }, { ...context, processRunner: runner });
-  assert.deepEqual((calls[1] as any).argv, ["-p", "--output-format", "json", "--resume", "claude-session", request.prompt]);
+  assert.deepEqual((calls[1] as any).argv, ["-p", "--output-format", "json", "--add-dir", process.cwd(), "--resume", "claude-session", "--", request.prompt]);
 });
 
 test("Codex builds exec JSON argv and parses JSONL thread and final message", async () => {
@@ -82,11 +80,11 @@ test("Codex builds exec JSON argv and parses JSONL thread and final message", as
     JSON.stringify({ type: "item.completed", item: { type: "agent_message", text: "answer" } })
   ].join("\n"), stderr: "", exitCode: 0, signal: null, durationMs: 2 }; } };
   const result = await adapter.execute(request, { ...context, processRunner: runner });
-  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", request.prompt]);
+  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "--", request.prompt]);
   assert.equal((result as any).sessionId, "codex-thread");
   assert.equal((result as any).text, "answer");
   await adapter.execute({ ...request, sessionId: "codex-thread" }, { ...context, processRunner: runner });
-  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "resume", "codex-thread", request.prompt]);
+  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "resume", "codex-thread", "--", request.prompt]);
 });
 
 test("Copilot uses an exact UUID session ID and silent prompt mode", async () => {
@@ -95,12 +93,12 @@ test("Copilot uses an exact UUID session ID and silent prompt mode", async () =>
   const adapter = createCopilotAdapter(async () => "/bin/copilot", () => sessionId);
   const runner = { run: async (value: any) => { spec = value; return { stdout: "answer", stderr: "", exitCode: 0, signal: null, durationMs: 2 }; } };
   const result = await adapter.execute(request, { ...context, processRunner: runner });
-  assert.deepEqual(spec.argv, ["-p", request.prompt, "--silent", "--session-id", sessionId]);
+  assert.deepEqual(spec.argv, [`--prompt=${request.prompt}`, "--silent", `--session-id=${sessionId}`, "--sandbox"]);
   assert.equal(result.status, "completed");
   assert.equal((result as any).text, "answer");
   assert.equal((result as any).sessionId, sessionId);
   await adapter.execute({ ...request, sessionId }, { ...context, processRunner: runner });
-  assert.deepEqual(spec.argv, ["-p", request.prompt, "--silent", "--session-id", sessionId]);
+  assert.deepEqual(spec.argv, [`--prompt=${request.prompt}`, "--silent", `--session-id=${sessionId}`, "--sandbox"]);
 });
 
 test("Claude and Codex reject malformed structured output", async () => {
@@ -116,4 +114,31 @@ test("Copilot rejects empty output", async () => {
   const result = await adapter.execute(request, { ...context, processRunner: { run: async () => ({ stdout: "", stderr: "", exitCode: 0, signal: null, durationMs: 1 }) } });
   assert.equal(result.status, "failed");
   assert.equal((result as any).reason, "invalid-output");
+});
+
+test("all adapters reject an unapproved workspace before spawning", async () => {
+  const outside = { ...context, workingDirectory: "/not-approved", processRunner: { run: async () => { throw new Error("must not spawn"); } } };
+  for (const adapter of [createClaudeAdapter(async () => "/bin/claude"), createCodexAdapter(async () => "/bin/codex"), createCopilotAdapter(async () => "/bin/copilot", () => "00000000-0000-4000-8000-000000000000")]) {
+    assert.deepEqual(await adapter.execute(request, outside), { status: "failed", reason: "workspace-rejected" });
+  }
+});
+
+test("runner rejection is execution-failed with bounded diagnostics", async () => {
+  for (const adapter of [createClaudeAdapter(async () => "/bin/claude"), createCodexAdapter(async () => "/bin/codex"), createCopilotAdapter(async () => "/bin/copilot", () => "00000000-0000-4000-8000-000000000000")]) {
+    const result = await adapter.execute(request, { ...context, processRunner: { run: async () => { throw new Error("runner failed"); } } });
+    assert.equal(result.status, "failed");
+    assert.equal((result as any).reason, "execution-failed");
+    assert.match((result as any).stderr, /runner failed/);
+  }
+});
+
+test("adapters map process termination and nonzero results", async () => {
+  for (const terminationReason of ["timeout", "cancelled", "output-limit"] as const) {
+    for (const adapter of [createClaudeAdapter(async () => "/bin/claude"), createCodexAdapter(async () => "/bin/codex"), createCopilotAdapter(async () => "/bin/copilot", () => "00000000-0000-4000-8000-000000000000")]) {
+      const result = await adapter.execute(request, { ...context, processRunner: { run: async () => ({ stdout: "", stderr: "bounded", exitCode: null, signal: "SIGTERM", durationMs: 3, terminationReason }) } });
+      assert.equal((result as any).reason, terminationReason);
+    }
+  }
+  const result = await createClaudeAdapter(async () => "/bin/claude").execute(request, { ...context, processRunner: { run: async () => ({ stdout: "", stderr: "bad", exitCode: 3, signal: null, durationMs: 3 }) } });
+  assert.equal((result as any).reason, "exit-nonzero");
 });

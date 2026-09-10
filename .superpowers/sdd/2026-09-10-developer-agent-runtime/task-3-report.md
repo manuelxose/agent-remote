@@ -23,3 +23,20 @@ Implemented Claude, Codex, and Copilot developer-agent adapters.
 ## Concerns
 
 - Real vendor smoke tests remain dependent on locally installed and authenticated CLIs; unit tests use the injected fake runner.
+
+## Review Fix Round 1
+
+### Changes
+
+- Added `--` before Claude and Codex positional prompts; Copilot now uses `--prompt=<prompt>`, exact `--session-id=<id>`, and fixed `--sandbox`.
+- Added Claude `--add-dir <validated working directory>` and retained Codex `--sandbox workspace-write`; policy assertion remains before runner invocation.
+- Separated runner failures from parser failures: runner rejections return `execution-failed` with bounded diagnostics and parser failures return `invalid-output` with bounded metadata.
+- Added tests for adversarial prompt argv, fixed workspace flags, unavailable and workspace rejection branches for every adapter, runner rejection, timeout/cancel/output-limit, and nonzero exit mapping.
+- Removed unused placeholder `ConversationAgent` imports and exports; canonical adapter exports remain.
+
+### Verification
+
+- Red: focused adapter tests failed on missing `--`/scope flags, Copilot option shape, and runner rejection classified as `invalid-output`.
+- Green focused: `npm run build && node --test --experimental-strip-types test/adapters.test.ts` — 12 passing.
+- Full: `npm test` — 57 passing.
+- `git diff --check` — passed.
