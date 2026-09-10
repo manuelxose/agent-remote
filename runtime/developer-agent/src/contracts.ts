@@ -55,11 +55,7 @@ export interface DeveloperProcessResult {
   stderrTruncated?: boolean;
 }
 
-export interface DeveloperAgentResult {
-  status: "completed" | "failed";
-  text?: string;
-  sessionId?: string;
-  reason?: DeveloperAgentFailureReason;
+interface DeveloperAgentProcessMetadata {
   stdout?: string;
   stderr?: string;
   exitCode?: number | null;
@@ -67,6 +63,17 @@ export interface DeveloperAgentResult {
   signal?: string | null;
   outputTruncated?: boolean;
 }
+
+export type DeveloperAgentResult =
+  | (DeveloperAgentProcessMetadata & {
+      status: "completed";
+      text: string;
+      sessionId: string;
+    })
+  | (DeveloperAgentProcessMetadata & {
+      status: "failed";
+      reason: DeveloperAgentFailureReason;
+    });
 
 export interface DeveloperProcessRunner {
   run(spec: DeveloperProcessSpec): Promise<DeveloperProcessResult>;

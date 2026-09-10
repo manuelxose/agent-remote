@@ -38,7 +38,7 @@ export class InMemoryDeveloperSessionStore implements DeveloperSessionStore {
 export class JsonDeveloperSessionStore implements DeveloperSessionStore {
   private readonly sessions = new Map<string, DeveloperSessionState>();
   // ponytail: in-process queue; use distributed per-conversation locks if the runtime becomes multi-process.
-  private readonly locks = new Map<string, Promise<void>>();
+  private writeQueue: Promise<void> = Promise.resolve();
   private loaded = false;
   private loading?: Promise<void>;
 
@@ -63,20 +63,15 @@ export class JsonDeveloperSessionStore implements DeveloperSessionStore {
 
   async set(key: string, state: DeveloperSessionState): Promise<void> {
     await this.load();
-    const previous = this.locks.get(key) ?? Promise.resolve();
-    const current = previous.then(async () => {
+    const current = this.writeQueue.then(async () => {
       this.sessions.set(key, state);
       await mkdir(dirname(this.path), { recursive: true });
       const temporaryPath = `${this.path}.tmp`;
       await writeFile(temporaryPath, `${JSON.stringify(Object.fromEntries(this.sessions), null, 2)}\n`, "utf8");
       await rename(temporaryPath, this.path);
     });
-    this.locks.set(key, current);
-    try {
-      await current;
-    } finally {
-      if (this.locks.get(key) === current) this.locks.delete(key);
-    }
+    this.writeQueue = current.catch(() => undefined);
+    await current;
   }
 
   private async read(): Promise<void> {
