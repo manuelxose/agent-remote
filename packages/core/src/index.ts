@@ -42,6 +42,7 @@ export interface ExecutionContext {
   correlationId: string;
   conversationId: string;
   workspaceRoot?: string;
+  signal?: AbortSignal;
   metadata?: Metadata;
 }
 

@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { DeveloperAgentRuntime } from "../dist/runtime/developer-agent/src/index.js";
+import { NodeDeveloperProcessRunner } from "../dist/runtime/developer-agent/src/process.js";
 import { InMemoryDeveloperSessionStore, JsonDeveloperSessionStore } from "../dist/runtime/developer-agent/src/sessions.js";
 import { InMemoryEventBus } from "../dist/packages/events/src/index.js";
 import { WorkspacePolicy } from "../dist/packages/security/src/index.js";
@@ -137,6 +138,66 @@ test("developer runtime publishes one terminal event and returns safe adapter fa
   assert.equal(response.text.includes("secret stderr"), false);
 });
 
+test("developer runtime ignores a started handler failure", async () => {
+  const events = new InMemoryEventBus();
+  const observed: string[] = [];
+  events.subscribe("AgentExecutionStarted", () => { throw new Error("started handler failed"); });
+  events.subscribe("AgentExecutionCompleted", event => { observed.push(event.type); });
+  events.subscribe("AgentExecutionFailed", event => { observed.push(event.type); });
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: fakeAdapter("claude").adapter }, sessions: new InMemoryDeveloperSessionStore(), defaultWorkspaceRoot: root, runner: fakeRunner(), events
+  });
+
+  const response = await runtime.execute(context("started-handler", "claude"), agent("claude"));
+
+  assert.equal(response.text, "claude:new");
+  assert.deepEqual(observed, ["AgentExecutionCompleted"]);
+});
+
+test("developer runtime ignores a completed handler failure without publishing failed", async () => {
+  const events = new InMemoryEventBus();
+  const observed: string[] = [];
+  for (const type of ["AgentExecutionStarted", "AgentExecutionCompleted", "AgentExecutionFailed"] as const) events.subscribe(type, event => { observed.push(event.type); });
+  events.subscribe("AgentExecutionCompleted", () => { throw new Error("completed handler failed"); });
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: fakeAdapter("claude").adapter }, sessions: new InMemoryDeveloperSessionStore(), defaultWorkspaceRoot: root, runner: fakeRunner(), events
+  });
+
+  const response = await runtime.execute(context("completed-handler", "claude"), agent("claude"));
+
+  assert.equal(response.text, "claude:new");
+  assert.deepEqual(observed, ["AgentExecutionStarted", "AgentExecutionCompleted"]);
+});
+
+test("developer runtime emits one failed event for a session persistence error", async () => {
+  const events = new InMemoryEventBus();
+  const observed: string[] = [];
+  for (const type of ["AgentExecutionStarted", "AgentExecutionCompleted", "AgentExecutionFailed"] as const) events.subscribe(type, event => { observed.push(event.type); });
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: fakeAdapter("claude").adapter },
+    sessions: { async load() {}, async get() { return undefined; }, async set() { throw new Error("session write failed"); } },
+    defaultWorkspaceRoot: root,
+    runner: fakeRunner(),
+    events
+  });
+
+  const response = await runtime.execute(context("session-error", "claude"), agent("claude"));
+
+  assert.deepEqual(response.metadata, { agent: "claude", reason: "execution-failed" });
+  assert.deepEqual(observed, ["AgentExecutionStarted", "AgentExecutionFailed"]);
+});
+
+test("developer runtime creates production session and runner defaults when omitted", () => {
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: fakeAdapter("claude").adapter }, defaultWorkspaceRoot: root
+  });
+  const options = (runtime as any).options;
+
+  assert.ok(options.sessions instanceof JsonDeveloperSessionStore);
+  assert.equal(options.sessions.path, "data/developer-agent-sessions.json");
+  assert.ok(options.runner instanceof NodeDeveloperProcessRunner);
+});
+
 test("developer runtime reports missing and unavailable adapters with stable diagnostics", async () => {
   const unavailable = fakeAdapter("claude", { available: false });
   const runtime = new DeveloperAgentRuntime(capabilities, {
@@ -163,4 +224,40 @@ test("developer runtime rejects untrusted workspaces before adapter execution an
   assert.deepEqual(cancellation.metadata, { agent: "codex", reason: "cancelled" });
   assert.equal(adapter.calls.length, 0);
   assert.equal(runner.calls.length, 0);
+});
+
+test("developer runtime passes an aborting trusted execution signal to a waiting adapter", async () => {
+  let entered!: () => void;
+  let release!: () => void;
+  let observedSignal: AbortSignal | undefined;
+  const enteredAdapter = new Promise<void>(resolve => { entered = resolve; });
+  const releaseAdapter = new Promise<void>(resolve => { release = resolve; });
+  const controller = new AbortController();
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: {
+      claude: {
+        id: "claude",
+        async isAvailable() { return true; },
+        async getAvailability() { return { available: true, executable: "claude" }; },
+        async execute(_request, execution) {
+          observedSignal = execution.signal;
+          entered();
+          await releaseAdapter;
+          return { status: "failed" as const, reason: "cancelled" as const };
+        }
+      }
+    },
+    sessions: new InMemoryDeveloperSessionStore(), defaultWorkspaceRoot: root, runner: fakeRunner(), events: new InMemoryEventBus()
+  });
+  const execution = context("aborting", "claude");
+  execution.execution.signal = controller.signal;
+
+  const response = runtime.execute(execution, agent("claude"));
+  await enteredAdapter;
+  controller.abort();
+  release();
+
+  assert.deepEqual((await response).metadata, { agent: "claude", reason: "cancelled" });
+  assert.equal(observedSignal, controller.signal);
+  assert.equal(observedSignal?.aborted, true);
 });

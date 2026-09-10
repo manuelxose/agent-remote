@@ -3,19 +3,25 @@ import type { EventBus } from "../../../packages/events/src/index.js";
 import { InMemoryEventBus } from "../../../packages/events/src/index.js";
 import type { DeveloperCapabilities } from "../../../packages/security/src/index.js";
 import type { DeveloperAgentAdapter, DeveloperAgentFailureReason, DeveloperProcessRunner } from "./contracts.js";
-import type { DeveloperSessionStore } from "./sessions.js";
+import { NodeDeveloperProcessRunner } from "./process.js";
+import { JsonDeveloperSessionStore, type DeveloperSessionStore } from "./sessions.js";
 
 type RuntimeFailureReason = DeveloperAgentFailureReason | "adapter-not-configured";
 
 export interface DeveloperAgentRuntimeOptions {
   adapters: Readonly<Record<string, DeveloperAgentAdapter>>;
-  sessions: DeveloperSessionStore;
+  sessions?: DeveloperSessionStore;
   defaultWorkspaceRoot: string;
-  runner: DeveloperProcessRunner;
+  runner?: DeveloperProcessRunner;
   events?: EventBus;
   timeoutMs?: number;
   maxOutputBytes?: number;
 }
+
+type ResolvedDeveloperAgentRuntimeOptions = DeveloperAgentRuntimeOptions & {
+  sessions: DeveloperSessionStore;
+  runner: DeveloperProcessRunner;
+};
 
 export class DeveloperAgentRuntime implements AgentRuntime {
   readonly type = "developer-agent" as const;
@@ -24,8 +30,13 @@ export class DeveloperAgentRuntime implements AgentRuntime {
 
   constructor(
     readonly capabilities: DeveloperCapabilities,
-    private readonly options: DeveloperAgentRuntimeOptions
+    private readonly options: ResolvedDeveloperAgentRuntimeOptions
   ) {
+    this.options = {
+      ...options,
+      sessions: options.sessions ?? new JsonDeveloperSessionStore("data/developer-agent-sessions.json"),
+      runner: options.runner ?? new NodeDeveloperProcessRunner(capabilities.policy)
+    };
     this.events = options.events ?? new InMemoryEventBus();
   }
 
@@ -52,7 +63,7 @@ export class DeveloperAgentRuntime implements AgentRuntime {
   private async executeTurn(context: ConversationContext, agent: ConversationAgent): Promise<AgentResponse> {
     const startedAt = Date.now();
     const basePayload = { agent: agent.id, conversationId: context.conversation.id };
-    await this.events.publish({ type: "AgentExecutionStarted", occurredAt: new Date(), correlationId: context.execution.correlationId, payload: basePayload });
+    await this.publish({ type: "AgentExecutionStarted", occurredAt: new Date(), correlationId: context.execution.correlationId, payload: basePayload });
     try {
       const adapter = this.options.adapters[agent.id];
       if (!adapter || adapter.id !== agent.id) return this.failure(context, basePayload, "adapter-not-configured", startedAt);
@@ -79,7 +90,7 @@ export class DeveloperAgentRuntime implements AgentRuntime {
         conversationId: context.conversation.id,
         workingDirectory,
         workspacePolicy: this.capabilities.policy,
-        signal: new AbortController().signal,
+        signal: context.execution.signal ?? new AbortController().signal,
         events: this.events,
         processRunner: this.options.runner
       });
@@ -91,7 +102,7 @@ export class DeveloperAgentRuntime implements AgentRuntime {
         workspaceRoot: workingDirectory,
         updatedAt: new Date().toISOString()
       });
-      await this.events.publish({
+      await this.publish({
         type: "AgentExecutionCompleted",
         occurredAt: new Date(),
         correlationId: context.execution.correlationId,
@@ -110,12 +121,18 @@ export class DeveloperAgentRuntime implements AgentRuntime {
     startedAt: number,
     result?: { durationMs?: number; exitCode?: number | null }
   ): Promise<AgentResponse> {
-    await this.events.publish({
+    await this.publish({
       type: "AgentExecutionFailed",
       occurredAt: new Date(),
       correlationId: context.execution.correlationId,
       payload: { ...payload, reason, durationMs: result?.durationMs ?? Date.now() - startedAt, exitCode: result?.exitCode ?? null }
     });
     return { text: "Unable to complete the developer-agent request.", metadata: { agent: String(payload.agent), reason } };
+  }
+
+  private async publish(event: Parameters<EventBus["publish"]>[0]): Promise<void> {
+    try {
+      await this.events.publish(event);
+    } catch {}
   }
 }
