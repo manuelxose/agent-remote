@@ -4,6 +4,7 @@ import { AllowlistedToolRegistry, DeveloperCapabilityError } from "../dist/packa
 import { createRestrictedDeveloperCapabilities, WorkspacePolicy } from "../dist/packages/security/src/index.js";
 import { ChatbotRuntime } from "../dist/runtime/chatbot/src/index.js";
 import { DeveloperAgentRuntime } from "../dist/runtime/developer-agent/src/index.js";
+import { InMemoryDeveloperSessionStore } from "../dist/runtime/developer-agent/src/sessions.js";
 
 const context = {
   message: { id: "m", conversationId: "c", channel: "web", senderId: "u", text: "hello", receivedAt: new Date(0) },
@@ -60,9 +61,21 @@ test("developer runtime accepts explicit local capabilities", async () => {
     writeFile: async () => undefined,
     git: async () => "clean"
   };
-  const runtime = new DeveloperAgentRuntime(capabilities);
-  const agent = { id: "claude", type: "developer-agent" as const, async handleMessage() { return { text: "ran" }; } };
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: {
+      claude: {
+        id: "claude",
+        async isAvailable() { return true; },
+        async getAvailability() { return { available: true, executable: "claude" }; },
+        async execute() { return { status: "completed" as const, text: "adapter-ran", sessionId: "session" }; }
+      }
+    },
+    sessions: new InMemoryDeveloperSessionStore(),
+    defaultWorkspaceRoot: "/approved/workspace",
+    runner: { async run() { return { stdout: "", stderr: "", exitCode: 0, signal: null, durationMs: 0 }; } }
+  });
+  const agent = { id: "claude", type: "developer-agent" as const, async handleMessage() { throw new Error("developer runtime must use the adapter"); } };
 
-  assert.equal((await runtime.execute({ ...context, route: { ...context.route, runtime: "developer-agent", agent: "claude" } }, agent)).text, "ran");
+  assert.equal((await runtime.execute({ ...context, route: { ...context.route, runtime: "developer-agent", agent: "claude" } }, agent)).text, "adapter-ran");
   assert.equal(await capabilities.shell("pwd"), "ok");
 });
