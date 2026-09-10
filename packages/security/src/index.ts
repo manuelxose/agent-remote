@@ -1,4 +1,5 @@
-import { isAbsolute, relative, resolve } from "node:path";
+import { existsSync, lstatSync, realpathSync } from "node:fs";
+import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
 
 export class WorkspaceAccessError extends Error {
   constructor(path: string) {
@@ -16,14 +17,27 @@ export class WorkspacePolicy {
   }
 
   assertPath(path: string): string {
-    const candidate = resolve(path);
+    const candidate = canonicalizeExistingAncestor(path);
     const approved = this.roots.some(root => {
-      const remainder = relative(root, candidate);
+      const canonicalRoot = canonicalizeExistingAncestor(root);
+      const remainder = relative(canonicalRoot, candidate);
       return remainder === "" || (!remainder.startsWith("..") && !isAbsolute(remainder));
     });
     if (!approved) throw new WorkspaceAccessError(path);
     return candidate;
   }
+}
+
+function canonicalizeExistingAncestor(path: string): string {
+  let current = resolve(path);
+  const suffix: string[] = [];
+  while (!existsSync(current)) {
+    const parent = dirname(current);
+    if (parent === current) return current;
+    suffix.unshift(basename(current));
+    current = parent;
+  }
+  return join(realpathSync.native(current), ...suffix);
 }
 
 export interface DeveloperCapabilities {

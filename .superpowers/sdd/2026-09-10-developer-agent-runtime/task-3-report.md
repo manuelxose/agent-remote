@@ -32,6 +32,21 @@ Implemented Claude, Codex, and Copilot developer-agent adapters.
 - Red: focused tests failed because Copilot omitted `--experimental` from its sandboxed invocation.
 - Green focused: `npm run build && node --test --experimental-strip-types test/adapters.test.ts` — 12 passing.
 - Full: `npm test` — 57 passing.
+
+## Review Fix Round 3
+
+### Changes
+
+- Hardened `WorkspacePolicy.assertPath` against approved-root and candidate-path symlink escapes by canonicalizing the longest existing ancestor with `realpathSync.native`, then appending non-existing suffix components.
+- Preserved synchronous policy behavior, existing workspace containment checks, and valid new paths beneath approved roots.
+- Added a temporary-directory symlink regression test with explicit permission-based skip handling.
+
+### Verification
+
+- Red: the symlink regression failed with the prior lexical-only containment check.
+- Focused: `npm run build && node --test --experimental-strip-types test/security.test.ts test/developer-agent-process.test.ts test/adapters.test.ts` — 24 passing.
+- Full: `npm test` — 58 passing.
+- `git diff --check` — passed.
 - `graphify update .` — completed.
 
 ## Concerns
