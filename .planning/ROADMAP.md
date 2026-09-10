@@ -1,6 +1,6 @@
 # Roadmap
 
-## Phase 1: Architectural foundation
+## Phase 1: Architectural foundation — Complete
 
 Build the minimal TypeScript workspace, domain contracts, configuration router, event abstraction, separated runtimes, placeholder adapters, tests, and architecture documentation.
 
@@ -13,3 +13,5 @@ Success criteria:
 3. Chatbot runtime tests demonstrate developer shell capabilities are unavailable.
 4. Static boundary checks find no WhatsApp dependency in core and no product-specific logic in WhatsApp.
 5. Architecture docs explain future Talkaris, Telegram, and Web Chat extension points.
+
+Verification: 18 tests passing; TypeScript build passing; Graphify refreshed.

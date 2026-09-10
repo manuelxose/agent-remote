@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": ".",
+    "outDir": "dist",
+    "strict": true,
+    "declaration": true,
+    "sourceMap": true,
+    "skipLibCheck": true
+  },
+  "include": ["apps/**/*.ts", "channels/**/*.ts", "config/**/*.ts", "developer-agents/**/*.ts", "integrations/**/*.ts", "packages/**/*.ts", "runtime/**/*.ts", "types/**/*.d.ts"]
+}

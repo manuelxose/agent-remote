@@ -1,0 +1,17 @@
+{
+  "whatsapp-group-claude": {
+    "id": "whatsapp-group-claude",
+    "runtime": "developer-agent",
+    "agent": "claude"
+  },
+  "whatsapp-group-codex": {
+    "id": "whatsapp-group-codex",
+    "runtime": "developer-agent",
+    "agent": "codex"
+  },
+  "whatsapp-group-copilot": {
+    "id": "whatsapp-group-copilot",
+    "runtime": "developer-agent",
+    "agent": "copilot"
+  }
+}

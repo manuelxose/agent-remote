@@ -1,0 +1,9 @@
+{
+  "name": "agent-remote",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test --experimental-strip-types test/*.test.ts"
+  }
+}
