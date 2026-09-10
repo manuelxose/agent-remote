@@ -4,6 +4,11 @@ import { WhatsAppChannel, InvalidWhatsAppPayloadError } from "../dist/channels/w
 import { claudeAgent } from "../dist/developer-agents/claude/src/index.js";
 import { codexAgent } from "../dist/developer-agents/codex/src/index.js";
 import { copilotAgent } from "../dist/developer-agents/copilot/src/index.js";
+import { createClaudeAdapter } from "../dist/developer-agents/claude/src/index.js";
+import { createCodexAdapter } from "../dist/developer-agents/codex/src/index.js";
+import { createCopilotAdapter } from "../dist/developer-agents/copilot/src/index.js";
+import { InMemoryEventBus } from "../dist/packages/events/src/index.js";
+import { WorkspacePolicy } from "../dist/packages/security/src/index.js";
 import { talkarisAgent } from "../dist/integrations/talkaris/src/index.js";
 
 test("WhatsApp channel translates payloads without agent knowledge", async () => {
@@ -29,4 +34,86 @@ test("agent adapters register independently of the WhatsApp channel", () => {
   );
   assert.equal(talkarisAgent.id, "talkaris");
   assert.equal(talkarisAgent.type, "chatbot");
+});
+
+const request = { prompt: "prompt with --not-a-flag", conversationId: "conversation", timeoutMs: 1000, maxOutputBytes: 1000 };
+const context = {
+  correlationId: "correlation",
+  conversationId: request.conversationId,
+  workingDirectory: process.cwd(),
+  workspacePolicy: new WorkspacePolicy([process.cwd()]),
+  signal: new AbortController().signal,
+  events: new InMemoryEventBus(),
+  processRunner: { run: async () => ({ stdout: "", stderr: "", exitCode: 0, signal: null, durationMs: 1 }) }
+};
+
+test("adapters report missing executables without spawning", async () => {
+  for (const adapter of [
+    createClaudeAdapter(async () => undefined),
+    createCodexAdapter(async () => undefined),
+    createCopilotAdapter(async () => undefined, () => "00000000-0000-4000-8000-000000000000")
+  ]) {
+    assert.deepEqual(await adapter.getAvailability(), { available: false, reason: "executable-missing", executable: adapter.id });
+    assert.equal(await adapter.isAvailable(), false);
+  }
+});
+
+test("Claude builds fixed argv, parses JSON, and resumes its native session", async () => {
+  const calls: unknown[] = [];
+  const adapter = createClaudeAdapter(async () => "/bin/claude");
+  const runner = { run: async (spec: any) => {
+    calls.push(spec);
+    return { stdout: JSON.stringify({ type: "result", session_id: "claude-session", result: "answer" }), stderr: "", exitCode: 0, signal: null, durationMs: 2 };
+  }};
+  const result = await adapter.execute(request, { ...context, processRunner: runner });
+  assert.deepEqual(calls[0], { executable: "/bin/claude", argv: ["-p", "--output-format", "json", request.prompt], workingDirectory: process.cwd(), signal: context.signal, timeoutMs: 1000, maxOutputBytes: 1000 });
+  assert.equal(result.status, "completed");
+  assert.equal((result as any).text, "answer");
+  assert.equal((result as any).sessionId, "claude-session");
+  await adapter.execute({ ...request, sessionId: "claude-session" }, { ...context, processRunner: runner });
+  assert.deepEqual((calls[1] as any).argv, ["-p", "--output-format", "json", "--resume", "claude-session", request.prompt]);
+});
+
+test("Codex builds exec JSON argv and parses JSONL thread and final message", async () => {
+  let spec: any;
+  const adapter = createCodexAdapter(async () => "/bin/codex");
+  const runner = { run: async (value: any) => { spec = value; return { stdout: [
+    JSON.stringify({ type: "thread.started", thread_id: "codex-thread" }),
+    JSON.stringify({ type: "item.completed", item: { type: "agent_message", text: "answer" } })
+  ].join("\n"), stderr: "", exitCode: 0, signal: null, durationMs: 2 }; } };
+  const result = await adapter.execute(request, { ...context, processRunner: runner });
+  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", request.prompt]);
+  assert.equal((result as any).sessionId, "codex-thread");
+  assert.equal((result as any).text, "answer");
+  await adapter.execute({ ...request, sessionId: "codex-thread" }, { ...context, processRunner: runner });
+  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "resume", "codex-thread", request.prompt]);
+});
+
+test("Copilot uses an exact UUID session ID and silent prompt mode", async () => {
+  let spec: any;
+  const sessionId = "00000000-0000-4000-8000-000000000000";
+  const adapter = createCopilotAdapter(async () => "/bin/copilot", () => sessionId);
+  const runner = { run: async (value: any) => { spec = value; return { stdout: "answer", stderr: "", exitCode: 0, signal: null, durationMs: 2 }; } };
+  const result = await adapter.execute(request, { ...context, processRunner: runner });
+  assert.deepEqual(spec.argv, ["-p", request.prompt, "--silent", "--session-id", sessionId]);
+  assert.equal(result.status, "completed");
+  assert.equal((result as any).text, "answer");
+  assert.equal((result as any).sessionId, sessionId);
+  await adapter.execute({ ...request, sessionId }, { ...context, processRunner: runner });
+  assert.deepEqual(spec.argv, ["-p", request.prompt, "--silent", "--session-id", sessionId]);
+});
+
+test("Claude and Codex reject malformed structured output", async () => {
+  for (const adapter of [createClaudeAdapter(async () => "/bin/claude"), createCodexAdapter(async () => "/bin/codex")]) {
+    const result = await adapter.execute(request, { ...context, processRunner: { run: async () => ({ stdout: "not-json", stderr: "", exitCode: 0, signal: null, durationMs: 1 }) } });
+    assert.equal(result.status, "failed");
+    assert.equal((result as any).reason, "invalid-output");
+  }
+});
+
+test("Copilot rejects empty output", async () => {
+  const adapter = createCopilotAdapter(async () => "/bin/copilot", () => "00000000-0000-4000-8000-000000000000");
+  const result = await adapter.execute(request, { ...context, processRunner: { run: async () => ({ stdout: "", stderr: "", exitCode: 0, signal: null, durationMs: 1 }) } });
+  assert.equal(result.status, "failed");
+  assert.equal((result as any).reason, "invalid-output");
 });
