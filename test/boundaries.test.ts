@@ -1,5 +1,5 @@
 import { strict as assert } from "node:assert";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import { ConfigurationRouter } from "../dist/packages/routing/src/index.js";
 
@@ -19,7 +19,10 @@ test("core source has no channel or product imports", () => {
 });
 
 test("WhatsApp source has no agent or chatbot product knowledge", () => {
-  const source = readFileSync("channels/whatsapp/src/index.ts", "utf8");
+  const source = readdirSync("channels/whatsapp/src")
+    .filter(file => file.endsWith(".ts"))
+    .map(file => readFileSync(`channels/whatsapp/src/${file}`, "utf8"))
+    .join("\n");
   assert.doesNotMatch(source, /claude|codex|copilot|talkaris/i);
 });
 
