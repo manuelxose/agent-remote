@@ -35,6 +35,7 @@ export interface Route {
   runtime: RuntimeType;
   agent: AgentType;
   tenant?: string;
+  workspaceRoot?: string;
 }
 
 export interface ExecutionContext {
