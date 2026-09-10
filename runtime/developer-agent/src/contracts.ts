@@ -79,6 +79,13 @@ export interface DeveloperProcessRunner {
   run(spec: DeveloperProcessSpec): Promise<DeveloperProcessResult>;
 }
 
+export class DeveloperProcessError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "DeveloperProcessError";
+  }
+}
+
 export interface DeveloperAgentAdapter {
   readonly id: string;
   isAvailable(): Promise<boolean>;
