@@ -2,11 +2,11 @@
 
 ## Current Position
 
-Phase 2 — Local WhatsApp channel adapter (implemented)
+Phase 3 — Developer-agent runtime (implemented)
 
 ## Status
 
-Implementation complete; verification is recorded in the Phase 2 handoff.
+Implementation and documentation complete; verification is recorded below.
 
 ## Decisions
 
@@ -23,7 +23,11 @@ Implementation complete; verification is recorded in the Phase 2 handoff.
 - Static tests confirm core and WhatsApp dependency boundaries.
 - Runtime tests confirm chatbot allowlisting and developer workspace restrictions.
 - Baileys channel tests cover translation, attachment metadata, allowlists, QR handling, auth persistence, reconnect, logout, shutdown, health, and gateway response delivery.
+- `npm run build`: passes.
+- `npm test`: 77 tests, 75 passing, 0 failing, 2 skipped; Claude and Copilot skipped as unavailable, and installed Codex smoke execution timed out at the bounded 10-second limit.
+- `graphify update .`: completed successfully; graph refreshed to 471 nodes and 671 edges.
+- Full verification confirms session isolation/restart persistence, approved workspace rejection before spawn, typed argv boundaries, observable process failure states, gateway response delivery, and chatbot/WhatsApp/core boundaries.
 
 ## Next Action
 
-Operate the local WhatsApp gateway with a configured auth path and allowlist; production-grade auth storage and distributed event delivery remain future concerns.
+Operate the local WhatsApp gateway with a configured auth path and allowlist; developer CLIs remain trusted local prerequisites, and production-grade credential storage, distributed event delivery, and long-lived interactive CLI processes remain future concerns.

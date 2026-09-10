@@ -47,11 +47,19 @@ message -> conversation context -> route -> runtime -> agent -> response
 
 ### Trusted local developer zone
 
-The developer-agent runtime can use shell, filesystem, and git, but capabilities are injected and every explicit working-directory/file path is checked against approved workspace roots. The actual local shell executor remains an injected trusted implementation; CLI process execution is deliberately out of V1. The Claude, Codex, and Copilot adapters are intentionally thin placeholders: they implement the agent seam without coupling WhatsApp to a CLI product.
+The developer-agent runtime can use shell, filesystem, git, and the configured developer-agent adapters. Capabilities are injected and every explicit working-directory/file path is checked against the trusted approved workspace roots configured by the composition root. The adapter registry is keyed by `claude`, `codex`, and `copilot`; the selected adapter resolves its executable from PATH and owns its fixed invocation and output parser.
+
+Developer-agent process execution crosses the boundary through Node's direct child-process API with an executable and typed argv array. It never invokes a shell or turns WhatsApp text into a command string. The runner validates the working directory before spawn, captures bounded stdout/stderr, and reports exit code, signal, timeout, cancellation, output-limit, and lifecycle information.
+
+Conversation session mappings are stored by channel and conversation ID. The default JSON path is `data/developer-agent-sessions.json`; trusted runtime setup may supply another store/path. A mapping records the adapter ID, native session ID, approved workspace root, and update time. Agent or workspace changes start a new native session, and same-conversation turns are serialized.
+
+Unavailable CLIs produce structured `executable-missing` diagnostics without installation or fallback. Adapter, workspace, malformed-output, timeout, cancellation, non-zero-exit, output-limit, and execution failures remain stable runtime failure states and are surfaced as safe gateway responses.
 
 ### Untrusted chatbot zone
 
 The chatbot runtime receives only a `ToolRegistry` containing explicit allowlisted tools. It has no shell, arbitrary filesystem, git, or developer-agent adapters. The constructor rejects a registry that exposes developer capabilities, and the package has no import path to those adapters.
+
+The chatbot runtime remains unable to import developer adapters by design; WhatsApp/core/chatbot boundary tests enforce that separation.
 
 ## Routing
 
@@ -73,4 +81,4 @@ The WhatsApp adapter uses Baileys behind a transport-only `WhatsAppChannel`. It 
 
 ## Intentionally not implemented
 
-Production-grade credential storage, CLI process spawning, persistent conversation storage, distributed events, and multi-tenant scheduling are deferred until their concrete requirements exist. WhatsApp account authentication remains local to the configured auth directory.
+Production-grade credential storage, distributed events, long-lived interactive CLI processes, and multi-tenant scheduling are deferred until their concrete requirements exist. Developer-agent CLI execution and JSON session persistence are implemented as trusted local runtime capabilities. WhatsApp account authentication remains local to the configured auth directory.

@@ -1,0 +1,338 @@
+{
+  ".planning/config.json": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576522,
+    "ast_hash": "a133687d5640557a2d3db7bbcee16247",
+    "semantic_hash": ""
+  },
+  "apps/gateway/src/index.ts": {
+    "mtime": 1789069306.0506024,
+    "seen": 1789069413.9377341,
+    "ast_hash": "56cb78716daed29853f6913f5ce96488",
+    "semantic_hash": ""
+  },
+  "apps/gateway/src/whatsapp.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.857658,
+    "ast_hash": "e95704f18e6c3ae0b79dfc42f40ecc18",
+    "semantic_hash": ""
+  },
+  "apps/worker/src/index.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576586,
+    "ast_hash": "2fd4d4bb20c64beb6118817a496da4fc",
+    "semantic_hash": ""
+  },
+  "channels/whatsapp/src/config.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576593,
+    "ast_hash": "7b6f7a782837ff1708589a809309f9bc",
+    "semantic_hash": ""
+  },
+  "channels/whatsapp/src/index.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576598,
+    "ast_hash": "96916d23b9c7d9265e19ec4ffa227a9a",
+    "semantic_hash": ""
+  },
+  "channels/whatsapp/src/lifecycle.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576608,
+    "ast_hash": "a553a8182da47c0b233bc565c20d1b54",
+    "semantic_hash": ""
+  },
+  "channels/whatsapp/src/translate.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576612,
+    "ast_hash": "e55ca0abf8366d9dc8ea6ff8ef3f0fe8",
+    "semantic_hash": ""
+  },
+  "config/routes.json": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576617,
+    "ast_hash": "c60f1c1ee510c80e1ad3b4e243021d43",
+    "semantic_hash": ""
+  },
+  "developer-agents/claude/src/index.ts": {
+    "mtime": 1789067421.153128,
+    "seen": 1789067463.5243347,
+    "ast_hash": "621465ac31b217db59fd241915a6899f",
+    "semantic_hash": ""
+  },
+  "developer-agents/codex/src/index.ts": {
+    "mtime": 1789067421.972128,
+    "seen": 1789067463.5243356,
+    "ast_hash": "3b678b8ff0f9b787b2c1b0b8703b62a3",
+    "semantic_hash": ""
+  },
+  "developer-agents/copilot/src/index.ts": {
+    "mtime": 1789067781.2630296,
+    "seen": 1789067808.7340114,
+    "ast_hash": "b3f3eb0e851994c391fb0a81d3fd3b84",
+    "semantic_hash": ""
+  },
+  "integrations/talkaris/src/index.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.857664,
+    "ast_hash": "5733b5b4dc6b3d0ca059ba2ed1e0b3b5",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576646,
+    "ast_hash": "6a177767a53c6418276f98f3b7d2ff69",
+    "semantic_hash": ""
+  },
+  "packages/conversations/src/index.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.857665,
+    "ast_hash": "9b48b0edb0377ce4a8bf2af35ec3fded",
+    "semantic_hash": ""
+  },
+  "packages/core/src/index.ts": {
+    "mtime": 1789069887.799989,
+    "seen": 1789069947.7779033,
+    "ast_hash": "abb48fe9b9af57fee67b3c1d7f3e469b",
+    "semantic_hash": ""
+  },
+  "packages/events/src/index.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.857666,
+    "ast_hash": "d30af100244c9783128802604fc3ca75",
+    "semantic_hash": ""
+  },
+  "packages/routing/src/index.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576667,
+    "ast_hash": "53dc0c2c0272c03ee7ffcd66301ef7c7",
+    "semantic_hash": ""
+  },
+  "packages/security/src/index.ts": {
+    "mtime": 1789068550.6050608,
+    "seen": 1789068583.312842,
+    "ast_hash": "816dc9efbd5e76d97be097645ba1c93f",
+    "semantic_hash": ""
+  },
+  "packages/tools/src/index.ts": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.857668,
+    "ast_hash": "187b6662f280d93b0691f049c3b10c5f",
+    "semantic_hash": ""
+  },
+  "runtime/chatbot/src/index.ts": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.8576682,
+    "ast_hash": "f1c5fcc6e7e57ee2a73c559c16f03fc8",
+    "semantic_hash": ""
+  },
+  "runtime/developer-agent/src/contracts.ts": {
+    "mtime": 1789066183.652179,
+    "seen": 1789066209.7851877,
+    "ast_hash": "31a6ec71cee72a9de89adb91a4e51d30",
+    "semantic_hash": ""
+  },
+  "runtime/developer-agent/src/index.ts": {
+    "mtime": 1789070318.7541454,
+    "seen": 1789070371.3481026,
+    "ast_hash": "b7134798f14e372a1fee77d0427299b0",
+    "semantic_hash": ""
+  },
+  "runtime/developer-agent/src/sessions.ts": {
+    "mtime": 1789070320.0941162,
+    "seen": 1789070371.3481045,
+    "ast_hash": "dd9fe2290eec01ad67af938d055cbe0c",
+    "semantic_hash": ""
+  },
+  "test/adapters.test.ts": {
+    "mtime": 1789067768.177495,
+    "seen": 1789067808.734021,
+    "ast_hash": "4d8055662bb37c92e6629fa2cb2a46df",
+    "semantic_hash": ""
+  },
+  "test/boundaries.test.ts": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.857671,
+    "ast_hash": "8a02d0f50e8ba5422cc7bd4a0c47ea7f",
+    "semantic_hash": ""
+  },
+  "test/core.test.ts": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.8576715,
+    "ast_hash": "45ee5a7e7a74d709803de4bb7c37b693",
+    "semantic_hash": ""
+  },
+  "test/developer-agent-sessions.test.ts": {
+    "mtime": 1789070295.9078758,
+    "seen": 1789070371.3481088,
+    "ast_hash": "ed6c3b06a3cccfd5ca2777ff03c7f5ad",
+    "semantic_hash": ""
+  },
+  "test/gateway.test.ts": {
+    "mtime": 1789069351.0327566,
+    "seen": 1789069413.9377587,
+    "ast_hash": "d1581079fd6978670df58227c36e6136",
+    "semantic_hash": ""
+  },
+  "test/review-regressions.test.ts": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.857673,
+    "ast_hash": "04e297af1ce227a07df17bc8ed169c9e",
+    "semantic_hash": ""
+  },
+  "test/routing-events.test.ts": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.8576734,
+    "ast_hash": "a25846edd33492fd0be3cbf1b9b553f6",
+    "semantic_hash": ""
+  },
+  "test/runtimes.test.ts": {
+    "mtime": 1789069239.3643932,
+    "seen": 1789069413.9377608,
+    "ast_hash": "64b7696305d339ea85c7549939aa1563",
+    "semantic_hash": ""
+  },
+  "test/whatsapp-channel.test.ts": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.8576746,
+    "ast_hash": "21b83c4dd9f42b82aaf5bf245d700841",
+    "semantic_hash": ""
+  },
+  "test/whatsapp-gateway.test.ts": {
+    "mtime": 1789069368.3072464,
+    "seen": 1789069413.9377632,
+    "ast_hash": "e061bec10553d55b213a47f6e89b35de",
+    "semantic_hash": ""
+  },
+  "test/whatsapp-translation.test.ts": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.8576758,
+    "ast_hash": "1c66bf1d87e99afedee225e8a4c0b61c",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.857676,
+    "ast_hash": "fa7b213fbf4530fb492cae4844831571",
+    "semantic_hash": ""
+  },
+  "types/node-path.d.ts": {
+    "mtime": 1789065289.149749,
+    "seen": 1789065532.8576765,
+    "ast_hash": "f6e4fdd1c29819fc624abebc57dd6217",
+    "semantic_hash": ""
+  },
+  ".planning/PROJECT.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.857677,
+    "ast_hash": "2e95e51170935426db74ebbc29a14893",
+    "semantic_hash": ""
+  },
+  ".planning/REQUIREMENTS.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.857678,
+    "ast_hash": "795d37dc2906f2524d712e34f7c95b37",
+    "semantic_hash": ""
+  },
+  ".planning/ROADMAP.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576787,
+    "ast_hash": "84c3ec4caa4019bf3dfabc95acd22c5c",
+    "semantic_hash": ""
+  },
+  ".planning/STATE.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576791,
+    "ast_hash": "1e4ce78e679fd70228a0d35708aa113a",
+    "semantic_hash": ""
+  },
+  ".planning/phases/01-architectural-foundation/01-01-PLAN.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576796,
+    "ast_hash": "21efc234c955a830ac4ca67aa6cf03a8",
+    "semantic_hash": ""
+  },
+  ".planning/phases/01-architectural-foundation/VERIFICATION.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.85768,
+    "ast_hash": "49de118053fc25c6f1855686cdf1f00e",
+    "semantic_hash": ""
+  },
+  "docs/architecture.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576815,
+    "ast_hash": "c492ec7a21efe16cd5aa372c43dbb409",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-10-agent-remote-foundation.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576822,
+    "ast_hash": "e79d3a0348229822d3da001c787e4337",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576827,
+    "ast_hash": "307458f40b03baff81fd21a3d034cfbe",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-09-10-whatsapp-channel-adapter.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576832,
+    "ast_hash": "c3418b3b4c42919a3847a5e4818dabdb",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-10-agent-remote-design.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576837,
+    "ast_hash": "e1e95f74591718cb8eeb71236d1219c4",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-10-developer-agent-runtime-design.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576841,
+    "ast_hash": "a1e2b5bd4f1db527f932c724e24f1952",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-10-whatsapp-channel-adapter-design.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576849,
+    "ast_hash": "98c19f1c63909c63f9e16a6f20f9d6da",
+    "semantic_hash": ""
+  },
+  "docs/whatsapp.md": {
+    "mtime": 1789065289.140394,
+    "seen": 1789065532.8576856,
+    "ast_hash": "845aad3c3c06004023d62269fc8f9554",
+    "semantic_hash": ""
+  },
+  "runtime/developer-agent/src/process.ts": {
+    "mtime": 1789066494.7211227,
+    "seen": 1789066522.0902674,
+    "ast_hash": "d2ef846414034798e1b701ff1971b534",
+    "semantic_hash": ""
+  },
+  "test/developer-agent-process.test.ts": {
+    "mtime": 1789066464.1688352,
+    "seen": 1789066522.0902715,
+    "ast_hash": "868313789d2d6a3710deb969586a206d",
+    "semantic_hash": ""
+  },
+  ".superpowers/sdd/2026-09-10-developer-agent-runtime/task-3-report.md": {
+    "mtime": 1789068578.3625393,
+    "seen": 1789068583.3128622,
+    "ast_hash": "e1b3aee4af93402e1df2ee7c8824e887",
+    "semantic_hash": ""
+  },
+  "test/security.test.ts": {
+    "mtime": 1789068486.8424213,
+    "seen": 1789068583.312854,
+    "ast_hash": "3a8523e02995fde20cf5ef38ef6c109d",
+    "semantic_hash": ""
+  },
+  "test/developer-agent-runtime.test.ts": {
+    "mtime": 1789070275.7439191,
+    "seen": 1789070371.348108,
+    "ast_hash": "6fd119fac2ebc7ec4493e979defc0ef9",
+    "semantic_hash": ""
+  }
+}
