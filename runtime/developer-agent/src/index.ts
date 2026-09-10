@@ -4,7 +4,7 @@ import { InMemoryEventBus } from "../../../packages/events/src/index.js";
 import type { DeveloperCapabilities } from "../../../packages/security/src/index.js";
 import type { DeveloperAgentAdapter, DeveloperAgentFailureReason, DeveloperProcessRunner } from "./contracts.js";
 import { NodeDeveloperProcessRunner } from "./process.js";
-import { JsonDeveloperSessionStore, type DeveloperSessionStore } from "./sessions.js";
+import { createDeveloperSessionKey, JsonDeveloperSessionStore, type DeveloperSessionStore } from "./sessions.js";
 
 type RuntimeFailureReason = DeveloperAgentFailureReason | "adapter-not-configured";
 
@@ -50,7 +50,8 @@ export class DeveloperAgentRuntime implements AgentRuntime {
 
   async execute(context: ConversationContext, agent: ConversationAgent): Promise<AgentResponse> {
     if (context.route.runtime !== this.type || agent.type !== this.type) throw new Error("Developer runtime received a non-developer agent");
-    const key = `${context.message.channel}:${context.conversation.id}`;
+    const workspaceRoot = context.execution.workspaceRoot ?? context.route.workspaceRoot ?? this.options.defaultWorkspaceRoot;
+    const key = createDeveloperSessionKey(context.message.channel, context.conversation.id, agent.id, workspaceRoot);
     const previous = this.queues.get(key) ?? Promise.resolve();
     const execution = previous.then(() => this.executeTurn(context, agent));
     const tail = execution.then(() => undefined, () => undefined);
@@ -79,11 +80,12 @@ export class DeveloperAgentRuntime implements AgentRuntime {
 
       if (!(await adapter.isAvailable())) return this.failure(context, { ...basePayload, workspaceRoot: workingDirectory }, "unavailable", startedAt);
 
-      const session = await this.options.sessions.get(`${context.message.channel}:${context.conversation.id}`);
+      const sessionKey = createDeveloperSessionKey(context.message.channel, context.conversation.id, agent.id, workingDirectory);
+      const session = await this.options.sessions.get(sessionKey);
       const result = await adapter.execute({
         prompt: context.message.text,
         conversationId: context.conversation.id,
-        sessionId: session?.agentId === agent.id && session.workspaceRoot === workingDirectory ? session.nativeSessionId : undefined,
+        sessionId: session?.nativeSessionId,
         timeoutMs: this.options.timeoutMs ?? 120_000,
         maxOutputBytes: this.options.maxOutputBytes ?? 64 * 1024
       }, {
@@ -97,12 +99,7 @@ export class DeveloperAgentRuntime implements AgentRuntime {
       });
       if (result.status === "failed") return this.failure(context, { ...basePayload, workspaceRoot: workingDirectory }, result.reason, startedAt, result);
 
-      await this.options.sessions.set(`${context.message.channel}:${context.conversation.id}`, {
-        agentId: agent.id,
-        nativeSessionId: result.sessionId,
-        workspaceRoot: workingDirectory,
-        updatedAt: new Date().toISOString()
-      });
+      await this.options.sessions.set(sessionKey, { nativeSessionId: result.sessionId });
       await this.publish({
         type: "AgentExecutionCompleted",
         occurredAt: new Date(),

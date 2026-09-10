@@ -51,7 +51,7 @@ The developer-agent runtime can use shell, filesystem, git, and the configured d
 
 Developer-agent process execution crosses the boundary through Node's direct child-process API with an executable and typed argv array. It never invokes a shell or turns WhatsApp text into a command string. The runner validates the working directory before spawn, captures bounded stdout/stderr, and reports exit code, signal, timeout, cancellation, output-limit, and lifecycle information.
 
-Conversation session mappings are stored by channel and conversation ID. The default JSON path is `data/developer-agent-sessions.json`; trusted runtime setup may supply another store/path. A mapping records the adapter ID, native session ID, approved workspace root, and update time. Agent or workspace changes start a new native session, and same-conversation turns are serialized.
+Conversation session mappings use a collision-free JSON tuple of channel, conversation ID, adapter ID, and canonical approved workspace root. The default JSON path is `data/developer-agent-sessions.json`; trusted runtime setup may supply another store/path. Each value stores only the native session ID; agent and workspace identity remain in the lookup key. Agent or workspace changes therefore start a new native session, and same-session turns are serialized.
 
 Unavailable CLIs produce structured `executable-missing` diagnostics without installation or fallback. Adapter, workspace, malformed-output, timeout, cancellation, non-zero-exit, output-limit, and execution failures remain stable runtime failure states and are surfaced as safe gateway responses.
 

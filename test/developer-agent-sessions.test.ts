@@ -4,16 +4,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import {
+  createDeveloperSessionKey,
   DeveloperSessionStateError,
   InMemoryDeveloperSessionStore,
   JsonDeveloperSessionStore
 } from "../dist/runtime/developer-agent/src/sessions.js";
 
 const expected = {
-  agentId: "claude",
-  nativeSessionId: "session-a",
-  workspaceRoot: "/approved/workspace",
-  updatedAt: "2026-09-10T00:00:00.000Z"
+  nativeSessionId: "session-a"
 };
 
 test("in-memory session store isolates channel and conversation keys", async () => {
@@ -38,9 +36,7 @@ test("JSON session store reloads persisted mappings", async () => {
     await second.load();
 
     assert.deepEqual(await second.get("whatsapp:conversation-a"), expected);
-    assert.deepEqual(JSON.parse(await readFile(path, "utf8")), {
-      "whatsapp:conversation-a": expected
-    });
+    assert.deepEqual(JSON.parse(await readFile(path, "utf8")), { "whatsapp:conversation-a": expected });
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
@@ -63,18 +59,20 @@ test("JSON session store rejects malformed JSON with a named error", async () =>
   }
 });
 
-test("JSON session store keeps keys containing colons isolated", async () => {
+test("session keys keep tuple components containing colons isolated", async () => {
   const directory = await mkdtemp(join(tmpdir(), "developer-agent-sessions-"));
   const path = join(directory, "sessions.json");
 
   try {
     const store = new JsonDeveloperSessionStore(path);
     await store.load();
-    await store.set("whatsapp:tenant:conversation-a", expected);
+    const first = createDeveloperSessionKey("a:b", "c", "claude", "/approved/workspace");
+    const second = createDeveloperSessionKey("a", "b:c", "claude", "/approved/workspace");
+    assert.notEqual(first, second);
+    await store.set(first, expected);
 
-    assert.deepEqual(await store.get("whatsapp:tenant:conversation-a"), expected);
-    assert.equal(await store.get("whatsapp:tenant:conversation-b"), undefined);
-    assert.equal(await store.get("whatsapp:conversation-a"), undefined);
+    assert.deepEqual(await store.get(first), expected);
+    assert.equal(await store.get(second), undefined);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
@@ -83,7 +81,7 @@ test("JSON session store keeps keys containing colons isolated", async () => {
 test("JSON session store preserves concurrent writes for different conversations", async () => {
   const directory = await mkdtemp(join(tmpdir(), "developer-agent-sessions-"));
   const path = join(directory, "sessions.json");
-  const second = { ...expected, nativeSessionId: "session-b" };
+  const second = { nativeSessionId: "session-b" };
 
   try {
     const store = new JsonDeveloperSessionStore(path);
@@ -104,7 +102,7 @@ test("JSON session store preserves concurrent writes for different conversations
 test("JSON session store does not retain a mapping when rename fails", async () => {
   const directory = await mkdtemp(join(tmpdir(), "developer-agent-sessions-"));
   const path = join(directory, "sessions");
-  const persisted = { ...expected, nativeSessionId: "persisted-session" };
+  const persisted = { nativeSessionId: "persisted-session" };
 
   try {
     await writeFile(path, "{}\n", "utf8");
@@ -122,6 +120,18 @@ test("JSON session store does not retain a mapping when rename fails", async () 
     await reloaded.load();
     assert.equal(await reloaded.get("whatsapp:unpersisted"), undefined);
     assert.deepEqual(await reloaded.get("whatsapp:persisted"), persisted);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("JSON session store rejects legacy metadata-shaped records", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "developer-agent-sessions-"));
+  const path = join(directory, "sessions.json");
+
+  try {
+    await writeFile(path, JSON.stringify({ key: { ...expected, agentId: "claude", workspaceRoot: "/approved", updatedAt: "now" } }), "utf8");
+    await assert.rejects(() => new JsonDeveloperSessionStore(path).load(), DeveloperSessionStateError);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

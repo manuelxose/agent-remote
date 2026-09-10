@@ -143,20 +143,19 @@ The runtime may select a workspace beneath an approved root, but no incoming Wha
 
 ## Session persistence and isolation
 
-The store is keyed by `channel + conversationId` and stores only:
+The store is keyed by an unambiguous JSON tuple `[channel, conversationId, agentId, workspaceRoot]` and stores only:
 
 ```json
 {
-  "agentId": "codex",
-  "nativeSessionId": "vendor-session-id",
-  "workspaceRoot": "/approved/workspace",
-  "updatedAt": "2026-09-10T00:00:00.000Z"
+  "[\"whatsapp\",\"conversation\",\"codex\",\"/approved/workspace\"]": {
+    "nativeSessionId": "vendor-session-id"
+  }
 }
 ```
 
 The default path is `data/developer-agent-sessions.json`, configurable through trusted runtime setup. The file is loaded at startup and written after successful execution using a same-directory temporary file and rename. Missing state starts empty. Malformed state fails startup/configuration clearly instead of silently creating cross-session ambiguity.
 
-If the stored agent ID or workspace root no longer matches the current route/request, the runtime starts a new native session and replaces that conversation’s mapping. It never resumes another agent’s session. Concurrent turns for the same conversation are serialized; different conversations remain independent.
+The runtime canonicalizes the approved workspace root before constructing the tuple. Agent or workspace changes produce a different key and start a new native session; no redundant agent or workspace metadata is persisted. Legacy metadata-shaped records are malformed and fail clearly rather than being interpreted as a session. Concurrent turns for the same tuple are serialized; different tuples remain independent.
 
 ## Events and response pipeline
 
@@ -179,4 +178,3 @@ Unit tests use a fake process runner and temporary directories to verify:
 - successful output reaches the gateway/channel response pipeline.
 
 When a CLI is installed, optional smoke tests invoke its availability probe and a minimal non-destructive prompt in an approved temporary workspace. Missing CLIs are reported as skipped/unavailable, never treated as passing execution.
-

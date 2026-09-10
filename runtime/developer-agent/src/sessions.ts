@@ -2,10 +2,11 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 export interface DeveloperSessionState {
-  agentId: string;
   nativeSessionId: string;
-  workspaceRoot: string;
-  updatedAt: string;
+}
+
+export function createDeveloperSessionKey(channel: string, conversationId: string, agentId: string, workspaceRoot: string): string {
+  return JSON.stringify([channel, conversationId, agentId, workspaceRoot]);
 }
 
 export interface DeveloperSessionStore {
@@ -100,7 +101,6 @@ function isSessionMap(value: unknown): value is Record<string, DeveloperSessionS
   if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
   return Object.values(value).every(state =>
     state !== null && typeof state === "object" && !Array.isArray(state) &&
-    typeof state.agentId === "string" && typeof state.nativeSessionId === "string" &&
-    typeof state.workspaceRoot === "string" && typeof state.updatedAt === "string"
+    Object.keys(state).length === 1 && typeof state.nativeSessionId === "string"
   );
 }

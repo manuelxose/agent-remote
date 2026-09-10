@@ -18,9 +18,9 @@ const capabilities = {
   git: async () => "clean"
 };
 
-function context(conversationId: string, agent: string, workspaceRoot = root) {
+function context(conversationId: string, agent: string, workspaceRoot = root, channel = "whatsapp") {
   return {
-    message: { id: `message-${conversationId}`, conversationId, channel: "whatsapp", senderId: "user", text: `prompt-${conversationId}`, receivedAt: new Date(0) },
+    message: { id: `message-${conversationId}`, conversationId, channel, senderId: "user", text: `prompt-${conversationId}`, receivedAt: new Date(0) },
     conversation: { id: conversationId, channel: "whatsapp", participantIds: ["user"], metadata: {} },
     route: { id: `route-${conversationId}`, runtime: "developer-agent" as const, agent, workspaceRoot },
     execution: { correlationId: `correlation-${conversationId}`, conversationId, workspaceRoot }
@@ -79,6 +79,25 @@ test("developer runtime keeps native sessions isolated by conversation, agent, a
   assert.equal(codex.calls[0].request.sessionId, undefined);
   assert.equal(codex.calls[1].request.sessionId, undefined);
   assert.equal(copilot.calls[0].request.sessionId, undefined);
+});
+
+test("developer runtime keeps collision-prone channel and conversation tuples independent", async () => {
+  const claude = fakeAdapter("claude");
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: claude.adapter },
+    sessions: new InMemoryDeveloperSessionStore(),
+    defaultWorkspaceRoot: root,
+    runner: fakeRunner(),
+    events: new InMemoryEventBus()
+  });
+
+  await runtime.execute(context("c", "claude", root, "a:b"), agent("claude"));
+  await runtime.execute(context("b:c", "claude", root, "a"), agent("claude"));
+  await runtime.execute(context("c", "claude", root, "a:b"), agent("claude"));
+  await runtime.execute(context("b:c", "claude", root, "a"), agent("claude"));
+
+  assert.equal(claude.calls[2].request.sessionId, "claude-session-1");
+  assert.equal(claude.calls[3].request.sessionId, "claude-session-2");
 });
 
 test("developer runtime reloads a persisted native session", async () => {

@@ -290,6 +290,19 @@
       "source_location": "L67"
     },
     {
+      "id": "packages_core_src_index_agenttype",
+      "label": "AgentType",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "agenttype",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L3"
+    },
+    {
       "id": "packages_core_src_index_conversationagent",
       "label": "ConversationAgent",
       "_callable": true,
@@ -314,6 +327,32 @@
       "norm_label": "conversationcontext",
       "source_file": "packages/core/src/index.ts",
       "source_location": "L49"
+    },
+    {
+      "id": "packages_core_src_index_metadata",
+      "label": "Metadata",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "metadata",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "packages_core_src_index_runtimetype",
+      "label": "RuntimeType",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "runtimetype",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L1"
     },
     {
       "id": "packages_events_src_index_domainevent",
@@ -751,7 +790,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "gatewayconfigurationerror",
       "source_file": "apps/gateway/src/index.ts",
@@ -764,7 +803,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "gatewaydependencies",
       "source_file": "apps/gateway/src/index.ts",
@@ -777,7 +816,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "conversationstore",
       "source_file": "packages/conversations/src/index.ts",
@@ -790,24 +829,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "inmemoryconversationstore",
       "source_file": "packages/conversations/src/index.ts",
       "source_location": "L7"
-    },
-    {
-      "id": "packages_core_src_index_agenttype",
-      "label": "AgentType",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "agenttype",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L3"
     },
     {
       "id": "packages_core_src_index_channel",
@@ -816,7 +842,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "channel",
       "source_file": "packages/core/src/index.ts",
@@ -829,7 +855,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "conversation",
       "source_file": "packages/core/src/index.ts",
@@ -842,7 +868,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "executioncontext",
       "source_file": "packages/core/src/index.ts",
@@ -855,37 +881,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "message",
       "source_file": "packages/core/src/index.ts",
       "source_location": "L14"
-    },
-    {
-      "id": "packages_core_src_index_messageattachment",
-      "label": "MessageAttachment",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "messageattachment",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L7"
-    },
-    {
-      "id": "packages_core_src_index_metadata",
-      "label": "Metadata",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "metadata",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L5"
     },
     {
       "id": "packages_core_src_index_route",
@@ -894,24 +894,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "route",
       "source_file": "packages/core/src/index.ts",
       "source_location": "L33"
-    },
-    {
-      "id": "packages_core_src_index_runtimetype",
-      "label": "RuntimeType",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "runtimetype",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L1"
     },
     {
       "id": "packages_routing_src_index_configurationrouter",
@@ -920,7 +907,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "configurationrouter",
       "source_file": "packages/routing/src/index.ts",
@@ -933,7 +920,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "routenotfounderror",
       "source_file": "packages/routing/src/index.ts",
@@ -946,7 +933,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "routeresolver",
       "source_file": "packages/routing/src/index.ts",
@@ -1107,6 +1094,19 @@
       "norm_label": "rawwhatsappmessage",
       "source_file": "channels/whatsapp/src/translate.ts",
       "source_location": "L11"
+    },
+    {
+      "id": "packages_core_src_index_messageattachment",
+      "label": "MessageAttachment",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "translate.ts",
+      "file_type": "code",
+      "norm_label": "messageattachment",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L7"
     },
     {
       "id": "apps_gateway_src_index_gateway_constructor",
@@ -2578,7 +2578,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".handle()",
       "source_file": "apps/gateway/src/index.ts",
@@ -2590,7 +2590,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "apps/gateway/src/index.ts",
@@ -2602,7 +2602,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".getorcreate()",
       "source_file": "packages/conversations/src/index.ts",
@@ -2614,7 +2614,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "createconversationcontext()",
       "source_file": "packages/conversations/src/index.ts",
@@ -2626,7 +2626,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".getorcreate()",
       "source_file": "packages/conversations/src/index.ts",
@@ -2638,7 +2638,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".receive()",
       "source_file": "packages/core/src/index.ts",
@@ -2650,7 +2650,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".send()",
       "source_file": "packages/core/src/index.ts",
@@ -2662,7 +2662,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "packages/routing/src/index.ts",
@@ -2674,7 +2674,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".resolve()",
       "source_file": "packages/routing/src/index.ts",
@@ -2686,7 +2686,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "packages/routing/src/index.ts",
@@ -2698,7 +2698,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": ".resolve()",
       "source_file": "packages/routing/src/index.ts",
@@ -3175,6 +3175,39 @@
       "file_type": "code",
       "norm_label": "worker/src/index.ts",
       "source_file": "apps/worker/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "integrations_talkaris_src_index",
+      "label": "talkaris/src/index.ts",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "talkaris/src/index.ts",
+      "source_file": "integrations/talkaris/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "integrations_talkaris_src_index_talkarisagent",
+      "label": "talkarisAgent",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "talkarisagent",
+      "source_file": "integrations/talkaris/src/index.ts",
+      "source_location": "L3"
+    },
+    {
+      "id": "packages_core_src_index",
+      "label": "core/src/index.ts",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "core/src/index.ts",
+      "source_file": "packages/core/src/index.ts",
       "source_location": "L1"
     },
     {
@@ -4958,54 +4991,21 @@
       "label": "gateway/src/index.ts",
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "gateway/src/index.ts",
       "source_file": "apps/gateway/src/index.ts",
       "source_location": "L1"
     },
     {
-      "id": "integrations_talkaris_src_index",
-      "label": "talkaris/src/index.ts",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "talkaris/src/index.ts",
-      "source_file": "integrations/talkaris/src/index.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "integrations_talkaris_src_index_talkarisagent",
-      "label": "talkarisAgent",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "talkarisagent",
-      "source_file": "integrations/talkaris/src/index.ts",
-      "source_location": "L3"
-    },
-    {
       "id": "packages_conversations_src_index",
       "label": "conversations/src/index.ts",
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "conversations/src/index.ts",
       "source_file": "packages/conversations/src/index.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "packages_core_src_index",
-      "label": "core/src/index.ts",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "core/src/index.ts",
-      "source_file": "packages/core/src/index.ts",
       "source_location": "L1"
     },
     {
@@ -5013,11 +5013,33 @@
       "label": "routing/src/index.ts",
       "_origin": "ast",
       "community": 37,
-      "community_name": "core/src/index.ts",
+      "community_name": "gateway/src/index.ts",
       "file_type": "code",
       "norm_label": "routing/src/index.ts",
       "source_file": "packages/routing/src/index.ts",
       "source_location": "L1"
+    },
+    {
+      "id": "test_developer_agent_smoke_test",
+      "label": "developer-agent-smoke.test.ts",
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "developer-agent-smoke.test.ts",
+      "file_type": "code",
+      "norm_label": "developer-agent-smoke.test.ts",
+      "source_file": "test/developer-agent-smoke.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "test_developer_agent_smoke_test_adapters",
+      "label": "adapters",
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "developer-agent-smoke.test.ts",
+      "file_type": "code",
+      "norm_label": "adapters",
+      "source_file": "test/developer-agent-smoke.test.ts",
+      "source_location": "L13"
     },
     {
       "id": "tsconfig",
@@ -5521,7 +5543,7 @@
       "node_kind": "heading",
       "norm_label": "events",
       "source_file": "docs/architecture.md",
-      "source_location": "L60"
+      "source_location": "L68"
     },
     {
       "id": "docs_architecture_future_extensions",
@@ -5533,7 +5555,7 @@
       "node_kind": "heading",
       "norm_label": "future extensions",
       "source_file": "docs/architecture.md",
-      "source_location": "L64"
+      "source_location": "L72"
     },
     {
       "id": "docs_architecture_intentionally_not_implemented",
@@ -5545,7 +5567,7 @@
       "node_kind": "heading",
       "norm_label": "intentionally not implemented",
       "source_file": "docs/architecture.md",
-      "source_location": "L74"
+      "source_location": "L82"
     },
     {
       "id": "docs_architecture_package_boundaries",
@@ -5569,7 +5591,7 @@
       "node_kind": "heading",
       "norm_label": "routing",
       "source_file": "docs/architecture.md",
-      "source_location": "L56"
+      "source_location": "L64"
     },
     {
       "id": "docs_architecture_system_shape",
@@ -5617,7 +5639,7 @@
       "node_kind": "heading",
       "norm_label": "untrusted chatbot zone",
       "source_file": "docs/architecture.md",
-      "source_location": "L52"
+      "source_location": "L58"
     },
     {
       "id": "docs_architecture_whatsapp_transport",
@@ -5629,7 +5651,7 @@
       "node_kind": "heading",
       "norm_label": "whatsapp transport",
       "source_file": "docs/architecture.md",
-      "source_location": "L70"
+      "source_location": "L78"
     }
   ],
   "links": [
@@ -9408,7 +9430,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/architecture.md",
-      "source_location": "L56",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -9419,7 +9441,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/architecture.md",
-      "source_location": "L60",
+      "source_location": "L68",
       "weight": 1.0
     },
     {
@@ -9430,7 +9452,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/architecture.md",
-      "source_location": "L64",
+      "source_location": "L72",
       "weight": 1.0
     },
     {
@@ -9441,7 +9463,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/architecture.md",
-      "source_location": "L70",
+      "source_location": "L78",
       "weight": 1.0
     },
     {
@@ -9452,7 +9474,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/architecture.md",
-      "source_location": "L74",
+      "source_location": "L82",
       "weight": 1.0
     },
     {
@@ -9474,7 +9496,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/architecture.md",
-      "source_location": "L52",
+      "source_location": "L58",
       "weight": 1.0
     },
     {
@@ -11612,6 +11634,17 @@
       "weight": 1.0
     },
     {
+      "source": "test_developer_agent_smoke_test",
+      "target": "test_developer_agent_smoke_test_adapters",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/developer-agent-smoke.test.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
       "source": "test_gateway_test",
       "target": "test_gateway_test_execute",
       "relation": "contains",
@@ -13284,5 +13317,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ec22fb03e0abf57e47c2e346dbafeec1554b21dc"
+  "built_at_commit": "22fb0c3a9481984c7d778e1da0a1224339628b0e"
 }
