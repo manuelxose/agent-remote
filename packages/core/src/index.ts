@@ -4,6 +4,13 @@ export type AgentType = string;
 
 export type Metadata = Record<string, string>;
 
+export interface MessageAttachment {
+  kind: string;
+  mimeType?: string;
+  fileName?: string;
+  size?: number;
+}
+
 export interface Message {
   id: string;
   conversationId: string;
@@ -11,6 +18,8 @@ export interface Message {
   senderId: string;
   text: string;
   receivedAt: Date;
+  groupId?: string;
+  attachments?: MessageAttachment[];
   metadata?: Metadata;
 }
 

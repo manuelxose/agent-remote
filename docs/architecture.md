@@ -8,7 +8,7 @@ Messaging Channel -> Conversation Core -> Router -> Agent Runtime -> Agent
         +---------------- Channel response ---------------------+
 ```
 
-The local process hosts the gateway, worker, in-memory event bus, routing configuration, and registered adapters. Channels translate transport concerns; the core owns conversation semantics; runtimes enforce trust policies; agents integrate with developer CLIs or future chatbot behavior.
+The local process hosts the gateway, worker, in-memory event bus, routing configuration, and registered adapters. Channels translate transport concerns; the core owns conversation semantics; runtimes enforce trust policies; agents integrate with local or future chatbot behavior.
 
 ## Package boundaries
 
@@ -67,6 +67,10 @@ Talkaris plugs in by implementing `ConversationAgent` in `integrations/talkaris`
 
 Telegram or Web Chat plugs in by implementing `Channel` in a separate channel package and registering a channel key. The conversation, router, runtimes, and agents remain unchanged.
 
+## WhatsApp transport
+
+The WhatsApp adapter uses Baileys behind a transport-only `WhatsAppChannel`. It owns local multi-file auth persistence, QR notification, reconnect and shutdown state, allowlist checks, message translation, response delivery, and a sanitized health snapshot. The gateway composition helper supplies `Gateway.handle` as the inbound callback and exposes the channel health object to the application.
+
 ## Intentionally not implemented
 
-Provider credentials, WhatsApp transport SDKs, CLI process spawning, persistent storage, distributed events, Talkaris business logic, and multi-tenant scheduling are deferred until their concrete requirements exist.
+Production-grade credential storage, CLI process spawning, persistent conversation storage, distributed events, and multi-tenant scheduling are deferred until their concrete requirements exist. WhatsApp account authentication remains local to the configured auth directory.
