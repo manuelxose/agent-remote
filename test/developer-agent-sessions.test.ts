@@ -1,5 +1,5 @@
 import { strict as assert } from "node:assert";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -96,6 +96,32 @@ test("JSON session store preserves concurrent writes for different conversations
     await reloaded.load();
     assert.deepEqual(await reloaded.get("whatsapp:conversation-a"), expected);
     assert.deepEqual(await reloaded.get("whatsapp:conversation-b"), second);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("JSON session store does not retain a mapping when rename fails", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "developer-agent-sessions-"));
+  const path = join(directory, "sessions");
+  const persisted = { ...expected, nativeSessionId: "persisted-session" };
+
+  try {
+    await writeFile(path, "{}\n", "utf8");
+    const store = new JsonDeveloperSessionStore(path);
+    await store.load();
+    await rm(path, { force: true });
+    await mkdir(path);
+    await assert.rejects(() => store.set("whatsapp:unpersisted", expected));
+    assert.equal(await store.get("whatsapp:unpersisted"), undefined);
+
+    await rm(path, { recursive: true, force: true });
+    await store.set("whatsapp:persisted", persisted);
+
+    const reloaded = new JsonDeveloperSessionStore(path);
+    await reloaded.load();
+    assert.equal(await reloaded.get("whatsapp:unpersisted"), undefined);
+    assert.deepEqual(await reloaded.get("whatsapp:persisted"), persisted);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

@@ -198,6 +198,14 @@ test("developer runtime creates production session and runner defaults when omit
   assert.ok(options.runner instanceof NodeDeveloperProcessRunner);
 });
 
+test("developer runtime reports an adapter ID mismatch as unconfigured", async () => {
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: fakeAdapter("codex").adapter }, defaultWorkspaceRoot: root
+  });
+
+  assert.deepEqual(await runtime.getAvailability("claude"), { available: false, reason: "adapter-not-configured", executable: "claude" });
+});
+
 test("developer runtime reports missing and unavailable adapters with stable diagnostics", async () => {
   const unavailable = fakeAdapter("claude", { available: false });
   const runtime = new DeveloperAgentRuntime(capabilities, {

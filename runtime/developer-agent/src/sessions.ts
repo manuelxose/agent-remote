@@ -64,11 +64,13 @@ export class JsonDeveloperSessionStore implements DeveloperSessionStore {
   async set(key: string, state: DeveloperSessionState): Promise<void> {
     await this.load();
     const current = this.writeQueue.then(async () => {
-      this.sessions.set(key, state);
+      const snapshot = new Map(this.sessions);
+      snapshot.set(key, state);
       await mkdir(dirname(this.path), { recursive: true });
       const temporaryPath = `${this.path}.tmp`;
-      await writeFile(temporaryPath, `${JSON.stringify(Object.fromEntries(this.sessions), null, 2)}\n`, "utf8");
+      await writeFile(temporaryPath, `${JSON.stringify(Object.fromEntries(snapshot), null, 2)}\n`, "utf8");
       await rename(temporaryPath, this.path);
+      this.sessions.set(key, state);
     });
     this.writeQueue = current.catch(() => undefined);
     await current;

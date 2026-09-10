@@ -27,10 +27,11 @@ export class DeveloperAgentRuntime implements AgentRuntime {
   readonly type = "developer-agent" as const;
   private readonly queues = new Map<string, Promise<void>>();
   private readonly events: EventBus;
+  private readonly options: ResolvedDeveloperAgentRuntimeOptions;
 
   constructor(
     readonly capabilities: DeveloperCapabilities,
-    private readonly options: ResolvedDeveloperAgentRuntimeOptions
+    options: DeveloperAgentRuntimeOptions
   ) {
     this.options = {
       ...options,
@@ -42,7 +43,7 @@ export class DeveloperAgentRuntime implements AgentRuntime {
 
   async getAvailability(agentId: string) {
     const adapter = this.options.adapters[agentId];
-    return adapter
+    return adapter && adapter.id === agentId
       ? adapter.getAvailability()
       : { available: false as const, reason: "adapter-not-configured" as const, executable: agentId };
   }
