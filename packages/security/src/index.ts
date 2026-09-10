@@ -1,4 +1,4 @@
-import { existsSync, lstatSync, realpathSync } from "node:fs";
+import { lstatSync, realpathSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
 
 export class WorkspaceAccessError extends Error {
@@ -17,9 +17,19 @@ export class WorkspacePolicy {
   }
 
   assertPath(path: string): string {
-    const candidate = canonicalizeExistingAncestor(path);
+    let candidate: string;
+    try {
+      candidate = canonicalizeExistingAncestor(path);
+    } catch {
+      throw new WorkspaceAccessError(path);
+    }
     const approved = this.roots.some(root => {
-      const canonicalRoot = canonicalizeExistingAncestor(root);
+      let canonicalRoot: string;
+      try {
+        canonicalRoot = canonicalizeExistingAncestor(root);
+      } catch {
+        return false;
+      }
       const remainder = relative(canonicalRoot, candidate);
       return remainder === "" || (!remainder.startsWith("..") && !isAbsolute(remainder));
     });
@@ -31,13 +41,20 @@ export class WorkspacePolicy {
 function canonicalizeExistingAncestor(path: string): string {
   let current = resolve(path);
   const suffix: string[] = [];
-  while (!existsSync(current)) {
-    const parent = dirname(current);
-    if (parent === current) return current;
-    suffix.unshift(basename(current));
-    current = parent;
+  while (true) {
+    try {
+      lstatSync(current);
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== "ENOENT" && code !== "ENOTDIR") throw error;
+      const parent = dirname(current);
+      if (parent === current) throw error;
+      suffix.unshift(basename(current));
+      current = parent;
+      continue;
+    }
+    return join(realpathSync.native(current), ...suffix);
   }
-  return join(realpathSync.native(current), ...suffix);
 }
 
 export interface DeveloperCapabilities {

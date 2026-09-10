@@ -47,6 +47,21 @@ Implemented Claude, Codex, and Copilot developer-agent adapters.
 - Focused: `npm run build && node --test --experimental-strip-types test/security.test.ts test/developer-agent-process.test.ts test/adapters.test.ts` — 24 passing.
 - Full: `npm test` — 58 passing.
 - `git diff --check` — passed.
+
+## Review Fix Round 4
+
+### Changes
+
+- Replaced `existsSync`-following path inspection with `lstatSync` component inspection.
+- Existing components and symlinks are resolved with `realpathSync.native`; unresolved symlink targets fail closed as `WorkspaceAccessError` instead of becoming non-existing suffixes.
+- Ordinary new paths and symlinks resolving inside approved roots remain accepted.
+- Added a dangling-symlink regression proving policy rejection occurs before `outside/created.txt` can be written.
+
+### Verification
+
+- Red: the dangling-symlink test failed because the prior `existsSync` walk treated the dangling link as an ordinary missing suffix.
+- Focused: `npm run build && node --test --experimental-strip-types test/security.test.ts test/developer-agent-process.test.ts test/adapters.test.ts` — 25 passing.
+- Full: `npm test` — 59 passing.
 - `graphify update .` — completed.
 
 ## Concerns
