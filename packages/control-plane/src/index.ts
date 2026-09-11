@@ -153,6 +153,7 @@ export class ControlPlane {
   private readonly repositories: ControlPlaneRepositories;
   private readonly events: EventBus;
   private readonly queues = new Map<string, ExecutionQueue>();
+  private readonly telemetry = new Map<string, ExecutionTelemetry>();
   private readonly options: ControlPlaneOptions;
   private readonly rateHistory = new Map<string, number[]>();
   private accepting = true;
@@ -173,6 +174,17 @@ export class ControlPlane {
     const deadline = Date.now() + timeoutMs;
     while ([...this.queues.values()].some(queue => queue.running) && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 10));
     for (const queue of this.queues.values()) if (queue.running) await queue.cancel();
+  }
+
+  markExecutionTransportReply(executionId: string, final = false): void {
+    const telemetry = this.telemetry.get(executionId);
+    if (!telemetry) return;
+    telemetry.mark("firstTransportReplyAt");
+    if (final) telemetry.mark("finalReplyAt");
+  }
+
+  executionTelemetry(executionId: string) {
+    return this.telemetry.get(executionId)?.snapshot();
   }
 
   async handle(message: Message, identity: ControlPlaneIdentity): Promise<CommandResult> {
@@ -468,6 +480,8 @@ export class ControlPlane {
     telemetry.mark("messageReceivedAt");
     telemetry.mark("routingCompletedAt");
     telemetry.mark("queueEnteredAt");
+    this.telemetry.set(message.id, telemetry);
+    while (this.telemetry.size > 256) this.telemetry.delete(this.telemetry.keys().next().value!);
     try { await this.options.onExecutionAccepted?.(session, message); } catch {}
     telemetry.mark("executionAcceptedAt");
     let deferred = false;
@@ -502,7 +516,6 @@ export class ControlPlane {
         response = { text: "Unable to complete the developer-agent request.", metadata: { agent: agentId, reason: "execution-failed" } };
       }
       telemetry.mark("executionCompletedAt");
-      telemetry.mark("finalReplyAt");
       await this.finalizeExecution(current, message.id, agentId, response, telemetry);
       if (deferred) {
         try { await this.options.onExecutionResponse?.(current, response); } catch {}

@@ -140,7 +140,8 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
   });
   const agents = Object.fromEntries(["claude", "codex", "copilot"].map(id => [id, createAgent(id)]));
   const deliveries = new Map<string, StreamDelivery>();
-  const controlPlane = new ControlPlane({
+  let controlPlane!: ControlPlane;
+  controlPlane = new ControlPlane({
     repositories: new JsonControlPlaneStore(config.controlPlanePath),
     agents,
     runtimes: { "developer-agent": runtime },
@@ -158,16 +159,21 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
         await delivery.complete(response.text);
         deliveries.delete(executionId!);
       } else await whatsapp.channel.send(session.externalConversationId, response);
+      if (executionId) controlPlane.markExecutionTransportReply(executionId, true);
     },
     onExecutionAccepted: async (session, message) => {
       await whatsapp.channel.setPresence(session.externalConversationId, "composing");
       await whatsapp.channel.send(session.externalConversationId, { text: "⏳ Recibido. Procesando…", replyTo: message.replyReference ?? { channel: message.channel, conversationId: message.conversationId, messageId: message.id, senderId: message.senderId } });
+      controlPlane.markExecutionTransportReply(message.id);
     },
     onExecutionEvent: async (session, _message, event) => {
       if (event.type === "assistant.delta" && typeof event.payload?.text === "string") {
         let delivery = deliveries.get(event.executionId);
         if (!delivery) {
-          delivery = new StreamDelivery(config.streamingDelivery, value => whatsapp.channel.send(session.externalConversationId, value), event.replyTo);
+          delivery = new StreamDelivery(config.streamingDelivery, async value => {
+            controlPlane.markExecutionTransportReply(event.executionId);
+            await whatsapp.channel.send(session.externalConversationId, value);
+          }, event.replyTo);
           deliveries.set(event.executionId, delivery);
         }
         await delivery.push(event.payload.text);
@@ -199,6 +205,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
         await delivery.complete(result.text);
         deliveries.delete(result.metadata.executionId);
       } else await channel.send(message.conversationId, result);
+      if (result.metadata?.executionId) controlPlane.markExecutionTransportReply(result.metadata.executionId, true);
     },
     onError: async (error, payload, channel) => {
       const message = messageFromPayload(payload);

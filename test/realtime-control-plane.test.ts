@@ -75,3 +75,13 @@ test("status exposes safe runtime diagnostics without prompt content", async () 
   assert.match(result.text, /Providers: codex=available/);
   assert.doesNotMatch(result.text, /prompt|secret/i);
 });
+
+test("execution telemetry can be marked at the transport boundary", () => {
+  const telemetry = new ExecutionTelemetry({ executionId: "e2", correlationId: "m2", logicalSessionId: "l2", externalConversationId: "chat", provider: "codex", agent: "codex", workspace: root });
+  telemetry.mark("messageReceivedAt", 100);
+  telemetry.mark("executionCompletedAt", 200);
+  telemetry.mark("firstTransportReplyAt", 210);
+  telemetry.mark("finalReplyAt", 220);
+  assert.equal(telemetry.snapshot().latencies.timeToFirstReplyMs, 110);
+  assert.equal(telemetry.snapshot().latencies.deliveryLatencyMs, 20);
+});
