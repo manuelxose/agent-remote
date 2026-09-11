@@ -85,3 +85,9 @@ Stop with `Ctrl-C` or `SIGTERM`; the gateway closes the socket cleanly. Start it
 If startup fails, run `npm run doctor`. Check the auth path, owner/chat allowlists, route key spelling, approved workspace roots, and that the provider executable is on `PATH`. Never paste auth files or provider credentials into logs or Git.
 
 Talkaris remains a future chatbot-runtime extension. It is intentionally not connected to the developer-agent process runtime.
+
+## Single-number WhatsApp presentation
+
+Agent Remote uses one WhatsApp account: a generated reply is a transport message with `fromMe`, while `MessageOrigin` identifies the logical agent and execution for correlation. The normal transport experience is composing presence and one quoted final reply; optional delayed progress is controlled by `AGENT_REMOTE_PROGRESS_AFTER_MS`, and `/cancel` stops provider work without producing a streaming partial/final reply. Exact successful WhatsApp send IDs are held in a finite TTL/capacity registry, not inferred from response text.
+
+WhatsApp cannot natively show a same-account agent as a second, left-side sender. The optional presentation companion augments only local Web/Desktop DOM nodes for registered exact IDs; it is opt-in and best-effort. It does not affect the official mobile client, protocol traffic, or sender identity. See [WhatsApp operations](docs/whatsapp.md) for setup, token handling, and extension warnings.

@@ -45,3 +45,15 @@ Accepted prompts set composing presence and receive a correlated acknowledgement
 ## Control-plane commands
 
 Use `/help` for the registry-generated list. Authorized ordinary messages automatically initialize their chat with Codex; `/init [name]` remains available for explicit naming, and `/claude`, `/codex`, or `/copilot` select an agent. `/chats`, `/chat <name|id>`, `/rename`, and `/close` manage owner-scoped logical chats. `/model` exposes configured provider model IDs, `/workspace` and `/workspaces` enforce approved roots, and `/running`, `/cancel`, `/retry`, and `/reset confirm` manage execution state.
+
+## One-account identity and delivery
+
+The gateway uses one WhatsApp account. Agent Remote replies are transport messages from that account (`fromMe`), even when their logical `MessageOrigin` says that Claude, Codex, or another configured agent produced them. The logical origin is runtime metadata, not an attempt to spoof a sender or manufacture an inbound participant.
+
+Each final or delayed-progress reply retains the exact incoming-message `reply` reference when its bounded quoted context remains available. Successful outbound sends are correlated by their exact WhatsApp message ID in a TTL- and capacity-bounded registry; text is never used as a key. The normal visible lifecycle is composing presence followed by one final reply and paused presence. `AGENT_REMOTE_PROGRESS_AFTER_MS=0` disables progress; a positive threshold allows at most the configured bounded progress/final messages. `/cancel` cancels the execution and pauses presence without sending a partial/final delivery through the streaming helper.
+
+## Optional Web/Desktop presentation companion
+
+Protocol-native left-side agent rendering is impossible under one WhatsApp account. WhatsApp Web/Desktop and mobile derive the sender layout from the real account and transport; linked devices and LID metadata do not create a second participant. Therefore the official **mobile** client remains unchanged and cannot be made to render Agent Remote as an incoming agent.
+
+The opt-in presentation companion is a best-effort local Web/Desktop augmentation only. Set `AGENT_REMOTE_PRESENTATION_ENABLED=true`, choose `AGENT_REMOTE_PRESENTATION_PORT` (default `8765`), and set a private `AGENT_REMOTE_PRESENTATION_TOKEN`; put the same port/token in the companion source, run `npm run build`, then load `dist/presentation/whatsapp-companion` unpacked in Chromium. It polls only the loopback registry for exact IDs and can stop augmenting safely when the bridge or DOM changes. It neither sends WhatsApp messages nor reads local files, calls providers, alters encryption/network traffic, or affects mobile. WhatsApp may display Code Verify or extension warnings because the DOM is modified; review those warnings before use.
