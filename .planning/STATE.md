@@ -2,11 +2,13 @@
 
 ## Current Position
 
-Phase 5 — Enterprise Conversational Control Plane (complete; environmental acceptance gaps recorded)
+Phase 6 — Real-Time Conversational Runtime (planning/implementation)
 
 ## Status
 
 The Phase 5 control plane is implemented: central command registry, explicit state, owner-scoped managed chats, atomic versioned JSON state, bounded per-chat queues, cancellation, idempotency, explicit model policy, application composition, docs, and tests. Deterministic verification is complete; unavailable Claude/Copilot CLIs and live WhatsApp credentials are recorded as UNVERIFIED in the phase verification artifact.
+
+Phase 6 design is approved and recorded in `docs/superpowers/specs/2026-09-11-real-time-conversational-runtime-design.md`; implementation follows the executable plan in `docs/superpowers/plans/2026-09-11-real-time-conversational-runtime.md`. The current baseline is the verified Phase 5 source with Codex CLI 0.154.0 available and Claude/Copilot/live WhatsApp environment checks unavailable.
 
 ## Decisions
 
@@ -39,4 +41,4 @@ The Phase 5 control plane is implemented: central command registry, explicit sta
 
 ## Next Action
 
-Final verification is recorded in `.planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md`; production-grade credential storage, distributed event delivery, and long-lived interactive CLI processes remain future concerns.
+Execute Phase 6 tasks in order, recording measured streaming/latency evidence and truthful external acceptance status in `.planning/phases/06-real-time-conversational-runtime/VERIFICATION.md`.

@@ -88,3 +88,25 @@ Plans:
 - [x] 05-01-PLAN.md — control-plane implementation, integration, documentation, and verification
 
 Verification: `.planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md`.
+
+## Phase 6: Real-Time Conversational Runtime — In progress
+
+Evolve the Phase 5 control plane into a streaming, session-oriented runtime
+with transport-neutral reply correlation, provider capability caching, bounded
+delivery, explicit lifecycle supervision, latency telemetry, and native
+WhatsApp quoted replies.
+
+Requirements: REALTIME-01, REALTIME-02, REALTIME-03, SESSION-03, EXEC-03,
+WHATSAPP-07, OPS-02, TEST-03, DOC-03.
+
+Success criteria:
+
+1. Inbound message references survive the control-plane/runtime path and are rendered as native WhatsApp quotes with bounded TTL/capacity fallback.
+2. Claude/Codex adapters translate incremental provider output before process completion; Copilot remains compatible behind the same session boundary.
+3. Provider discovery is cached, logical sessions are isolated/reused/reset/closed deliberately, same-session turns serialize, and cancellation reaches the actual process.
+4. Streaming delivery is aggregated/bounded, presence is safe, latency timestamps/derived metrics and diagnostics are exposed, and shutdown closes sessions without orphan work.
+5. Build, complete tests, benchmark evidence, documentation, Graphify, and truthful live-verification status are recorded.
+
+Plans:
+
+- [ ] 06-01-PLAN.md — neutral contracts, streaming sessions, control-plane delivery, WhatsApp correlation, lifecycle, tests, docs, and verification
