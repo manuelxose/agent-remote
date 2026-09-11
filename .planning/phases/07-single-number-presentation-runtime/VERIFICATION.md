@@ -4,8 +4,11 @@
 
 | Command | Result |
 | --- | --- |
-| `npm run build && node --test --experimental-strip-types test/documentation.test.ts` | Build passed; 1 test passed, 0 failed. |
-| `npm test` | 169 tests total; 167 passed, 0 failed, 2 skipped; duration 17,150.809 ms. |
+| `npm run build` | Exit 0. |
+| `node --test --experimental-strip-types test/documentation.test.ts` | Exit 0; 1 test passed, 0 failed. |
+| `npm test` | Exit 0; 169 tests total, 167 passed, 0 failed, 2 skipped. |
+| `npm run doctor` with the existing project environment | Exit 1 because the optional Copilot CLI is unavailable; configuration, Claude CLI, Codex CLI, Graphify, and presentation-disabled checks passed. |
+| `graphify update .` | Exit 0; 1106 nodes, 1765 edges, 99 communities. |
 
 The fresh benchmark printed by `npm test` was:
 
@@ -23,9 +26,9 @@ These deterministic values are the after-run evidence. The earlier Task 3 report
 - Default delivery is composing + final reply + paused; delayed progress requires a positive threshold, and cancellation/failure suppresses delivery.
 - The optional bridge is loopback-only, origin- and token-gated, `GET /registry` only, no-store, and exposes a bounded sanitized snapshot.
 
-## Graphify — recorded, not rerun
+## Graphify — PASS
 
-The existing generated graph has 1081 nodes. Task 5 changed only documentation, test, and GSD artifacts, so no source change required `graphify update .`; pre-existing generated Graphify files were preserved.
+The final `graphify update .` completed with 1106 nodes, 1765 edges, and 99 communities. Generated graph files remain expected workspace changes.
 
 ## Live WhatsApp/client acceptance — UNVERIFIED
 

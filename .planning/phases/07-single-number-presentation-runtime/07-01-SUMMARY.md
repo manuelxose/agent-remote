@@ -20,8 +20,9 @@ The optional presentation companion receives only a bounded sanitized registry s
 - `npm run build` passed.
 - `node --test --experimental-strip-types test/documentation.test.ts` passed: 1 test, 0 failures.
 - `npm test` passed: 169 tests, 167 passed, 0 failed, 2 skipped.
+- `npm run doctor` returned exit 1 only because the optional Copilot CLI is unavailable; configuration, Claude, Codex, Graphify, and presentation-disabled checks passed.
+- `graphify update .` passed with 1106 nodes, 1765 edges, and 99 communities.
 - Fresh deterministic benchmark: cold total latency 5 ms; warm total latency 1 ms. Task 3 previously confirmed measured cold/warm spans but did not preserve numeric baseline output, so Phase 7 reports no synthetic before/after improvement claim and no live-provider/transport measurement.
-- The existing Graphify snapshot contains 1081 nodes. Task 5 changed documentation/GSD artifacts only, so it intentionally did not rerun `graphify update .`.
 
 ## Client acceptance and limitations
 
