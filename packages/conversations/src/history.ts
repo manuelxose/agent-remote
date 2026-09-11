@@ -198,14 +198,18 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
       await mkdir(dirname(this.path), { recursive: true });
       const file = await open(this.path, "a", 0o600);
       try {
+        await this.enforcePermissions();
         await file.writeFile(`${JSON.stringify(record)}\n`, "utf8");
       } finally {
         await file.close();
       }
-      await chmod(this.path, 0o600);
     });
     this.writeQueue = write.then(() => undefined, () => undefined);
     return write;
+  }
+
+  protected async enforcePermissions(): Promise<void> {
+    await chmod(this.path, 0o600);
   }
 }
 

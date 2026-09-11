@@ -1,10 +1,19 @@
 import assert from "node:assert/strict";
-import { appendFile, mkdtemp, mkdir, readFile, rm, stat } from "node:fs/promises";
+import { appendFile, chmod, mkdtemp, mkdir, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import type { Message } from "../packages/core/src/index.js";
 import { InMemoryHistoryStore, JsonHistoryStore } from "../dist/packages/conversations/src/index.js";
+
+class ChmodFailingHistoryStore extends JsonHistoryStore {
+  failChmod = true;
+
+  protected override async enforcePermissions(): Promise<void> {
+    if (this.failChmod) throw new Error("forced chmod failure");
+    await chmod(this.path, 0o600);
+  }
+}
 
 function message(id: string, conversationId: string, text: string, receivedAt = "2026-01-01T00:00:00.000Z"): Message {
   return {
@@ -170,6 +179,26 @@ test("JSON history retries an auto-created chat and message after persistence fa
     await store.upsertMessage(message("m-1", "chat-1", "retry me"));
     const lines = (await readFile(path, "utf8")).trim().split("\n").map(line => JSON.parse(line) as { type: string });
     assert.deepEqual(lines.map(line => line.type), ["chat", "message"]);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("JSON history does not duplicate records after a chmod failure and retry", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-"));
+  const path = join(directory, "history.jsonl");
+  try {
+    const store = new ChmodFailingHistoryStore(path);
+    await assert.rejects(() => store.upsertMessage(message("m-1", "chat-1", "retry once")), /forced chmod failure/);
+    store.failChmod = false;
+    await store.upsertMessage(message("m-1", "chat-1", "retry once"));
+
+    const lines = (await readFile(path, "utf8")).trim().split("\n").map(line => JSON.parse(line) as { type: string });
+    assert.deepEqual(lines.map(line => line.type), ["chat", "message"]);
+    const restored = new JsonHistoryStore(path);
+    const result = await restored.query("whatsapp", "chat-1", "retry", { maxMessages: 10, maxCharacters: 100 });
+    assert.equal(result?.importedMessageCount, 1);
+    assert.equal(result?.messages[0]?.text, "retry once");
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
