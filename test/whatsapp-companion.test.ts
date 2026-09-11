@@ -111,8 +111,21 @@ test("loopback bridge exposes only an authenticated WhatsApp registry snapshot",
     const missingToken = await fetch(`${baseUrl}/registry`, { headers: { Origin: "https://web.whatsapp.com" } });
     const wrongOrigin = await fetch(`${baseUrl}/registry`, { headers: { Origin: "https://example.test", "x-agent-remote-token": "presentation-test-token" } });
     const accepted = await fetch(`${baseUrl}/registry`, { headers: { Origin: "https://web.whatsapp.com", "x-agent-remote-token": "presentation-test-token" } });
-    const unauthenticatedPreflight = await fetch(`${baseUrl}/registry`, { method: "OPTIONS", headers: { Origin: "https://web.whatsapp.com" } });
-    const authenticatedPreflight = await fetch(`${baseUrl}/registry?preflightToken=presentation-test-token`, { method: "OPTIONS", headers: { Origin: "https://web.whatsapp.com" } });
+    const preflight = await fetch(`${baseUrl}/registry`, { method: "OPTIONS", headers: {
+      Origin: "https://web.whatsapp.com",
+      "Access-Control-Request-Method": "GET",
+      "Access-Control-Request-Headers": "x-agent-remote-token"
+    } });
+    const invalidPreflightMethod = await fetch(`${baseUrl}/registry`, { method: "OPTIONS", headers: {
+      Origin: "https://web.whatsapp.com",
+      "Access-Control-Request-Method": "POST",
+      "Access-Control-Request-Headers": "x-agent-remote-token"
+    } });
+    const invalidPreflightHeader = await fetch(`${baseUrl}/registry`, { method: "OPTIONS", headers: {
+      Origin: "https://web.whatsapp.com",
+      "Access-Control-Request-Method": "GET",
+      "Access-Control-Request-Headers": "x-untrusted-header"
+    } });
     const wrongMethod = await fetch(`${baseUrl}/registry`, { method: "POST", headers: { Origin: "https://web.whatsapp.com", "x-agent-remote-token": "presentation-test-token" } });
     const unknownRoute = await fetch(`${baseUrl}/anything`, { headers: { Origin: "https://web.whatsapp.com", "x-agent-remote-token": "presentation-test-token" } });
 
@@ -121,9 +134,10 @@ test("loopback bridge exposes only an authenticated WhatsApp registry snapshot",
     assert.equal(accepted.status, 200);
     assert.equal(accepted.headers.get("cache-control"), "no-store");
     assert.deepEqual(await accepted.json(), [metadata("wa-agent-a", "claude", "chat-a")]);
-    assert.equal(unauthenticatedPreflight.status, 403);
-    assert.equal(authenticatedPreflight.status, 204);
-    assert.equal(authenticatedPreflight.headers.get("access-control-allow-methods"), "GET");
+    assert.equal(preflight.status, 204);
+    assert.equal(preflight.headers.get("access-control-allow-methods"), "GET");
+    assert.equal(invalidPreflightMethod.status, 405);
+    assert.equal(invalidPreflightHeader.status, 403);
     assert.equal(wrongMethod.status, 405);
     assert.equal(unknownRoute.status, 404);
   } finally {

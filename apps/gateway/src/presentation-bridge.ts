@@ -24,10 +24,10 @@ export interface PresentationBridge {
 export function createPresentationBridge(options: PresentationBridgeOptions): PresentationBridge {
   if (options.host !== "127.0.0.1") throw new Error("Presentation bridge must bind to 127.0.0.1");
   const server = createServer((request, response) => {
-    const url = new URL(request.url ?? "/", "http://127.0.0.1");
-    if (url.pathname !== "/registry") return send(response, 404);
+    if (request.url !== "/registry") return send(response, 404);
     if (request.method === "OPTIONS") {
-      if (request.headers.origin !== options.allowedOrigin || url.searchParams.get("preflightToken") !== options.token) return send(response, 403);
+      if (request.headers.origin !== options.allowedOrigin || request.headers["access-control-request-headers"]?.toLowerCase() !== "x-agent-remote-token") return send(response, 403);
+      if (request.headers["access-control-request-method"] !== "GET") return send(response, 405);
       response.writeHead(204, corsHeaders(options.allowedOrigin)).end();
       return;
     }
