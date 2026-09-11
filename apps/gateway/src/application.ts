@@ -150,7 +150,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     env: config.env,
     onQr: printQr,
     onMessage: async (message, channel) => {
-      const result = await controlPlane.handle(message, { id: message.senderId, role: roleFor(config.env, message.senderId) });
+      const result = await controlPlane.handle(message, { id: message.senderId, role: resolveWhatsAppRole(config.env, message.senderId) });
       await channel.send(message.conversationId, result);
     },
     onError: async (error, payload, channel) => {
@@ -237,13 +237,14 @@ function optionalValue(value: string | undefined): string | undefined {
   return trimmed || undefined;
 }
 
-function roleFor(env: Readonly<Record<string, string | undefined>>, senderId: string): Role {
+export function resolveWhatsAppRole(env: Readonly<Record<string, string | undefined>>, senderId: string): Role {
   const owners = parseList(env.AGENT_REMOTE_OWNER_IDS);
   const operators = parseList(env.AGENT_REMOTE_OPERATOR_IDS);
   const viewers = parseList(env.AGENT_REMOTE_VIEWER_IDS);
   if (viewers.includes(senderId)) return "viewer";
   if (operators.includes(senderId)) return "operator";
   if (owners.includes(senderId)) return "owner";
+  if (env.WHATSAPP_ALLOW_SELF_MESSAGES?.trim().toLowerCase() === "true") return "owner";
   if (parseList(env.WHATSAPP_ALLOWED_USERS).includes(senderId)) return "owner";
   return "viewer";
 }

@@ -5,7 +5,7 @@ Date: 2026-09-11
 ## Automated verification
 
 - `npm run build`: PASS.
-- `npm test`: PASS — 118 tests, 116 passed, 0 failed, 2 skipped.
+- `npm test`: PASS — 119 tests, 117 passed, 0 failed, 2 skipped.
 - Focused control-plane tests: PASS — atomic JSON persistence, corruption failure,
   registry help, initialization restrictions, multiple chats, idempotency,
   cancellation, queue bounds, and concurrent logical chats.
@@ -26,7 +26,7 @@ Date: 2026-09-11
 ## Graphify
 
 - `graphify update .`: PASS.
-- Refreshed graph: 779 nodes, 1270 edges, 75 communities.
+- Refreshed graph: 793 nodes, 1282 edges, 64 communities.
 - Focused query identifies `ControlPlane`, `CommandRegistry`,
   `JsonControlPlaneStore`, `application.ts`, and `WhatsAppChannel` as separate
   modules. A directed control-plane-to-channel path is absent because the
