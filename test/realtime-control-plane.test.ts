@@ -58,7 +58,7 @@ test("control-plane command and streamed execution results correlate to the inbo
   const running = control.handle(message("prompt", "hello"), identity);
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(streamed[0].payload.text, "partial");
-  assert.equal(streamed[0].replyTo.messageId, "prompt");
+  assert.deepEqual(streamed[0].replyTo, { channel: "test", conversationId: "chat-1", messageId: "prompt", senderId: "owner" });
   release();
   const result = await running;
   assert.equal(result.replyTo?.messageId, "prompt");

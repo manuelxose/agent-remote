@@ -18,6 +18,7 @@ export interface CommandAction { label: string; command: string; }
 export interface CommandResult {
   text: string;
   replyTo?: MessageReference;
+  origin?: MessageOrigin;
   status?: CommandStatus;
   metadata?: Record<string, string>;
   actions?: CommandAction[];
@@ -536,7 +537,7 @@ export class ControlPlane {
     }
     try {
       const response = await result.promise;
-      return { text: response.text, metadata: response.metadata };
+      return response;
     } catch {
       return { text: "Unable to complete the developer-agent request.", status: "error" };
     }
