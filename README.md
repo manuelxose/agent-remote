@@ -25,6 +25,7 @@ Use an absolute or repository-relative path for `AGENT_REMOTE_WORKSPACE_ROOTS`. 
 - `AGENT_REMOTE_DEFAULT_WORKSPACE`: fallback workspace for routes without `workspaceRoot`.
 - `AGENT_REMOTE_WORKSPACE_ALIASES`: optional JSON object mapping safe names to paths under the approved workspace roots.
 - `AGENT_REMOTE_SESSION_PATH`: persistent provider session map.
+- `AGENT_REMOTE_HISTORY_PATH`: imported WhatsApp chat metadata and message text, default `data/whatsapp-history.jsonl`.
 - `AGENT_REMOTE_CONTROL_PLANE_PATH`: versioned managed-chat, binding, selection, and idempotency state (default `data/control-plane.json`).
 - `AGENT_REMOTE_TIMEOUT_MS` and `AGENT_REMOTE_MAX_OUTPUT_BYTES`: execution limits.
 - `AGENT_REMOTE_MAX_QUEUE_DEPTH`: bounded pending executions per logical chat.
@@ -65,6 +66,8 @@ npm start
 Baileys persists credentials under `WHATSAPP_AUTH_PATH`; later restarts reuse them and should not require pairing again. The account must be in `WHATSAPP_ALLOWED_USERS` and the chat must have a route. An authorized but unmapped chat receives its conversation ID and the required route key in the response.
 
 After pairing, the first ordinary message in an authorized chat initializes it automatically with Codex. `/init [name]` remains available when an explicit chat name is wanted. Managed chats, agents, workspaces, provider sessions, queues, and state are controlled by the central command registry.
+
+WhatsApp Web history sync imports available chat metadata and message text into `AGENT_REMOTE_HISTORY_PATH`. Use `/chat` to list imported chats, then `/chat <name-or-id> <question>` to reference a bounded excerpt. This is not a full archive: WhatsApp controls the synced coverage, so older chats and messages may be absent. Attachment descriptors may be retained as metadata, but attachment binaries are never downloaded. The local JSONL file is created and enforced as mode `0600`; keep it under `data/` and never commit it.
 
 ## Provider behavior
 

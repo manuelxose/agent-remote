@@ -110,6 +110,60 @@ test("loads routes and composes the existing developer-agent graph", async () =>
   await application.stop();
 });
 
+test("loads the default and configured persistent WhatsApp history paths", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-config-"));
+  const routesPath = join(directory, "routes.json");
+  await writeFile(routesPath, "{}");
+  const env = {
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  };
+
+  assert.equal(loadApplicationConfig(env, directory).historyPath, join(directory, "data", "whatsapp-history.jsonl"));
+  assert.equal(loadApplicationConfig({ ...env, AGENT_REMOTE_HISTORY_PATH: "data/imported-history.jsonl" }, directory).historyPath, join(directory, "data", "imported-history.jsonl"));
+});
+
+test("application shares persistent WhatsApp history with control-plane chat queries", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-compose-"));
+  const routesPath = join(directory, "routes.json");
+  await writeFile(routesPath, "{}");
+  const events = new FakeEvents();
+  const socket = {
+    ev: events,
+    async sendMessage() { return { key: { id: "out" } }; },
+    async sendPresenceUpdate() {},
+    async end() {}
+  };
+  const application = createApplication(loadApplicationConfig({
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_HISTORY_PATH: "data/imported-history.jsonl",
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, directory), {
+    whatsapp: {
+      loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+      createSocket: () => socket,
+      logger: { info() {}, warn() {}, error() {} }
+    }
+  } as any);
+
+  try {
+    await application.start();
+    events.emit("messaging-history.set", { chats: [{ id: "source@g.us", subject: "Source chat" }], messages: [] });
+    await settle();
+
+    const result = await application.controlPlane.handle({
+      id: "list-imports", channel: "whatsapp", conversationId: "owner@s.whatsapp.net", senderId: "owner@s.whatsapp.net", text: "/chat", receivedAt: new Date()
+    }, { id: "owner@s.whatsapp.net", role: "owner" });
+    assert.match(result.text, /Source chat \(source@g\.us\)/);
+  } finally {
+    await application.stop();
+  }
+});
+
 test("gateway presents a successful execution without a processing acknowledgement", async () => {
   const adapter = {
     id: "codex",

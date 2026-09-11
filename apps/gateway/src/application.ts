@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 import { isAbsolute, resolve } from "node:path";
 import qrcode from "qrcode-terminal";
 import type { ConversationAgent, Message, Route } from "../../../packages/core/src/index.js";
-import { InMemoryConversationStore } from "../../../packages/conversations/src/index.js";
+import { InMemoryConversationStore, JsonHistoryStore } from "../../../packages/conversations/src/index.js";
 import { ConfiguredModelPolicy, ControlPlane, JsonControlPlaneStore, type Role } from "../../../packages/control-plane/src/index.js";
 import { InMemoryEventBus } from "../../../packages/events/src/index.js";
 import { ConfigurationRouter } from "../../../packages/routing/src/index.js";
@@ -33,6 +33,7 @@ export interface ApplicationConfig {
   defaultWorkspaceRoot: string;
   workspaceAliases: Readonly<Record<string, string>>;
   sessionPath: string;
+  historyPath: string;
   timeoutMs: number;
   maxOutputBytes: number;
   controlPlanePath: string;
@@ -122,6 +123,7 @@ export function loadApplicationConfig(
     defaultWorkspaceRoot,
     workspaceAliases: resolvedWorkspaceAliases,
     sessionPath: resolveFrom(cwd, env.AGENT_REMOTE_SESSION_PATH ?? "data/developer-agent-sessions.json"),
+    historyPath: resolveFrom(cwd, env.AGENT_REMOTE_HISTORY_PATH ?? "data/whatsapp-history.jsonl"),
     timeoutMs: positiveInteger(env.AGENT_REMOTE_TIMEOUT_MS, 120_000),
     maxOutputBytes: positiveInteger(env.AGENT_REMOTE_MAX_OUTPUT_BYTES, 64 * 1024),
     controlPlanePath: resolveFrom(cwd, env.AGENT_REMOTE_CONTROL_PLANE_PATH ?? "data/control-plane.json"),
@@ -142,6 +144,7 @@ export function loadApplicationConfig(
 
 export function createApplication(config: ApplicationConfig, dependencies: ApplicationDependencies = {}): AgentRemoteApplication {
   const events = new InMemoryEventBus();
+  const history = new JsonHistoryStore(config.historyPath);
   const capabilities = createRestrictedDeveloperCapabilities(config.workspaceRoots, localOperations());
   const runtime = dependencies.runtime ?? new DeveloperAgentRuntime(capabilities, {
     adapters: {
@@ -168,6 +171,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
     modelPolicy: new ConfiguredModelPolicy({ claude: config.claudeModels, codex: config.codexModels }),
     maxQueueDepth: config.maxQueueDepth,
     rateLimitPerMinute: config.rateLimitPerMinute,
+    history,
     resetProviderSession: (session, agent) => runtime.resetSession(session.channel, session.logicalSessionId, agent, session.workspace),
     onExecutionResponse: async (session, response) => {
       const executionId = response.metadata?.executionId;
@@ -216,6 +220,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
     events
   }, {
     env: config.env,
+    historySink: history,
     ...dependencies.whatsapp,
     onQr: dependencies.whatsapp?.onQr ?? printQr,
     onMessage: async (message, channel) => {
@@ -248,7 +253,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
     runtime,
     controlPlane,
     presentationBridge,
-    start: async () => { await controlPlane.load(); await whatsapp.channel.start(); await presentationBridge?.start(); },
+    start: async () => { await controlPlane.load(); await history.listChats("whatsapp", undefined, 0); await whatsapp.channel.start(); await presentationBridge?.start(); },
     stop: async () => { await presentationBridge?.stop(); controlPlane.stopAccepting(); await controlPlane.drain(config.timeoutMs); await runtime.close(); await whatsapp.channel.stop(); }
   };
 }

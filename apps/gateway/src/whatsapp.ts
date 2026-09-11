@@ -3,6 +3,7 @@ import {
   parseWhatsAppConfig,
   WhatsAppChannel,
   type WhatsAppAuthLoader,
+  type WhatsAppHistorySink,
   type WhatsAppLogger,
   type WhatsAppSocketFactory
 } from "../../../channels/whatsapp/src/index.js";
@@ -14,6 +15,7 @@ export interface WhatsAppGatewayOptions {
   logger?: WhatsAppLogger;
   loadAuthState?: WhatsAppAuthLoader;
   createSocket?: WhatsAppSocketFactory;
+  historySink?: WhatsAppHistorySink;
   onMessage?: (message: Message, channel: WhatsAppChannel, gateway: Gateway) => Promise<void>;
   onError?: (error: unknown, payload: unknown, channel: WhatsAppChannel) => Promise<void>;
   onCommand?: (payload: unknown, channel: WhatsAppChannel, gateway: Gateway) => Promise<boolean>;
@@ -51,7 +53,8 @@ export function createWhatsAppGateway(
     onQr: options.onQr,
     logger: options.logger,
     loadAuthState: options.loadAuthState,
-    createSocket: options.createSocket
+    createSocket: options.createSocket,
+    historySink: options.historySink
   });
   gateway = new Gateway({ ...dependencies, channel });
   return { gateway, channel };
