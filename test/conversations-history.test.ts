@@ -114,6 +114,21 @@ test("JSON history reloads, deduplicates, and keeps a 0600 file", async () => {
   }
 });
 
+test("JSON history corrects an existing file to 0600 while loading", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-"));
+  const path = join(directory, "history.jsonl");
+  try {
+    await appendFile(path, `${JSON.stringify({ type: "message", message: message("m-1", "chat-1", "loaded") })}\n`);
+    await chmod(path, 0o644);
+
+    const restored = new JsonHistoryStore(path);
+    assert.equal((await restored.listChats("whatsapp"))[0]?.conversationId, "chat-1");
+    assert.equal((await stat(path)).mode & 0o777, 0o600);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("JSON history skips malformed lines while retaining valid records", async () => {
   const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-"));
   const path = join(directory, "history.jsonl");

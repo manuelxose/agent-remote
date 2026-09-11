@@ -16,3 +16,12 @@
 ## Concern
 
 - Live WhatsApp Web history coverage remains provider-controlled and was not exercised; the docs state that imported history is not a complete archive.
+
+## Review remediation
+
+- `gatewayFixture` now writes history only to its own temporary directory.
+- Existing JSONL history files are chmodded to `0600` during successful load; permission errors still reject the load.
+- The operational composition test persists a synced message, restarts the application, and verifies the reloaded transcript reaches the control-plane runtime prompt.
+- RED: the new existing-file permission test failed with mode `0644` before the load fix.
+- Focused: `npm run build && node --test --experimental-strip-types test/operational.test.ts test/conversations-history.test.ts` passed 32/32.
+- Full: `npm test` passed 194, failed 0, skipped 2 unavailable Claude/Copilot CLI smoke tests.

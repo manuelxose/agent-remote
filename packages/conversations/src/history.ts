@@ -176,6 +176,8 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
       throw error;
     }
 
+    await this.enforcePermissions();
+
     for (const line of contents.split(/\r?\n/)) {
       if (!line.trim()) continue;
       try {
