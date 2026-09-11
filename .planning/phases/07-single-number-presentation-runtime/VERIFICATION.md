@@ -43,3 +43,10 @@ Manual acceptance must use the existing gateway process that owns the auth lock;
 ## Official-client limitation — NOT CONTROLLABLE
 
 With one WhatsApp account, normal gateway sends stay `fromMe`. Neither linked devices nor LID/phone metadata create a second protocol participant; protocol-native agent-left rendering is therefore impossible. The opt-in Web/Desktop presentation companion is only a best-effort local DOM augmentation. Official mobile WhatsApp remains unchanged and cannot render Agent Remote as an incoming/left-side agent.
+
+## Client-layer matrix
+
+- `SINGLE ACCOUNT`: PASS — one configured WhatsApp transport is preserved.
+- `Protocol-native agent-left rendering`: IMPOSSIBLE WITH EVIDENCE — one account cannot create a second sender participant.
+- `Web/Desktop enhanced agent-left rendering`: UNVERIFIED — companion boundary is implemented and tested, but not loaded against a paired official client.
+- `Mobile official client agent-left rendering`: NOT CONTROLLABLE WITH EVIDENCE — the mobile client receives the same `fromMe` transport and is outside the companion boundary.
