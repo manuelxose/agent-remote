@@ -66,6 +66,13 @@ test("in-memory event bus delivers every required event type", async () => {
     "execution.failed",
     "execution.cancelled",
     "message.duplicate",
-    "security.denied"
+    "security.denied",
+    "execution.accepted",
+    "provider.started",
+    "assistant.delta",
+    "assistant.message",
+    "tool.started",
+    "tool.progress",
+    "tool.completed"
   ]);
 });

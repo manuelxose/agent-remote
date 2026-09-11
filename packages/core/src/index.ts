@@ -4,6 +4,19 @@ export type AgentType = string;
 
 export type Metadata = Record<string, string>;
 
+export interface MessageReference {
+  channel: string;
+  conversationId: string;
+  messageId: string;
+  senderId?: string;
+}
+
+export interface OutboundMessage {
+  text: string;
+  replyTo?: MessageReference;
+  metadata?: Metadata;
+}
+
 export interface MessageAttachment {
   kind: string;
   mimeType?: string;
@@ -21,6 +34,7 @@ export interface Message {
   groupId?: string;
   attachments?: MessageAttachment[];
   metadata?: Metadata;
+  replyReference?: MessageReference;
 }
 
 export interface Conversation {
@@ -41,9 +55,12 @@ export interface Route {
 export interface ExecutionContext {
   correlationId: string;
   conversationId: string;
+  executionId?: string;
+  logicalSessionId?: string;
   workspaceRoot?: string;
   signal?: AbortSignal;
   metadata?: Metadata;
+  observer?: { onEvent(event: unknown): void | Promise<void> };
 }
 
 export interface ConversationContext {
@@ -53,10 +70,7 @@ export interface ConversationContext {
   execution: ExecutionContext;
 }
 
-export interface AgentResponse {
-  text: string;
-  metadata?: Metadata;
-}
+export interface AgentResponse extends OutboundMessage {}
 
 export interface ConversationAgent {
   id: string;
@@ -67,10 +81,13 @@ export interface ConversationAgent {
 export interface AgentRuntime {
   type: RuntimeType;
   execute(context: ConversationContext, agent: ConversationAgent): Promise<AgentResponse>;
+  executeStreaming?(context: ConversationContext, agent: ConversationAgent, observer: { onEvent(event: unknown): void | Promise<void> }): Promise<AgentResponse>;
+  cancel?(executionId: string): Promise<void>;
+  close?(): Promise<void>;
 }
 
 export interface Channel {
   id: string;
   receive(payload: unknown): Promise<Message>;
-  send(conversationId: string, response: AgentResponse): Promise<void>;
+  send(conversationId: string, response: OutboundMessage): Promise<void>;
 }

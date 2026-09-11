@@ -22,7 +22,14 @@ export const eventTypes = [
   "execution.failed",
   "execution.cancelled",
   "message.duplicate",
-  "security.denied"
+  "security.denied",
+  "execution.accepted",
+  "provider.started",
+  "assistant.delta",
+  "assistant.message",
+  "tool.started",
+  "tool.progress",
+  "tool.completed"
 ] as const;
 
 export type DomainEventType = (typeof eventTypes)[number];

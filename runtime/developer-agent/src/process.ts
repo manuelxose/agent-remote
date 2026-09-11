@@ -4,6 +4,7 @@ import { promisify } from "node:util";
 import type { WorkspacePolicy } from "../../../packages/security/src/index.js";
 import {
   DeveloperProcessError,
+  type DeveloperProcessObserver,
   type DeveloperProcessResult,
   type DeveloperProcessRunner,
   type DeveloperProcessSpec,
@@ -14,7 +15,7 @@ const execFile = promisify(execFileCallback);
 export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
   constructor(private readonly workspacePolicy: WorkspacePolicy) {}
 
-  async run(spec: DeveloperProcessSpec): Promise<DeveloperProcessResult> {
+  async run(spec: DeveloperProcessSpec, observer?: DeveloperProcessObserver): Promise<DeveloperProcessResult> {
     let workingDirectory: string;
     try {
       workingDirectory = this.workspacePolicy.assertPath(spec.workingDirectory);
@@ -51,15 +52,21 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
     let settled = false;
     let timer: NodeJS.Timeout | undefined;
     let forceTimer: NodeJS.Timeout | undefined;
+    let observerChain: Promise<void> = Promise.resolve();
 
     return new Promise((resolve, reject) => {
-      const finish = (result: DeveloperProcessResult) => {
+      const finish = async (result: DeveloperProcessResult) => {
         if (settled) return;
         settled = true;
         if (timer) clearTimeout(timer);
         if (forceTimer) clearTimeout(forceTimer);
         spec.signal?.removeEventListener("abort", abort);
-        resolve(result);
+        try {
+          await observerChain;
+          resolve(result);
+        } catch (error) {
+          reject(new DeveloperProcessError("process output observer failed", { cause: error }));
+        }
       };
       const abort = () => {
         terminate("cancelled");
@@ -90,8 +97,14 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
         }
       };
 
-      child.stdout?.on("data", (chunk: Buffer) => append(stdout, chunk, "stdout"));
-      child.stderr?.on("data", (chunk: Buffer) => append(stderr, chunk, "stderr"));
+      child.stdout?.on("data", (chunk: Buffer) => {
+        append(stdout, chunk, "stdout");
+        if (observer?.onStdout) observerChain = observerChain.then(() => observer.onStdout!(chunk));
+      });
+      child.stderr?.on("data", (chunk: Buffer) => {
+        append(stderr, chunk, "stderr");
+        if (observer?.onStderr) observerChain = observerChain.then(() => observer.onStderr!(chunk));
+      });
       child.once("error", (error) => {
         if (settled) return;
         settled = true;
@@ -100,7 +113,7 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
         spec.signal?.removeEventListener("abort", abort);
         reject(new DeveloperProcessError(`failed to start ${spec.executable}`, { cause: error }));
       });
-      child.once("close", (exitCode, signal) => finish({
+      child.once("close", (exitCode, signal) => void finish({
         stdout: stdout.toString(),
         stderr: stderr.toString(),
         exitCode,

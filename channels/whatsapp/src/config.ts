@@ -6,6 +6,8 @@ export interface WhatsAppConfig {
   reconnectBaseDelayMs: number;
   reconnectMaxDelayMs: number;
   maxResponseChars: number;
+  replyContextTtlMs: number;
+  replyContextMaxEntries: number;
 }
 
 export class WhatsAppConfigurationError extends Error {
@@ -32,7 +34,9 @@ export function parseWhatsAppConfig(env: Readonly<Record<string, string | undefi
     allowSelfMessages: parseBoolean(env.WHATSAPP_ALLOW_SELF_MESSAGES, false),
     reconnectBaseDelayMs,
     reconnectMaxDelayMs,
-    maxResponseChars: parsePositiveInteger(env.WHATSAPP_MAX_RESPONSE_CHARS, 4000)
+    maxResponseChars: parsePositiveInteger(env.WHATSAPP_MAX_RESPONSE_CHARS, 4000),
+    replyContextTtlMs: parsePositiveInteger(env.WHATSAPP_REPLY_CONTEXT_TTL_MS, 120_000),
+    replyContextMaxEntries: parsePositiveInteger(env.WHATSAPP_REPLY_CONTEXT_MAX_ENTRIES, 256)
   };
 }
 

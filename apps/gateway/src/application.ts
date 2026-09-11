@@ -19,6 +19,7 @@ import { createWhatsAppGateway, type WhatsAppGatewayApplication } from "./whatsa
 import { formatOperationalError } from "./doctor.js";
 import { translateWhatsAppMessage } from "../../../channels/whatsapp/src/index.js";
 import { resolveDeveloperExecutable } from "../../../runtime/developer-agent/src/process.js";
+import { StreamDelivery, type StreamingDeliveryPolicy } from "../../../packages/control-plane/src/delivery.js";
 
 const execFile = promisify(nodeExecFile);
 
@@ -40,6 +41,7 @@ export interface ApplicationConfig {
   codexModels: Readonly<Record<string, string>>;
   claudeModel?: string;
   codexModel?: string;
+  streamingDelivery: StreamingDeliveryPolicy;
 }
 
 export interface AgentRemoteApplication extends WhatsAppGatewayApplication {
@@ -112,7 +114,12 @@ export function loadApplicationConfig(
     claudeModels,
     codexModels,
     claudeModel,
-    codexModel
+    codexModel,
+    streamingDelivery: {
+      minChars: positiveInteger(env.AGENT_REMOTE_STREAM_MIN_CHARS, 120),
+      maxIntervalMs: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_INTERVAL_MS, 1500),
+      maxMessagesPerExecution: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_MESSAGES, 8)
+    }
   };
 }
 
@@ -132,6 +139,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     maxOutputBytes: config.maxOutputBytes
   });
   const agents = Object.fromEntries(["claude", "codex", "copilot"].map(id => [id, createAgent(id)]));
+  const deliveries = new Map<string, StreamDelivery>();
   const controlPlane = new ControlPlane({
     repositories: new JsonControlPlaneStore(config.controlPlanePath),
     agents,
@@ -143,10 +151,36 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     maxQueueDepth: config.maxQueueDepth,
     rateLimitPerMinute: config.rateLimitPerMinute,
     resetProviderSession: (session, agent) => runtime.resetSession(session.channel, session.logicalSessionId, agent, session.workspace),
-    onExecutionResponse: async (session, response) => { await whatsapp.channel.send(session.externalConversationId, response); },
-    onExecutionAccepted: async (session) => { await whatsapp.channel.send(session.externalConversationId, { text: "⏳ Recibido. Procesando…" }); },
-    version: "phase-5",
-    diagnostics: () => "Run the gateway doctor command for provider and persistence diagnostics."
+    onExecutionResponse: async (session, response) => {
+      const executionId = response.metadata?.executionId;
+      const delivery = executionId ? deliveries.get(executionId) : undefined;
+      if (delivery) {
+        await delivery.complete(response.text);
+        deliveries.delete(executionId!);
+      } else await whatsapp.channel.send(session.externalConversationId, response);
+    },
+    onExecutionAccepted: async (session, message) => {
+      await whatsapp.channel.setPresence(session.externalConversationId, "composing");
+      await whatsapp.channel.send(session.externalConversationId, { text: "⏳ Recibido. Procesando…", replyTo: message.replyReference ?? { channel: message.channel, conversationId: message.conversationId, messageId: message.id, senderId: message.senderId } });
+    },
+    onExecutionEvent: async (session, _message, event) => {
+      if (event.type === "assistant.delta" && typeof event.payload?.text === "string") {
+        let delivery = deliveries.get(event.executionId);
+        if (!delivery) {
+          delivery = new StreamDelivery(config.streamingDelivery, value => whatsapp.channel.send(session.externalConversationId, value), event.replyTo);
+          deliveries.set(event.executionId, delivery);
+        }
+        await delivery.push(event.payload.text);
+      }
+      if (["execution.completed", "execution.failed", "execution.cancelled"].includes(event.type)) await whatsapp.channel.setPresence(session.externalConversationId, "paused");
+    },
+    version: "phase-6",
+    diagnostics: () => "Run the gateway doctor command for provider and persistence diagnostics.",
+    runtimeDiagnostics: async () => {
+      const providers = await runtime.providerHealth();
+      const providerSummary = Object.entries(providers).map(([id, availability]) => `${id}=${availability.available ? "available" : availability.reason}`).join(", ");
+      return `Providers: ${providerSummary || "none"}\nSessions: ${runtime.sessionHealth().length}\nStreaming: ${config.streamingDelivery.minChars} chars / ${config.streamingDelivery.maxIntervalMs} ms / ${config.streamingDelivery.maxMessagesPerExecution} messages`;
+    }
   });
   let whatsapp!: WhatsAppGatewayApplication;
   whatsapp = createWhatsAppGateway({
@@ -160,7 +194,11 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     onQr: printQr,
     onMessage: async (message, channel) => {
       const result = await controlPlane.handle(message, { id: resolveWhatsAppIdentity(config.env, message.senderId), role: resolveWhatsAppRole(config.env, message.senderId) });
-      await channel.send(message.conversationId, result);
+      const delivery = result.metadata?.executionId ? deliveries.get(result.metadata.executionId) : undefined;
+      if (delivery && result.metadata?.executionId) {
+        await delivery.complete(result.text);
+        deliveries.delete(result.metadata.executionId);
+      } else await channel.send(message.conversationId, result);
     },
     onError: async (error, payload, channel) => {
       const message = messageFromPayload(payload);
@@ -173,7 +211,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     runtime,
     controlPlane,
     start: async () => { await controlPlane.load(); await whatsapp.channel.start(); },
-    stop: async () => { controlPlane.stopAccepting(); await controlPlane.drain(config.timeoutMs); await whatsapp.channel.stop(); }
+    stop: async () => { controlPlane.stopAccepting(); await controlPlane.drain(config.timeoutMs); await runtime.close(); await whatsapp.channel.stop(); }
   };
 }
 

@@ -22,7 +22,8 @@ test("translates a group media message into a channel-neutral Message", () => {
     groupId: "120@g.us",
     text: "see",
     receivedAt: 1700000000000,
-    attachments: [{ kind: "image", mimeType: "image/png", fileName: "a.png", size: 9 }]
+    attachments: [{ kind: "image", mimeType: "image/png", fileName: "a.png", size: 9 }],
+    replyReference: { channel: "whatsapp", conversationId: "120@g.us", messageId: "m1", senderId: "u@s.whatsapp.net" }
   });
 });
 
@@ -64,7 +65,9 @@ test("configuration fails closed and requires an auth path", () => {
     allowSelfMessages: false,
     reconnectBaseDelayMs: 1000,
     reconnectMaxDelayMs: 30000,
-    maxResponseChars: 4000
+    maxResponseChars: 4000,
+    replyContextTtlMs: 120000,
+    replyContextMaxEntries: 256
   });
 });
 

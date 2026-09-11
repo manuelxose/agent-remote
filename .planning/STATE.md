@@ -2,13 +2,13 @@
 
 ## Current Position
 
-Phase 6 — Real-Time Conversational Runtime (planning/implementation)
+Phase 6 — Real-Time Conversational Runtime (complete)
 
 ## Status
 
 The Phase 5 control plane is implemented: central command registry, explicit state, owner-scoped managed chats, atomic versioned JSON state, bounded per-chat queues, cancellation, idempotency, explicit model policy, application composition, docs, and tests. Deterministic verification is complete; unavailable Claude/Copilot CLIs and live WhatsApp credentials are recorded as UNVERIFIED in the phase verification artifact.
 
-Phase 6 design is approved and recorded in `docs/superpowers/specs/2026-09-11-real-time-conversational-runtime-design.md`; implementation follows the executable plan in `docs/superpowers/plans/2026-09-11-real-time-conversational-runtime.md`. The current baseline is the verified Phase 5 source with Codex CLI 0.154.0 available and Claude/Copilot/live WhatsApp environment checks unavailable.
+Phase 6 design is approved and recorded in `docs/superpowers/specs/2026-09-11-real-time-conversational-runtime-design.md`; implementation follows the executable plan in `docs/superpowers/plans/2026-09-11-real-time-conversational-runtime.md`. The phase is complete locally with streaming contracts, managed sessions, correlated bounded WhatsApp delivery, telemetry, diagnostics, documentation, tests, and a refreshed Graphify graph. Codex smoke passed; Claude/Copilot Phase 6 provider execution and live WhatsApp streaming remain explicitly unverified.
 
 ## Decisions
 
@@ -38,7 +38,8 @@ Phase 6 design is approved and recorded in `docs/superpowers/specs/2026-09-11-re
 - Managed control-plane state uses `data/control-plane.json`; native provider sessions remain independently stored in `data/developer-agent-sessions.json`.
 - Phase 5 verification: `npm run build` passes; `npm test` reports 127 tests, 125 passed, 0 failed, 2 skipped; authorized chats and initialization-required commands auto-initialize, one-number identities are stable across Baileys LIDs, provider model IDs are shown directly, normal WhatsApp sends are used, and immediate execution acknowledgements remain enabled; the deep review's 17 findings were remediated; provider-default model fallback was hardened; `graphify update .` refreshed 798 nodes, 1295 edges, and 70 communities.
 - Local doctor with explicit configuration reports truthful PASS/WARN/FAIL results; Codex smoke is available, while Claude, Copilot, and live WhatsApp acceptance are UNVERIFIED because the required local executables/auth state are unavailable in this worktree.
+- Phase 6 verification: `npm test` reports 143 tests, 141 passed, 0 failed, 2 skipped; Codex smoke completed; the doctor reports streaming/reply-cache policy and a truthful Copilot executable failure; Graphify refreshed to 950 nodes, 1559 edges, and 79 communities. Synthetic cold/warm benchmark output and live-verification limitations are recorded in `.planning/phases/06-real-time-conversational-runtime/VERIFICATION.md`.
 
 ## Next Action
 
-Execute Phase 6 tasks in order, recording measured streaming/latency evidence and truthful external acceptance status in `.planning/phases/06-real-time-conversational-runtime/VERIFICATION.md`.
+Use the phase verification artifact for future live WhatsApp/provider acceptance or begin the next milestone.

@@ -4,7 +4,7 @@ import makeWASocket, {
   type BaileysEventMap,
   type WASocket
 } from "@whiskeysockets/baileys";
-import type { AgentResponse, Channel, Message } from "../../../packages/core/src/index.js";
+import type { Channel, Message, OutboundMessage } from "../../../packages/core/src/index.js";
 import { authorizeWhatsAppMessage, type WhatsAppAuthorization, type WhatsAppConfig } from "./config.js";
 import { translateWhatsAppMessage } from "./translate.js";
 
@@ -29,7 +29,7 @@ export interface WhatsAppEvents {
   removeAllListeners?<T extends keyof BaileysEventMap>(event: T): void;
 }
 
-export type WhatsAppSocket = Pick<WASocket, "sendMessage" | "end"> & { ev: WhatsAppEvents };
+export type WhatsAppSocket = Pick<WASocket, "sendMessage" | "end"> & { ev: WhatsAppEvents; sendPresenceUpdate?: (type: "composing" | "paused" | "available", jid: string) => Promise<void> };
 export type WhatsAppAuthState = { state: AuthenticationState; saveCreds: () => Promise<void> };
 export type WhatsAppAuthLoader = (path: string) => Promise<WhatsAppAuthState>;
 export type WhatsAppSocketFactory = (state: AuthenticationState) => WhatsAppSocket;
@@ -109,6 +109,7 @@ export class WhatsAppChannel implements Channel {
   private status: WhatsAppStatus = "stopped";
   private changedAt = new Date();
   private readonly outboundMessageIds = new Map<string, number>();
+  private readonly replyContexts = new Map<string, { conversationId: string; senderId?: string; quoted: unknown; createdAt: number }>();
 
   constructor(options: WhatsAppChannelOptions | ((conversationId: string, text: string) => Promise<void>)) {
     if (typeof options === "function") {
@@ -156,6 +157,7 @@ export class WhatsAppChannel implements Channel {
     const socket = this.socket;
     this.socket = undefined;
     this.outboundMessageIds.clear();
+    this.replyContexts.clear();
     this.removeListeners(socket);
     if (socket) await socket.end(undefined);
     this.setStatus("stopped");
@@ -182,17 +184,28 @@ export class WhatsAppChannel implements Channel {
       this.logRejection(message, authorization);
       throw new UnauthorizedWhatsAppMessageError(authorization.reason);
     }
+    this.rememberReplyContext(payload);
     return message;
   }
 
-  async send(conversationId: string, response: AgentResponse): Promise<void> {
+  async send(conversationId: string, response: OutboundMessage): Promise<void> {
     if (this.legacyDeliver) return this.legacyDeliver(conversationId, response.text);
     if (!this.socket || this.status !== "connected") throw new WhatsAppNotConnectedError();
     for (const chunk of chunkText(response.text, this.config?.maxResponseChars ?? 4000)) {
-      const sent = await this.socket.sendMessage(conversationId, { text: chunk });
+      const context = response.replyTo && response.replyTo.channel === this.id && response.replyTo.conversationId === conversationId
+        ? this.getReplyContext(response.replyTo.messageId) : undefined;
+      const sent = context
+        ? await this.socket.sendMessage(conversationId, { text: chunk }, { quoted: context.quoted as any })
+        : await this.socket.sendMessage(conversationId, { text: chunk });
       const messageId = messageIdFromPayload(sent);
       if (messageId) this.rememberOutboundMessage(messageId);
     }
+  }
+
+  async setPresence(conversationId: string, presence: "composing" | "paused" | "available"): Promise<void> {
+    if (!this.socket || this.status !== "connected" || !this.socket.sendPresenceUpdate) return;
+    try { await this.socket.sendPresenceUpdate(presence, conversationId); }
+    catch { this.logger.warn("whatsapp_presence_failed", { conversationId }); }
   }
 
   private async connect(): Promise<void> {
@@ -295,6 +308,36 @@ export class WhatsAppChannel implements Channel {
       if (typeof oldest === "string") this.outboundMessageIds.delete(oldest);
     }
     this.outboundMessageIds.set(messageId, Date.now());
+  }
+
+  private rememberReplyContext(payload: unknown): void {
+    if (!payload || typeof payload !== "object") return;
+    const raw = payload as Record<string, unknown>;
+    const key = raw.key;
+    const message = raw.message;
+    if (!key || typeof key !== "object" || !message || typeof message !== "object") return;
+    const keyRecord = key as Record<string, unknown>;
+    const id = keyRecord.id;
+    const conversationId = keyRecord.remoteJid;
+    if (typeof id !== "string" || typeof conversationId !== "string") return;
+    this.pruneReplyContexts();
+    const quoted = { key: { ...keyRecord }, message: { ...(message as Record<string, unknown>) } };
+    while (this.replyContexts.size >= (this.config?.replyContextMaxEntries ?? 256)) {
+      const oldest = this.replyContexts.keys().next().value;
+      if (typeof oldest !== "string") break;
+      this.replyContexts.delete(oldest);
+    }
+    this.replyContexts.set(id, { conversationId, ...(typeof keyRecord.participant === "string" ? { senderId: keyRecord.participant } : {}), quoted, createdAt: Date.now() });
+  }
+
+  private getReplyContext(messageId: string): { conversationId: string; senderId?: string; quoted: unknown; createdAt: number } | undefined {
+    this.pruneReplyContexts();
+    return this.replyContexts.get(messageId);
+  }
+
+  private pruneReplyContexts(): void {
+    const cutoff = Date.now() - (this.config?.replyContextTtlMs ?? 120_000);
+    for (const [id, context] of this.replyContexts) if (context.createdAt < cutoff) this.replyContexts.delete(id);
   }
 
   private isTrackedOutbound(payload: unknown): boolean {

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, Message, Route } from "../../core/src/index.js";
+import type { AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, Message, MessageReference, Route } from "../../core/src/index.js";
 import type { EventBus } from "../../events/src/index.js";
 import { InMemoryEventBus } from "../../events/src/index.js";
 import type { WorkspacePolicy } from "../../security/src/index.js";
@@ -9,6 +9,7 @@ import {
   type ManagedConversation,
   InMemoryControlPlaneStore
 } from "./persistence.js";
+import { ExecutionTelemetry } from "./telemetry.js";
 
 export type Role = "owner" | "operator" | "viewer";
 export type CommandCategory = "SESSION" | "AGENTS" | "WORKSPACE" | "EXECUTION" | "SYSTEM";
@@ -16,12 +17,24 @@ export type CommandStatus = "success" | "warning" | "error";
 export interface CommandAction { label: string; command: string; }
 export interface CommandResult {
   text: string;
+  replyTo?: MessageReference;
   status?: CommandStatus;
   metadata?: Record<string, string>;
   actions?: CommandAction[];
 }
 export interface ControlPlaneIdentity { id: string; role: Role; }
 export interface ParsedCommand { name: string; args: string; }
+export interface ControlPlaneExecutionEvent {
+  type: string;
+  occurredAt: Date;
+  executionId: string;
+  correlationId: string;
+  logicalSessionId: string;
+  provider?: string;
+  payload?: Record<string, string | number | boolean | null>;
+  replyTo?: MessageReference;
+}
+export interface ControlPlaneExecutionObserver { onEvent(event: ControlPlaneExecutionEvent): void | Promise<void>; }
 
 export interface ModelResolution { alias: string; providerModel: string; }
 export interface ModelPolicy {
@@ -126,9 +139,11 @@ export interface ControlPlaneOptions {
   maxQueueDepth?: number;
   version?: string;
   diagnostics?: () => string;
+  runtimeDiagnostics?: () => string | Promise<string>;
   resetProviderSession?: (session: ManagedConversation, agent: string) => Promise<void>;
   onExecutionResponse?: (session: ManagedConversation, response: AgentResponse) => Promise<void>;
   onExecutionAccepted?: (session: ManagedConversation, message: Message) => Promise<void>;
+  onExecutionEvent?: (session: ManagedConversation, message: Message, event: ControlPlaneExecutionEvent) => Promise<void>;
   defaultAgent?: string;
   rateLimitPerMinute?: number;
 }
@@ -161,6 +176,11 @@ export class ControlPlane {
   }
 
   async handle(message: Message, identity: ControlPlaneIdentity): Promise<CommandResult> {
+    const result = await this.handleInternal(message, identity);
+    return result.replyTo ? result : { ...result, replyTo: message.replyReference ?? { channel: message.channel, conversationId: message.conversationId, messageId: message.id, senderId: message.senderId } };
+  }
+
+  private async handleInternal(message: Message, identity: ControlPlaneIdentity): Promise<CommandResult> {
     await this.repositories.load();
     const correlationId = message.id;
     if (!this.acceptRate(identity.id, message.conversationId)) return this.rejected(correlationId, "Rate limit exceeded. Try again later.");
@@ -390,14 +410,19 @@ export class ControlPlane {
   }
 
   private async status(context: CommandContext): Promise<CommandResult> {
-    if (!context.session) return { text: "Gateway: available\nConversation: uninitialized" };
-    return { text: `Gateway: available\nChat: ${context.session.displayName}\nState: ${context.session.status}\nAgent: ${context.session.activeAgent ?? "none"}\nWorkspace: ${context.session.workspace}` };
+    const base = !context.session
+      ? "Gateway: available\nConversation: uninitialized"
+      : `Gateway: available\nChat: ${context.session.displayName}\nState: ${context.session.status}\nAgent: ${context.session.activeAgent ?? "none"}\nWorkspace: ${context.session.workspace}`;
+    const runtime = await this.options.runtimeDiagnostics?.();
+    return { text: runtime ? `${base}\n${runtime}` : base };
   }
 
   private async running(context: CommandContext): Promise<CommandResult> {
     if (!context.session) return { text: "Nothing is currently running." };
     const queue = this.queue(context.session.logicalSessionId);
-    return { text: queue.running ? `Running\nQueued: ${queue.depth}` : "Nothing is currently running." };
+    const base = queue.running ? `Running\nQueued: ${queue.depth}` : "Nothing is currently running.";
+    const runtime = await this.options.runtimeDiagnostics?.();
+    return { text: runtime ? `${base}\n${runtime}` : base };
   }
 
   private async cancel(context: CommandContext): Promise<CommandResult> {
@@ -430,10 +455,25 @@ export class ControlPlane {
     const queue = this.queue(session.logicalSessionId);
     if (!queue.hasCapacity) return { text: "Execution queue is full. Try again later.", status: "warning" };
     if (!(await this.claim(message, identity, session.logicalSessionId))) return this.duplicate(message.id, identity.id);
+    const telemetry = new ExecutionTelemetry({
+      executionId: message.id,
+      correlationId: message.id,
+      logicalSessionId: session.logicalSessionId,
+      externalConversationId: session.externalConversationId,
+      provider: agentId,
+      agent: agentId,
+      workspace: session.workspace,
+      ...(model ? { model: model.providerModel } : {})
+    });
+    telemetry.mark("messageReceivedAt");
+    telemetry.mark("routingCompletedAt");
+    telemetry.mark("queueEnteredAt");
     try { await this.options.onExecutionAccepted?.(session, message); } catch {}
+    telemetry.mark("executionAcceptedAt");
     let deferred = false;
     const task = async (signal: AbortSignal): Promise<AgentResponse> => {
       const current = await this.repositories.get(session.logicalSessionId) ?? session;
+      telemetry.mark("executionStartedAt");
       current.status = "RUNNING";
       current.lastPrompt = message.text;
       current.lastError = undefined;
@@ -446,12 +486,24 @@ export class ControlPlane {
         if (!runtime || !agent) throw new Error(`Agent is unavailable: ${agentId}`);
         const route: Route = { id: `managed-${current.logicalSessionId}`, runtime: "developer-agent", agent: agentId, workspaceRoot: current.workspace };
         const conversation = { id: current.logicalSessionId, channel: current.channel, participantIds: [identity.id], metadata: {} };
-        const context: ConversationContext = { message, conversation, route, execution: { correlationId: message.id, conversationId: current.logicalSessionId, workspaceRoot: current.workspace, signal, metadata: model ? { model: model.providerModel, modelAlias: model.alias } : undefined } };
-        response = await runtime.execute(context, agent);
+        const reference = message.replyReference ?? { channel: message.channel, conversationId: message.conversationId, messageId: message.id, senderId: message.senderId };
+        const observer: ControlPlaneExecutionObserver = {
+          onEvent: async event => {
+            if (event.type === "provider.started") telemetry.mark("providerStartedAt");
+            if (event.type === "assistant.delta" || event.type === "assistant.message") telemetry.mark("firstProviderOutputAt");
+            await this.publishRuntimeEvent(event);
+            try { await this.options.onExecutionEvent?.(current, message, { ...event, replyTo: reference }); } catch {}
+          }
+        };
+        const context: ConversationContext = { message, conversation, route, execution: { correlationId: message.id, executionId: message.id, logicalSessionId: current.logicalSessionId, conversationId: current.logicalSessionId, workspaceRoot: current.workspace, signal, metadata: model ? { model: model.providerModel, modelAlias: model.alias } : undefined, observer } };
+        response = runtime.executeStreaming ? await runtime.executeStreaming(context, agent, observer) : await runtime.execute(context, agent);
+        response = { ...response, replyTo: reference, metadata: { ...(response.metadata ?? {}), executionId: message.id } };
       } catch {
         response = { text: "Unable to complete the developer-agent request.", metadata: { agent: agentId, reason: "execution-failed" } };
       }
-      await this.finalizeExecution(current, message.id, agentId, response);
+      telemetry.mark("executionCompletedAt");
+      telemetry.mark("finalReplyAt");
+      await this.finalizeExecution(current, message.id, agentId, response, telemetry);
       if (deferred) {
         try { await this.options.onExecutionResponse?.(current, response); } catch {}
       }
@@ -475,7 +527,7 @@ export class ControlPlane {
     }
   }
 
-  private async finalizeExecution(session: ManagedConversation, messageId: string, agentId: string, response: AgentResponse): Promise<void> {
+  private async finalizeExecution(session: ManagedConversation, messageId: string, agentId: string, response: AgentResponse, telemetry?: ExecutionTelemetry): Promise<void> {
     const current = await this.repositories.get(session.logicalSessionId) ?? session;
     const failed = Boolean(response.metadata?.reason && response.metadata.reason !== "cancelled");
     current.status = failed ? "ERROR" : "IDLE";
@@ -485,7 +537,9 @@ export class ControlPlane {
       await this.repositories.setProviderSession(current.logicalSessionId, agentId, current.workspace, response.metadata.sessionId);
     }
     await this.touch(current);
-    await this.publish(response.metadata?.reason === "cancelled" ? "execution.cancelled" : failed ? "execution.failed" : "execution.completed", messageId, { logicalSessionId: current.logicalSessionId, agent: agentId });
+    const terminalType = response.metadata?.reason === "cancelled" ? "execution.cancelled" : failed ? "execution.failed" : "execution.completed";
+    const latencies = telemetry?.snapshot().latencies;
+    await this.publish(terminalType, messageId, { logicalSessionId: current.logicalSessionId, agent: agentId, ...(latencies ? latencyPayload(latencies) : {}) });
   }
 
   private async resolveSession(message: Message, identity: ControlPlaneIdentity): Promise<ManagedConversation | undefined> {
@@ -537,6 +591,10 @@ export class ControlPlane {
     try { await this.events.publish({ type, occurredAt: new Date(), correlationId, payload }); } catch {}
   }
 
+  private async publishRuntimeEvent(event: ControlPlaneExecutionEvent): Promise<void> {
+    try { await this.events.publish({ type: event.type as never, occurredAt: event.occurredAt, correlationId: event.correlationId, payload: { ...event.payload, executionId: event.executionId, logicalSessionId: event.logicalSessionId, provider: event.provider } }); } catch {}
+  }
+
   private acceptRate(identityId: string, conversationId: string): boolean {
     const limit = this.options.rateLimitPerMinute;
     if (!limit) return true;
@@ -551,6 +609,10 @@ export class ControlPlane {
     this.rateHistory.set(key, history);
     return true;
   }
+}
+
+function latencyPayload(latencies: object): Record<string, number> {
+  return Object.fromEntries(Object.entries(latencies).filter((entry): entry is [string, number] => typeof entry[1] === "number"));
 }
 
 class ExecutionQueue {

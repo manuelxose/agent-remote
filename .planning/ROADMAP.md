@@ -89,7 +89,7 @@ Plans:
 
 Verification: `.planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md`.
 
-## Phase 6: Real-Time Conversational Runtime — In progress
+## Phase 6: Real-Time Conversational Runtime — Complete
 
 Evolve the Phase 5 control plane into a streaming, session-oriented runtime
 with transport-neutral reply correlation, provider capability caching, bounded
@@ -109,4 +109,6 @@ Success criteria:
 
 Plans:
 
-- [ ] 06-01-PLAN.md — neutral contracts, streaming sessions, control-plane delivery, WhatsApp correlation, lifecycle, tests, docs, and verification
+- [x] 06-01-PLAN.md — neutral contracts, streaming sessions, control-plane delivery, WhatsApp correlation, lifecycle, tests, docs, and verification
+
+Verification: `.planning/phases/06-real-time-conversational-runtime/VERIFICATION.md`.

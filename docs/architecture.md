@@ -68,7 +68,7 @@ Routes are keyed by a stable channel conversation key, for example `whatsapp-gro
 
 ## Events
 
-`EventBus` is the broker abstraction. V1 uses `InMemoryEventBus`; its contract is suitable for a later Redis Streams, NATS, or Kafka implementation. Events include `MessageReceived`, `RouteResolved`, `AgentExecutionStarted`, `ToolExecutionRequested`, `ApprovalRequested`, `AgentExecutionCompleted`, `AgentExecutionFailed`, and `MessageSent`. Placeholder adapters do not synthesize tool or approval events yet; concrete adapters will publish those through the same bus.
+`EventBus` is the broker abstraction. V1 uses `InMemoryEventBus`; its contract is suitable for a later Redis Streams, NATS, or Kafka implementation. Events include `MessageReceived`, `RouteResolved`, `AgentExecutionStarted`, `ToolExecutionRequested`, `ApprovalRequested`, `AgentExecutionCompleted`, `AgentExecutionFailed`, and `MessageSent`, plus the normalized real-time execution events `execution.accepted`, `execution.started`, `provider.started`, `assistant.delta`, `assistant.message`, `tool.started`, `tool.progress`, `tool.completed`, `execution.completed`, `execution.failed`, and `execution.cancelled`. Provider-specific JSON remains inside its adapter.
 
 ## Future extensions
 
@@ -87,6 +87,16 @@ Commands are registered once with category, usage, initialization requirement, r
 Claude's `sonnet` and Codex's `luna` are product aliases. Their underlying model identifiers must be configured explicitly. Adapters receive only the resolved model value through fixed provider argv options. Workspaces resolve through configured aliases or the approved-root policy.
 
 Each logical conversation has an independent bounded queue and abort controller. Duplicate inbound IDs are persisted and ignored. Control-plane lifecycle events include command, state, queue, execution, duplicate, and security events without secrets or provider stderr.
+
+## Real-time execution
+
+Phase 6 keeps three identities separate: the external transport conversation, the durable logical session, and the provider-native session ID. Inbound messages carry a neutral `replyReference`; command results and streamed outbound chunks carry `replyTo`, so a channel can provide native threading without leaking transport types into the runtime.
+
+The developer runtime caches provider availability, supervises bounded logical sessions, serializes turns per logical session, and resumes each provider through its native session mechanism. It does not keep an interactive child process alive. Claude and Codex translate provider stream records into neutral `assistant.delta` and `assistant.message` events; Copilot remains completion-oriented behind the same session interface.
+
+Streaming delivery is bounded by minimum characters, maximum flush interval, and maximum messages per execution. The control plane records safe execution timestamps and derived latency fields, while `/status`, `/running`, and `/doctor` expose provider, session, queue, and delivery-policy diagnostics without prompts, credentials, or raw provider stderr.
+
+Shutdown stops admission, drains and cancels queued work, closes provider sessions, then stops WhatsApp. Provider cancellation is connected to the actual child-process `AbortSignal`.
 
 ## Intentionally not implemented
 

@@ -68,9 +68,9 @@ After pairing, the first ordinary message in an authorized chat initializes it a
 
 ## Provider behavior
 
-The application checks the installed provider executables at runtime and invokes them through their existing adapters with direct argv, bounded output, timeouts, approved workspaces, and persisted native sessions. It does not install missing CLIs.
+The application checks and caches provider availability at runtime and invokes the installed executables through their existing adapters with direct argv, bounded output, timeouts, approved workspaces, and persisted native sessions. Claude and Codex stream incremental output when their JSONL protocols provide it; Copilot remains completion-only. It does not install missing CLIs.
 
-Normal messages from authorized chats are automatically initialized and forwarded as prompts; `/claude` and `/codex` can still explicitly select the agent. Accepted prompts receive an immediate WhatsApp acknowledgement, and responses are sent as normal messages from the configured WhatsApp account. Because Baileys sends through that account, WhatsApp will display them as sent by that account; making them appear from another person requires a separate WhatsApp account/auth session. Provider failures return a short WhatsApp-safe message; detailed stderr and lifecycle diagnostics remain in logs.
+Normal messages from authorized chats are automatically initialized and forwarded as prompts; `/claude` and `/codex` can still explicitly select the agent. Accepted prompts receive an immediate WhatsApp acknowledgement, composing presence, bounded streaming chunks, and a final correlated reply when provider output is available. The quoted context cache is bounded by TTL/capacity and falls back to an ordinary send when unavailable. Because Baileys sends through that account, WhatsApp will display them as sent by that account; making them appear from another person requires a separate WhatsApp account/auth session. Provider failures return a short WhatsApp-safe message; detailed stderr and lifecycle diagnostics remain in logs.
 
 Send `/workspace` from an authorized WhatsApp chat to see the effective workspace path. It is the same local project directory used by this gateway and the provider CLI; the command does not expose file contents.
 

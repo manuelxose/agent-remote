@@ -64,12 +64,12 @@ test("Claude builds fixed argv, parses JSON, and resumes its native session", as
     return { stdout: JSON.stringify({ type: "result", session_id: "claude-session", result: "answer" }), stderr: "", exitCode: 0, signal: null, durationMs: 2 };
   }};
   const result = await adapter.execute(request, { ...context, processRunner: runner });
-  assert.deepEqual(calls[0], { executable: "/bin/claude", argv: ["-p", "--output-format", "json", "--add-dir", process.cwd(), "--", request.prompt], workingDirectory: process.cwd(), signal: context.signal, timeoutMs: 1000, maxOutputBytes: 1000 });
+  assert.deepEqual(calls[0], { executable: "/bin/claude", argv: ["-p", "--output-format", "stream-json", "--add-dir", process.cwd(), "--", request.prompt], workingDirectory: process.cwd(), signal: context.signal, timeoutMs: 1000, maxOutputBytes: 1000 });
   assert.equal(result.status, "completed");
   assert.equal((result as any).text, "answer");
   assert.equal((result as any).sessionId, "claude-session");
   await adapter.execute({ ...request, sessionId: "claude-session" }, { ...context, processRunner: runner });
-  assert.deepEqual((calls[1] as any).argv, ["-p", "--output-format", "json", "--add-dir", process.cwd(), "--resume", "claude-session", "--", request.prompt]);
+  assert.deepEqual((calls[1] as any).argv, ["-p", "--output-format", "stream-json", "--add-dir", process.cwd(), "--resume", "claude-session", "--", request.prompt]);
 });
 
 test("Codex builds exec JSON argv and parses JSONL thread and final message", async () => {
@@ -91,7 +91,7 @@ test("Claude and Codex pass explicitly resolved models to their CLIs", async () 
   const claudeCalls: any[] = [];
   const claude = createClaudeAdapter(async () => "/bin/claude");
   await claude.execute({ ...request, model: "claude-sonnet-configured" }, { ...context, processRunner: { run: async (spec: any) => { claudeCalls.push(spec); return { stdout: JSON.stringify({ type: "result", session_id: "s", result: "ok" }), stderr: "", exitCode: 0, signal: null, durationMs: 1 }; } } });
-  assert.deepEqual(claudeCalls[0].argv, ["-p", "--output-format", "json", "--add-dir", process.cwd(), "--model", "claude-sonnet-configured", "--", request.prompt]);
+  assert.deepEqual(claudeCalls[0].argv, ["-p", "--output-format", "stream-json", "--add-dir", process.cwd(), "--model", "claude-sonnet-configured", "--", request.prompt]);
 
   let codexSpec: any;
   const codex = createCodexAdapter(async () => "/bin/codex");

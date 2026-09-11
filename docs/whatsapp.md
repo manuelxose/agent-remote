@@ -14,6 +14,8 @@ WHATSAPP_ALLOWED_CHATS=group-id@g.us,chat-id@s.whatsapp.net
 
 Optional reconnect tuning variables are `WHATSAPP_RECONNECT_BASE_DELAY_MS` and `WHATSAPP_RECONNECT_MAX_DELAY_MS`. Values must be positive integers, and the maximum must be at least the base delay.
 
+`WHATSAPP_REPLY_CONTEXT_TTL_MS` and `WHATSAPP_REPLY_CONTEXT_MAX_ENTRIES` bound the minimal message-key cache used for native quoted replies. Missing, expired, or mismatched references safely fall back to an ordinary send.
+
 The adapter fails closed when both allowlists are empty. A configured user list filters senders; a configured chat list matches either the conversation ID or group ID. If both are configured, both must match. Rejections happen before the gateway callback and are logged as structured events without message text, attachments, QR values, or authentication data.
 
 ## Startup and shutdown
@@ -37,6 +39,8 @@ Health snapshots contain only lifecycle status, transition time, reconnect attem
 ## Message boundary
 
 Incoming messages are translated to the channel-neutral core `Message` model. The adapter supplies sender ID, conversation ID, optional group ID, text/caption, timestamp, and basic attachment descriptors. It ignores self-sent messages, broadcast/status traffic, unsupported textless payloads, and Baileys request-ID replay traffic. The application callback passes the translated message to the channel-neutral control plane and sends its `CommandResult` or agent result through WhatsApp. Future Telegram/Web adapters can invoke the same control-plane entry point with their own core `Message` values.
+
+Accepted prompts set composing presence and receive a correlated acknowledgement. Claude/Codex deltas are aggregated using `AGENT_REMOTE_STREAM_MIN_CHARS`, `AGENT_REMOTE_STREAM_MAX_INTERVAL_MS`, and `AGENT_REMOTE_STREAM_MAX_MESSAGES`; each emitted chunk and the final remainder retain the original quoted reference. Presence returns to paused when execution terminates.
 
 ## Control-plane commands
 

@@ -33,6 +33,19 @@ test("loads routes and composes the existing developer-agent graph", async () =>
   assert.equal(application.routes["whatsapp-chat"].agent, "codex");
   assert.deepEqual(await application.runtime.getAvailability("codex"), await application.runtime.getAvailability("codex"));
   await application.stop();
+  await application.stop();
+});
+
+test("loads bounded realtime delivery settings", () => {
+  const config = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_STREAM_MIN_CHARS: "32",
+    AGENT_REMOTE_STREAM_MAX_INTERVAL_MS: "250",
+    AGENT_REMOTE_STREAM_MAX_MESSAGES: "4",
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd());
+  assert.deepEqual(config.streamingDelivery, { minChars: 32, maxIntervalMs: 250, maxMessagesPerExecution: 4 });
 });
 
 test("application control-plane state survives restart without reinitialization", async () => {

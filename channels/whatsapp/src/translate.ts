@@ -1,4 +1,4 @@
-import type { Message, MessageAttachment } from "../../../packages/core/src/index.js";
+import type { Message, MessageAttachment, MessageReference } from "../../../packages/core/src/index.js";
 
 interface RawMessageKey {
   id?: unknown;
@@ -36,7 +36,8 @@ export function translateWhatsAppMessage(payload: unknown, options: WhatsAppTran
       channel: "whatsapp",
       senderId: legacy.senderId as string,
       text: legacy.text as string,
-      receivedAt: legacy.receivedAt ? new Date(legacy.receivedAt as string) : new Date()
+      receivedAt: legacy.receivedAt ? new Date(legacy.receivedAt as string) : new Date(),
+      ...(isMessageReference(legacy.replyReference) ? { replyReference: legacy.replyReference } : {})
     };
   }
   const raw = payload as RawWhatsAppMessage;
@@ -57,6 +58,7 @@ export function translateWhatsAppMessage(payload: unknown, options: WhatsAppTran
     ? participantAlt ?? participant
     : participant ?? participantAlt ?? conversationId;
   const groupId = conversationId.endsWith("@g.us") ? conversationId : undefined;
+  const replyReference: MessageReference = { channel: "whatsapp", conversationId, messageId: id, ...(senderId ? { senderId } : {}) };
   return {
     id,
     conversationId,
@@ -66,7 +68,14 @@ export function translateWhatsAppMessage(payload: unknown, options: WhatsAppTran
     text: text ?? "",
     receivedAt: new Date(timestampMilliseconds(raw.messageTimestamp)),
     ...(attachments.length > 0 ? { attachments } : {})
+    , replyReference
   };
+}
+
+function isMessageReference(value: unknown): value is MessageReference {
+  if (!value || typeof value !== "object") return false;
+  const reference = value as Record<string, unknown>;
+  return reference.channel === "whatsapp" && typeof reference.conversationId === "string" && typeof reference.messageId === "string";
 }
 
 function unwrapMessage(message: Record<string, unknown> | undefined): Record<string, unknown> | undefined {

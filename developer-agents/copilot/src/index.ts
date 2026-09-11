@@ -6,20 +6,25 @@ type Resolver = () => Promise<string | undefined>;
 type SessionIdFactory = () => string;
 
 export function createCopilotAdapter(resolve: Resolver = () => resolveDeveloperExecutable("copilot"), makeSessionId: SessionIdFactory = randomUUID): DeveloperAgentAdapter {
+  let availabilityPromise: ReturnType<Resolver> | undefined;
   const getAvailability = async () => {
-    const executable = await resolve();
+    availabilityPromise ??= resolve();
+    const executable = await availabilityPromise;
     return executable ? { available: true, executable } : { available: false, reason: "executable-missing" as const, executable: "copilot" };
   };
+  const refreshAvailability = async () => { availabilityPromise = resolve(); return getAvailability(); };
   return {
     id: "copilot",
     async isAvailable() { return (await getAvailability()).available; },
     getAvailability,
+    refreshAvailability,
     async execute(request, context) {
       const availability = await getAvailability();
       if (!availability.available) return { status: "failed", reason: "unavailable" };
       try { context.workspacePolicy.assertPath(context.workingDirectory); } catch { return { status: "failed", reason: "workspace-rejected" }; }
       const sessionId = request.sessionId ?? makeSessionId();
       const argv = [`--prompt=${request.prompt}`, "--silent", `--session-id=${sessionId}`, "--experimental", "--sandbox"];
+      await context.observer?.onEvent({ type: "provider.started", occurredAt: new Date(), executionId: request.executionId ?? request.correlationId ?? request.conversationId, correlationId: request.correlationId ?? request.executionId ?? request.conversationId, logicalSessionId: request.logicalSessionId ?? request.conversationId, provider: "copilot" });
       let process;
       try {
         process = await context.processRunner.run({ executable: availability.executable, argv, workingDirectory: context.workingDirectory, signal: context.signal, timeoutMs: request.timeoutMs, maxOutputBytes: request.maxOutputBytes });
@@ -31,6 +36,7 @@ export function createCopilotAdapter(resolve: Resolver = () => resolveDeveloperE
       if (process.exitCode !== 0) return { ...metadata, status: "failed" as const, reason: "exit-nonzero" as const };
       try {
         if (!process.stdout.trim()) throw new Error("invalid Copilot result");
+        await context.observer?.onEvent({ type: "assistant.message", occurredAt: new Date(), executionId: request.executionId ?? request.correlationId ?? request.conversationId, correlationId: request.correlationId ?? request.executionId ?? request.conversationId, logicalSessionId: request.logicalSessionId ?? request.conversationId, provider: "copilot", payload: { text: process.stdout } });
         return { ...metadata, status: "completed" as const, text: process.stdout, sessionId };
       } catch (error) {
         return { ...metadata, status: "failed" as const, reason: "invalid-output" as const, stderr: (error instanceof Error ? error.message : "invalid Copilot output").slice(0, request.maxOutputBytes) };
