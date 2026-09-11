@@ -29,6 +29,7 @@ Use an absolute or repository-relative path for `AGENT_REMOTE_WORKSPACE_ROOTS`. 
 - `AGENT_REMOTE_TIMEOUT_MS` and `AGENT_REMOTE_MAX_OUTPUT_BYTES`: execution limits.
 - `AGENT_REMOTE_MAX_QUEUE_DEPTH`: bounded pending executions per logical chat.
 - `AGENT_REMOTE_CLAUDE_MODEL` and `AGENT_REMOTE_CODEX_MODEL`: optional underlying provider model identifiers for the `sonnet` and `luna` aliases; when absent, the CLI default model is used.
+- `AGENT_REMOTE_CLAUDE_MODELS` and `AGENT_REMOTE_CODEX_MODELS`: optional JSON alias maps for `/model`, for example `{"fast":"codex-mini-latest","quality":"gpt-5.6-luna"}`. Use `/model` to list aliases and `/model fast` to select one for the active chat.
 - `AGENT_REMOTE_OWNER_IDS`, `AGENT_REMOTE_OPERATOR_IDS`, and `AGENT_REMOTE_VIEWER_IDS`: optional role mappings; allowlisted users default to owners.
 - `AGENT_REMOTE_<CLAUDE|CODEX|COPILOT>_EXECUTABLE`: optional absolute executable override, including a `/mnt/c/.../*.exe` path when the gateway runs in WSL.
 
@@ -69,7 +70,7 @@ After pairing, an authorized chat is initialized with `/init [name]`. Managed ch
 
 The application checks the installed provider executables at runtime and invokes them through their existing adapters with direct argv, bounded output, timeouts, approved workspaces, and persisted native sessions. It does not install missing CLIs.
 
-Normal messages are forwarded as prompts after `/init` and explicit agent selection. Provider failures return a short WhatsApp-safe message; detailed stderr and lifecycle diagnostics remain in logs.
+Normal messages are forwarded as prompts after `/init` and explicit agent selection. Accepted prompts receive an immediate WhatsApp acknowledgement, and final responses are sent as replies to the original message. Provider failures return a short WhatsApp-safe message; detailed stderr and lifecycle diagnostics remain in logs.
 
 Send `/workspace` from an authorized WhatsApp chat to see the effective workspace path. It is the same local project directory used by this gateway and the provider CLI; the command does not expose file contents.
 
