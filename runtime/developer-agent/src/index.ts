@@ -49,7 +49,7 @@ export class DeveloperAgentRuntime implements AgentRuntime {
   }
 
   async execute(context: ConversationContext, agent: ConversationAgent): Promise<AgentResponse> {
-    if (context.route.runtime !== this.type || agent.type !== this.type) throw new Error("Developer runtime received a non-developer agent");
+    if (context.route.runtime !== this.type || agent.type !== this.type || agent.id !== context.route.agent) throw new Error("Developer runtime received a mismatched developer agent");
     const workspaceRoot = context.execution.workspaceRoot ?? context.route.workspaceRoot ?? this.options.defaultWorkspaceRoot;
     let workingDirectory: string;
     try {
@@ -70,13 +70,13 @@ export class DeveloperAgentRuntime implements AgentRuntime {
 
   private async executeTurn(context: ConversationContext, agent: ConversationAgent, validatedWorkspace?: string): Promise<AgentResponse> {
     const startedAt = Date.now();
-    const basePayload = { agent: agent.id, conversationId: context.conversation.id };
+    const workspaceRoot = context.execution.workspaceRoot ?? context.route.workspaceRoot ?? this.options.defaultWorkspaceRoot;
+    const basePayload = { agent: agent.id, conversationId: context.conversation.id, workspaceRoot };
     await this.publish({ type: "AgentExecutionStarted", occurredAt: new Date(), correlationId: context.execution.correlationId, payload: basePayload });
     try {
       const adapter = this.options.adapters[agent.id];
       if (!adapter || adapter.id !== agent.id) return this.failure(context, basePayload, "adapter-not-configured", startedAt);
 
-      const workspaceRoot = context.execution.workspaceRoot ?? context.route.workspaceRoot ?? this.options.defaultWorkspaceRoot;
       let workingDirectory = validatedWorkspace;
       if (!workingDirectory) {
         try {

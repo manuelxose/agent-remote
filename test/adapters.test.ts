@@ -80,11 +80,11 @@ test("Codex builds exec JSON argv and parses JSONL thread and final message", as
     JSON.stringify({ type: "item.completed", item: { type: "agent_message", text: "answer" } })
   ].join("\n"), stderr: "", exitCode: 0, signal: null, durationMs: 2 }; } };
   const result = await adapter.execute(request, { ...context, processRunner: runner });
-  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "--", request.prompt]);
+  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "--skip-git-repo-check", "--", request.prompt]);
   assert.equal((result as any).sessionId, "codex-thread");
   assert.equal((result as any).text, "answer");
   await adapter.execute({ ...request, sessionId: "codex-thread" }, { ...context, processRunner: runner });
-  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "resume", "codex-thread", "--", request.prompt]);
+  assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "--skip-git-repo-check", "resume", "codex-thread", "--", request.prompt]);
 });
 
 test("Copilot uses an exact UUID session ID and silent prompt mode", async () => {

@@ -2558,7 +2558,7 @@
       "file_type": "code",
       "norm_label": "resolvedeveloperexecutable()",
       "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L106"
+      "source_location": "L109"
     },
     {
       "id": "test_developer_agent_process_test_script",
@@ -6456,7 +6456,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L109",
+      "source_location": "L112",
       "weight": 1.0
     },
     {
@@ -6564,7 +6564,7 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L116",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -11239,7 +11239,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L106",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
@@ -13399,5 +13399,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "7c87eff844f7d7a2b91ea4182324e2d1d0c1173a"
+  "built_at_commit": "72da968d5fe5a3dc8c17e03ded09ae2fa11e10ce"
 }

@@ -37,9 +37,10 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
       };
     }
 
-    const maxOutputBytes = spec.maxOutputBytes ?? Number.POSITIVE_INFINITY;
+    const maxOutputBytes = spec.maxOutputBytes ?? 64 * 1024;
     const child = spawn(spec.executable, spec.argv, {
       cwd: workingDirectory,
+      detached: process.platform !== "win32",
       stdio: ["ignore", "pipe", "pipe"],
     });
     let stdout = Buffer.alloc(0);
@@ -49,12 +50,14 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
     let terminationReason: DeveloperProcessResult["terminationReason"];
     let settled = false;
     let timer: NodeJS.Timeout | undefined;
+    let forceTimer: NodeJS.Timeout | undefined;
 
     return new Promise((resolve, reject) => {
       const finish = (result: DeveloperProcessResult) => {
         if (settled) return;
         settled = true;
         if (timer) clearTimeout(timer);
+        if (forceTimer) clearTimeout(forceTimer);
         spec.signal?.removeEventListener("abort", abort);
         resolve(result);
       };
@@ -64,7 +67,16 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
       const terminate = (reason: NonNullable<DeveloperProcessResult["terminationReason"]>) => {
         if (terminationReason) return;
         terminationReason = reason;
-        child.kill();
+        const sendSignal = (signal: NodeJS.Signals) => {
+          try {
+            if (process.platform === "win32" || !child.pid) child.kill(signal);
+            else process.kill(-child.pid, signal);
+          } catch {
+            try { child.kill(signal); } catch {}
+          }
+        };
+        sendSignal("SIGTERM");
+        forceTimer = setTimeout(() => sendSignal("SIGKILL"), 100);
       };
       const append = (current: Buffer, chunk: Buffer, stream: "stdout" | "stderr") => {
         const remaining = Math.max(0, maxOutputBytes - current.byteLength);
@@ -84,6 +96,7 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
         if (settled) return;
         settled = true;
         if (timer) clearTimeout(timer);
+        if (forceTimer) clearTimeout(forceTimer);
         spec.signal?.removeEventListener("abort", abort);
         reject(new DeveloperProcessError(`failed to start ${spec.executable}`, { cause: error }));
       });
@@ -99,7 +112,8 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
       }));
 
       spec.signal?.addEventListener("abort", abort, { once: true });
-      if (spec.timeoutMs !== undefined) timer = setTimeout(() => {
+      if (spec.signal?.aborted) abort();
+      if (!terminationReason && spec.timeoutMs !== undefined) timer = setTimeout(() => {
         terminate("timeout");
       }, spec.timeoutMs);
     });

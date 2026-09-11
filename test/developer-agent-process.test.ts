@@ -77,6 +77,19 @@ test("terminates a process on timeout", async () => {
   assert.ok(result.signal);
 });
 
+test("force-terminates a child that ignores graceful termination", async () => {
+  const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
+    executable: process.execPath,
+    argv: script("process.on('SIGTERM', () => {}); setTimeout(() => {}, 10_000)"),
+    workingDirectory: process.cwd(),
+    timeoutMs: 25,
+  });
+
+  assert.equal(result.exitCode, null);
+  assert.equal(result.terminationReason, "timeout");
+  assert.ok(result.durationMs < 1_000);
+});
+
 test("does not spawn when the signal is already aborted", async () => {
   const controller = new AbortController();
   controller.abort();
@@ -91,6 +104,32 @@ test("does not spawn when the signal is already aborted", async () => {
   assert.equal(result.exitCode, null);
   assert.equal(result.terminationReason, "cancelled");
   assert.equal(result.stdout, "");
+});
+
+test("does not lose cancellation between the preflight check and listener setup", async () => {
+  const controller = new AbortController();
+  let reads = 0;
+  const signal = {
+    get aborted() {
+      if (reads++ === 0) {
+        controller.abort();
+        return false;
+      }
+      return controller.signal.aborted;
+    },
+    addEventListener: controller.signal.addEventListener.bind(controller.signal),
+    removeEventListener: controller.signal.removeEventListener.bind(controller.signal),
+  } as AbortSignal;
+
+  const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
+    executable: process.execPath,
+    argv: script("setTimeout(() => {}, 10_000)"),
+    workingDirectory: process.cwd(),
+    signal,
+    timeoutMs: 500,
+  });
+
+  assert.equal(result.terminationReason, "cancelled");
 });
 
 test("caps stdout and reports truncation", async () => {

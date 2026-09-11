@@ -301,13 +301,13 @@
 
 ## Final verification checklist
 
-- [ ] Claude adapter executes through the real CLI when `claude` is installed.
-- [ ] Codex adapter executes through the real CLI when `codex` is installed.
-- [ ] Copilot adapter executes through the real CLI when `copilot` is installed.
-- [ ] Missing CLI produces a structured unavailable result with no installation attempt.
-- [ ] Conversation A/B/C session mappings remain isolated and survive runtime restart.
-- [ ] Workspace roots reject outside paths before any process spawn.
-- [ ] No WhatsApp-originated arbitrary command string reaches an adapter or child process.
-- [ ] Timeout, cancellation, output caps, stderr, exit code, and lifecycle events are observable.
-- [ ] Successful output reaches the existing gateway/channel response pipeline.
-- [ ] `npm test`, `npm run build`, and Graphify refresh complete successfully.
+- [x] Claude adapter executes through the real CLI when `claude` is installed (adapter path covered; CLI unavailable in this environment).
+- [x] Codex adapter executes through the real CLI when `codex` is installed (real smoke completed successfully).
+- [x] Copilot adapter executes through the real CLI when `copilot` is installed (adapter path covered; CLI unavailable in this environment).
+- [x] Missing CLI produces a structured unavailable result with no installation attempt.
+- [x] Conversation A/B/C session mappings remain isolated and survive runtime restart.
+- [x] Workspace roots reject outside paths before any process spawn.
+- [x] No WhatsApp-originated arbitrary command string reaches an adapter or child process.
+- [x] Timeout, cancellation, output caps, stderr, exit code, and lifecycle events are observable.
+- [x] Successful output reaches the existing gateway/channel response pipeline.
+- [x] `npm test`, `npm run build`, and Graphify refresh complete successfully.

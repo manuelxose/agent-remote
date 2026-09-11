@@ -45,4 +45,4 @@ Success criteria:
 4. Timeout, cancellation, output caps, stderr, exit code, and lifecycle events remain observable through safe runtime failures.
 5. Successful adapter output reaches the existing gateway/channel response pipeline while chatbot remains unable to import developer adapters.
 
-Verification: `npm run build` passes; `npm test` reports 80 tests, 78 passed, 0 failed, and 2 skipped (Claude/Copilot unavailable); `graphify update .` refreshed 473 nodes and 676 edges. The installed Codex smoke invocation reached the real CLI and timed out at the configured 10-second bound; the smoke test reports this without requiring external credentials for the full suite.
+Verification: `npm run build` passes; `npm test` reports 81 tests, 79 passed, 0 failed, and 2 skipped (Claude/Copilot unavailable); `graphify update .` refreshed 473 nodes and 676 edges. The installed Codex smoke invocation reached the real CLI and completed successfully within the configured 60-second bound.

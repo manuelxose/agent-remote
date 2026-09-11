@@ -160,7 +160,8 @@ test("developer runtime serializes equivalent approved workspace paths on one qu
 test("developer runtime publishes one terminal event and returns safe adapter failures", async () => {
   const events = new InMemoryEventBus();
   const observed: string[] = [];
-  for (const type of ["AgentExecutionStarted", "AgentExecutionCompleted", "AgentExecutionFailed"] as const) events.subscribe(type, event => observed.push(event.type));
+  const payloads: Array<Record<string, unknown>> = [];
+  for (const type of ["AgentExecutionStarted", "AgentExecutionCompleted", "AgentExecutionFailed"] as const) events.subscribe(type, event => { observed.push(event.type); payloads.push(event.payload as Record<string, unknown>); });
   const successful = fakeAdapter("claude");
   const failed = fakeAdapter("codex", { result: "failed" });
   const runtime = new DeveloperAgentRuntime(capabilities, {
@@ -171,9 +172,26 @@ test("developer runtime publishes one terminal event and returns safe adapter fa
   const response = await runtime.execute(context("failure", "codex"), agent("codex"));
 
   assert.deepEqual(observed, ["AgentExecutionStarted", "AgentExecutionCompleted", "AgentExecutionStarted", "AgentExecutionFailed"]);
+  assert.equal(payloads[0].workspaceRoot, root);
+  assert.equal(payloads[2].workspaceRoot, root);
   assert.match(response.text, /unable to complete/i);
   assert.deepEqual(response.metadata, { agent: "codex", reason: "exit-nonzero" });
   assert.equal(response.text.includes("secret stderr"), false);
+});
+
+test("developer runtime includes the requested workspace in early failure events", async () => {
+  const events = new InMemoryEventBus();
+  const payloads: Array<Record<string, unknown>> = [];
+  events.subscribe("AgentExecutionStarted", event => payloads.push(event.payload as Record<string, unknown>));
+  events.subscribe("AgentExecutionFailed", event => payloads.push(event.payload as Record<string, unknown>));
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: fakeAdapter("claude").adapter }, sessions: new InMemoryDeveloperSessionStore(), defaultWorkspaceRoot: root, runner: fakeRunner(), events
+  });
+
+  await runtime.execute(context("early-failure", "claude", "/not-approved"), agent("claude"));
+
+  assert.equal(payloads[0].workspaceRoot, "/not-approved");
+  assert.equal(payloads[1].workspaceRoot, "/not-approved");
 });
 
 test("developer runtime ignores a started handler failure", async () => {
@@ -242,6 +260,14 @@ test("developer runtime reports an adapter ID mismatch as unconfigured", async (
   });
 
   assert.deepEqual(await runtime.getAvailability("claude"), { available: false, reason: "adapter-not-configured", executable: "claude" });
+});
+
+test("developer runtime rejects an agent that does not match the resolved route", async () => {
+  const runtime = new DeveloperAgentRuntime(capabilities, {
+    adapters: { claude: fakeAdapter("claude").adapter }, defaultWorkspaceRoot: root
+  });
+
+  await assert.rejects(() => runtime.execute(context("route-mismatch", "claude"), agent("codex")), /mismatched developer agent/);
 });
 
 test("developer runtime reports missing and unavailable adapters with stable diagnostics", async () => {

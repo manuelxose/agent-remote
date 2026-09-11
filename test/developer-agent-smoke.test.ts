@@ -35,7 +35,7 @@ for (const adapter of adapters) {
         processRunner: new NodeDeveloperProcessRunner(policy)
       });
 
-      assert.notEqual(result.reason, "unavailable");
+      assert.equal(result.status, "completed");
       console.log(`${adapter.id}: ${result.status}${result.status === "failed" ? ` (${result.reason})` : ""}`);
     } finally {
       await rm(workspace, { recursive: true, force: true });
