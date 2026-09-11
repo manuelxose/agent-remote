@@ -206,8 +206,8 @@ export class WhatsAppChannel implements Channel {
       socket.ev.on("creds.update", () => {
         void saveCreds().catch(() => this.logger.error("whatsapp_auth_persistence_failed"));
       });
-      socket.ev.on("connection.update", update => { void this.handleConnectionUpdate(update); });
-      socket.ev.on("messages.upsert", update => { void this.handleMessages(update); });
+      socket.ev.on("connection.update", update => { void this.handleConnectionUpdate(update, socket); });
+      socket.ev.on("messages.upsert", update => { void this.handleMessages(update, socket); });
     } catch {
       this.lastErrorCode = undefined;
       this.setStatus("failed");
@@ -216,7 +216,8 @@ export class WhatsAppChannel implements Channel {
     }
   }
 
-  private async handleMessages(update: BaileysEventMap["messages.upsert"]): Promise<void> {
+  private async handleMessages(update: BaileysEventMap["messages.upsert"], socket: WhatsAppSocket): Promise<void> {
+    if (this.socket !== socket) return;
     if (update.requestId) return;
     for (const payload of update.messages) {
       if (this.isTrackedOutbound(payload)) continue;
@@ -230,7 +231,8 @@ export class WhatsAppChannel implements Channel {
     }
   }
 
-  private async handleConnectionUpdate(update: BaileysEventMap["connection.update"]): Promise<void> {
+  private async handleConnectionUpdate(update: BaileysEventMap["connection.update"], socket: WhatsAppSocket): Promise<void> {
+    if (this.socket !== socket) return;
     if (update.qr) {
       this.setStatus("qr");
       try {
@@ -250,6 +252,7 @@ export class WhatsAppChannel implements Channel {
     const statusCode = disconnectStatusCode(update.lastDisconnect?.error);
     this.lastErrorCode = statusCode;
     if (statusCode === DisconnectReason.loggedOut) {
+      this.removeListeners(socket);
       this.socket = undefined;
       this.setStatus("logged_out");
       this.logger.warn("whatsapp_logged_out", { statusCode });
@@ -259,6 +262,7 @@ export class WhatsAppChannel implements Channel {
       this.setStatus("stopped");
       return;
     }
+    this.removeListeners(socket);
     this.socket = undefined;
     this.scheduleReconnect();
   }

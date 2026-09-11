@@ -39,10 +39,13 @@ export interface ConversationRepository {
 export interface ProviderSessionRepository {
   getProviderSession(logicalSessionId: string, agent: string, workspace: string): Promise<string | undefined>;
   setProviderSession(logicalSessionId: string, agent: string, workspace: string, nativeSessionId: string): Promise<void>;
+  deleteProviderSession(logicalSessionId: string, agent: string, workspace: string): Promise<void>;
   list(logicalSessionId: string): Promise<Record<string, string>>;
 }
 
 export interface IdempotencyRepository {
+  claim(record: IdempotencyRecord): Promise<boolean>;
+  release(messageId: string): Promise<void>;
   has(messageId: string): Promise<boolean>;
   record(record: IdempotencyRecord): Promise<void>;
 }
@@ -50,6 +53,7 @@ export interface IdempotencyRepository {
 export interface SelectionRepository {
   getSelection(ownerId: string, channel: string): Promise<string | undefined>;
   setSelection(ownerId: string, channel: string, logicalSessionId: string): Promise<void>;
+  clearSelection(ownerId: string, channel: string): Promise<void>;
 }
 
 export interface ControlPlaneRepositories extends ConversationRepository, ProviderSessionRepository, IdempotencyRepository, SelectionRepository {
@@ -80,7 +84,7 @@ export class InMemoryControlPlaneStore implements ControlPlaneRepositories {
   async load(): Promise<void> {}
 
   async findByExternal(channel: string, externalConversationId: string): Promise<ManagedConversation | undefined> {
-    const value = [...this.conversations.values()].find(item => item.channel === channel && item.externalConversationId === externalConversationId && item.status !== "CLOSED");
+    const value = [...this.conversations.values()].find(item => item.channel === channel && item.externalConversationId === externalConversationId);
     return value ? clone(value) : undefined;
   }
 
@@ -105,6 +109,10 @@ export class InMemoryControlPlaneStore implements ControlPlaneRepositories {
     this.providerSessions.set(providerKey(logicalSessionId, agent, workspace), nativeSessionId);
   }
 
+  async deleteProviderSession(logicalSessionId: string, agent: string, workspace: string): Promise<void> {
+    this.providerSessions.delete(providerKey(logicalSessionId, agent, workspace));
+  }
+
   async list(logicalSessionId: string): Promise<Record<string, string>> {
     const prefix = `${logicalSessionId}\u0000`;
     return Object.fromEntries([...this.providerSessions.entries()].filter(([key]) => key.startsWith(prefix)).map(([key, value]) => [key.slice(prefix.length), value]));
@@ -114,8 +122,18 @@ export class InMemoryControlPlaneStore implements ControlPlaneRepositories {
     return this.idempotency.has(messageId);
   }
 
+  async claim(record: IdempotencyRecord): Promise<boolean> {
+    if (this.idempotency.has(record.messageId)) return false;
+    this.idempotency.set(record.messageId, { ...record });
+    return true;
+  }
+
   async record(record: IdempotencyRecord): Promise<void> {
     this.idempotency.set(record.messageId, { ...record });
+  }
+
+  async release(messageId: string): Promise<void> {
+    this.idempotency.delete(messageId);
   }
 
   async getSelection(ownerId: string, channel: string): Promise<string | undefined> {
@@ -126,10 +144,14 @@ export class InMemoryControlPlaneStore implements ControlPlaneRepositories {
     this.selections.set(selectionKey(ownerId, channel), logicalSessionId);
   }
 
+  async clearSelection(ownerId: string, channel: string): Promise<void> {
+    this.selections.delete(selectionKey(ownerId, channel));
+  }
+
   protected snapshot(): PersistedState {
     return {
       version: 1,
-      conversations: Object.fromEntries([...this.conversations.entries()].map(([key, value]) => [key, clone(value)])),
+      conversations: Object.fromEntries([...this.conversations.entries()].map(([key, value]) => [key, persistedConversation(value)])),
       providerSessions: Object.fromEntries(this.providerSessions),
       idempotency: Object.fromEntries([...this.idempotency.entries()].map(([key, value]) => [key, { ...value }])),
       selections: Object.fromEntries(this.selections)
@@ -201,6 +223,12 @@ export class JsonControlPlaneStore extends InMemoryControlPlaneStore {
     await this.persist();
   }
 
+  override async deleteProviderSession(logicalSessionId: string, agent: string, workspace: string): Promise<void> {
+    await this.load();
+    super.deleteProviderSession(logicalSessionId, agent, workspace);
+    await this.persist();
+  }
+
   override async list(logicalSessionId: string): Promise<Record<string, string>> {
     await this.load();
     return super.list(logicalSessionId);
@@ -209,6 +237,18 @@ export class JsonControlPlaneStore extends InMemoryControlPlaneStore {
   override async has(messageId: string): Promise<boolean> {
     await this.load();
     return super.has(messageId);
+  }
+
+  override async claim(record: IdempotencyRecord): Promise<boolean> {
+    await this.load();
+    return this.mutate(() => {
+      const claimed = super.claim(record);
+      if (this.idempotency.size > this.maxIdempotencyEntries) {
+        const oldest = this.idempotency.keys().next().value;
+        if (typeof oldest === "string") this.idempotency.delete(oldest);
+      }
+      return claimed;
+    });
   }
 
   override async record(record: IdempotencyRecord): Promise<void> {
@@ -222,6 +262,11 @@ export class JsonControlPlaneStore extends InMemoryControlPlaneStore {
     await this.persist();
   }
 
+  override async release(messageId: string): Promise<void> {
+    await this.load();
+    await this.mutate(() => super.release(messageId));
+  }
+
   override async getSelection(ownerId: string, channel: string): Promise<string | undefined> {
     await this.load();
     return super.getSelection(ownerId, channel);
@@ -233,15 +278,31 @@ export class JsonControlPlaneStore extends InMemoryControlPlaneStore {
     await this.persist();
   }
 
-  private async persist(): Promise<void> {
+  override async clearSelection(ownerId: string, channel: string): Promise<void> {
+    await this.load();
+    super.clearSelection(ownerId, channel);
+    await this.persist();
+  }
+
+  private async mutate<T>(operation: () => T | Promise<T>): Promise<T> {
     const current = this.writeQueue.then(async () => {
-      await mkdir(dirname(this.path), { recursive: true });
-      const temporaryPath = `${this.path}.tmp`;
-      await writeFile(temporaryPath, `${JSON.stringify(this.snapshot(), null, 2)}\n`, "utf8");
-      await rename(temporaryPath, this.path);
+      const result = await operation();
+      await this.writeSnapshot();
+      return result;
     });
-    this.writeQueue = current.catch(() => undefined);
-    await current;
+    this.writeQueue = current.then(() => undefined, () => undefined);
+    return current;
+  }
+
+  private async persist(): Promise<void> {
+    await this.mutate(() => undefined);
+  }
+
+  private async writeSnapshot(): Promise<void> {
+    await mkdir(dirname(this.path), { recursive: true });
+    const temporaryPath = `${this.path}.tmp`;
+    await writeFile(temporaryPath, `${JSON.stringify(this.snapshot(), null, 2)}\n`, "utf8");
+    await rename(temporaryPath, this.path);
   }
 
   private async read(): Promise<void> {
@@ -272,21 +333,37 @@ function clone(value: ManagedConversation): ManagedConversation {
   return { ...value, providerSessionIds: { ...value.providerSessionIds } };
 }
 
+function persistedConversation(value: ManagedConversation): ManagedConversation {
+  const { lastPrompt: _lastPrompt, ...safe } = clone(value);
+  return safe;
+}
+
 function isPersistedState(value: unknown): value is PersistedState {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const state = value as Record<string, unknown>;
-  return state.version === 1 && isRecord(state.conversations) && isRecord(state.providerSessions)
-    && isRecord(state.idempotency) && isRecord(state.selections)
-    && Object.values(state.conversations).every(isManagedConversation)
-    && Object.values(state.providerSessions).every(item => typeof item === "string")
-    && Object.values(state.idempotency).every(isIdempotencyRecord)
-    && Object.values(state.selections).every(item => typeof item === "string");
+  if (state.version !== 1 || !isRecord(state.conversations) || !isRecord(state.providerSessions) || !isRecord(state.idempotency) || !isRecord(state.selections)) return false;
+  const conversations = state.conversations;
+  const providerSessions = state.providerSessions;
+  const idempotency = state.idempotency;
+  const selections = state.selections;
+  return Object.entries(conversations).every(([key, item]) => key.length > 0 && isRecord(item) && key === item.logicalSessionId && isManagedConversation(item))
+    && Object.entries(providerSessions).every(([key, item]) => {
+      const parts = key.split("\u0000");
+      return parts.length === 3 && parts.every(Boolean) && conversations[parts[0]] !== undefined && typeof item === "string" && item.length > 0;
+    })
+    && Object.entries(idempotency).every(([key, item]) => key.length > 0 && isRecord(item) && key === item.messageId && isIdempotencyRecord(item))
+    && Object.entries(selections).every(([key, item]) => {
+      const parts = key.split("\u0000");
+      const selected = typeof item === "string" ? conversations[item] : undefined;
+      return parts.length === 2 && parts.every(Boolean) && typeof item === "string" && isManagedConversation(selected)
+        && selected.ownerId === parts[0] && selected.channel === parts[1] && selected.status !== "CLOSED";
+    });
 }
 
 function isManagedConversation(value: unknown): value is ManagedConversation {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const item = value as Record<string, unknown>;
-  return ["logicalSessionId", "channel", "externalConversationId", "ownerId", "displayName", "workspace", "createdAt", "updatedAt", "lastActivityAt", "status"].every(key => typeof item[key] === "string")
+  return ["logicalSessionId", "channel", "externalConversationId", "ownerId", "displayName", "workspace", "createdAt", "updatedAt", "lastActivityAt", "status"].every(key => typeof item[key] === "string" && Boolean(item[key]))
     && ["UNINITIALIZED", "READY_NO_AGENT", "IDLE", "RUNNING", "CANCELLING", "ERROR", "CLOSED"].includes(item.status as string)
     && (item.activeAgent === undefined || typeof item.activeAgent === "string")
     && (item.modelAlias === undefined || typeof item.modelAlias === "string")
@@ -298,7 +375,7 @@ function isManagedConversation(value: unknown): value is ManagedConversation {
 function isIdempotencyRecord(value: unknown): value is IdempotencyRecord {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const item = value as Record<string, unknown>;
-  return typeof item.messageId === "string" && typeof item.recordedAt === "string" && typeof item.correlationId === "string" && typeof item.ownerId === "string"
+  return typeof item.messageId === "string" && item.messageId.length > 0 && typeof item.recordedAt === "string" && item.recordedAt.length > 0 && typeof item.correlationId === "string" && item.correlationId.length > 0 && typeof item.ownerId === "string" && item.ownerId.length > 0
     && (item.logicalSessionId === undefined || typeof item.logicalSessionId === "string");
 }
 

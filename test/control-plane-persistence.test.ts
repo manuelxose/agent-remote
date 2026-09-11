@@ -42,3 +42,11 @@ test("control-plane writes a complete valid envelope atomically", async () => {
   assert.equal(state.version, 1);
   assert.ok(state.conversations);
 });
+
+test("reset removes the durable provider binding", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-control-plane-"));
+  const store = new JsonControlPlaneStore(join(directory, "state.json"));
+  await store.setProviderSession("chat-1", "claude", process.cwd(), "native-1");
+  await store.deleteProviderSession("chat-1", "claude", process.cwd());
+  assert.equal(await store.getProviderSession("chat-1", "claude", process.cwd()), undefined);
+});

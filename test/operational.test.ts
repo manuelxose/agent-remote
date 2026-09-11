@@ -66,6 +66,25 @@ test("requires approved workspace roots before composing the gateway", () => {
   }, process.cwd()), /AGENT_REMOTE_WORKSPACE_ROOTS/);
 });
 
+test("rejects a default workspace outside approved roots", () => {
+  assert.throws(() => loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_DEFAULT_WORKSPACE: "/tmp",
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd()), /approved workspace roots/i);
+});
+
+test("loads workspace aliases only when they are approved", () => {
+  const config = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_WORKSPACE_ALIASES: JSON.stringify({ repo: "." }),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd());
+  assert.equal(config.workspaceAliases.repo, process.cwd());
+});
+
 test("doctor reports unavailable providers instead of passing them", async () => {
   const directory = await mkdtemp(join(tmpdir(), "agent-remote-doctor-"));
   const routesPath = join(directory, "routes.json");
@@ -87,6 +106,24 @@ test("doctor reports unavailable providers instead of passing them", async () =>
   assert.equal(report.find(check => check.name === "Claude CLI")?.status, "FAIL");
   assert.equal(report.find(check => check.name === "Codex CLI")?.status, "FAIL");
   assert.match(report.find(check => check.name === "Routes")?.message ?? "", /1 route/);
+});
+
+test("doctor reports malformed control-plane state as a failure", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-doctor-state-"));
+  const routesPath = join(directory, "routes.json");
+  const controlPlanePath = join(directory, "control-plane.json");
+  await writeFile(routesPath, JSON.stringify({}));
+  await writeFile(controlPlanePath, "{broken", "utf8");
+  const config = loadApplicationConfig({
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_CONTROL_PLANE_PATH: controlPlanePath,
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd());
+  const report = await runDoctor(config, { resolveExecutable: async () => undefined, readVersion: async () => "" });
+  assert.equal(report.find(check => check.name === "Persistence")?.status, "FAIL");
+  assert.match(report.find(check => check.name === "Persistence")?.message ?? "", /Malformed/);
 });
 
 test("formats unknown conversations without leaking runtime diagnostics", () => {

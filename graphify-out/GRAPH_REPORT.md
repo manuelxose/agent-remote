@@ -1,22 +1,22 @@
 # Graph Report - phase-5-control-plane  (2026-09-11)
 
 ## Corpus Check
-- 77 files · ~37,822 words
+- 78 files · ~41,288 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 736 nodes · 1194 edges · 63 communities (42 shown, 13 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.81)
+- 779 nodes · 1270 edges · 75 communities (46 shown, 21 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 17 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a257f1d1`
+- Built from commit: `6a304f41`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - lifecycle.ts
-- developer-agent/src/index.ts
+- EventBus
 - developer-agent-runtime.test.ts
 - application.ts
 - compilerOptions
@@ -46,13 +46,13 @@
 - node-path.d.ts
 - adapters.test.ts
 - Task 3 Report
-- gateway/src/index.ts
+- core/src/index.ts
 - developer-agent-smoke.test.ts
-- contracts.ts
+- Critical Issues
 - agent-remote
 - Global Constraints
 - qrcode-terminal.d.ts
-- persistence.ts
+- JsonControlPlaneStore
 - Tasks
 - Phase 4 Plan 02 Summary
 - ControlPlane
@@ -60,30 +60,44 @@
 - Enterprise Conversational Control Plane Design
 - doctor.ts
 - security/src/index.ts
-- translate.ts
-- core/src/index.ts
+- WhatsAppChannel
+- contracts.ts
 - control-plane.test.ts
 - control-plane/src/index.ts
 - ConversationAgent
-- AgentResponse
+- DeveloperAgentRuntime
 - Phase 5 Verification: Enterprise Conversational Control Plane
 - CommandRegistry
-- DeveloperCapabilities
-- codex/src/index.ts
+- developer-agent/src/index.ts
+- persistence.ts
+- ControlPlaneRepositories
+- AgentResponse
+- SilentBaileysLogger
+- main.ts
+- ConversationRepository
+- IdempotencyRepository
+- translate.ts
+- whatsapp.ts
+- config.ts
+- ProviderSessionRepository
+- WhatsAppEvents
+- ModelPolicy
 
 ## God Nodes (most connected - your core abstractions)
-1. `ControlPlane` - 35 edges
+1. `ControlPlane` - 38 edges
 2. `createApplication()` - 29 edges
-3. `WhatsAppChannel` - 24 edges
-4. `JsonControlPlaneStore` - 20 edges
-5. `EventBus` - 20 edges
-6. `InMemoryControlPlaneStore` - 19 edges
-7. `Message` - 17 edges
-8. `AgentResponse` - 14 edges
+3. `JsonControlPlaneStore` - 28 edges
+4. `WhatsAppChannel` - 24 edges
+5. `InMemoryControlPlaneStore` - 23 edges
+6. `EventBus` - 20 edges
+7. `Message` - 18 edges
+8. `AgentResponse` - 15 edges
 9. `ConversationAgent` - 14 edges
-10. `translateWhatsAppMessage()` - 13 edges
+10. `WorkspacePolicy` - 14 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `defaults()` --indirect_call--> `resolveDeveloperExecutable()`  [INFERRED]
+  apps/gateway/src/doctor.ts → runtime/developer-agent/src/process.ts
 - `ApplicationConfig` --references--> `Route`  [EXTRACTED]
   apps/gateway/src/application.ts → packages/core/src/index.ts
 - `AgentRemoteApplication` --references--> `ControlPlane`  [EXTRACTED]
@@ -92,21 +106,19 @@
   apps/gateway/src/application.ts → packages/core/src/index.ts
 - `AgentRemoteApplication` --references--> `DeveloperAgentRuntime`  [EXTRACTED]
   apps/gateway/src/application.ts → runtime/developer-agent/src/index.ts
-- `createApplication()` --calls--> `createClaudeAdapter()`  [EXTRACTED]
-  apps/gateway/src/application.ts → developer-agents/claude/src/index.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (63 total, 13 thin omitted)
+## Communities (75 total, 21 thin omitted)
 
 ### Community 0 - "lifecycle.ts"
-Cohesion: 0.06
-Nodes (33): Gateway, createWhatsAppGateway(), isCoreMessage(), WhatsAppGatewayApplication, WhatsAppGatewayOptions, authorizeWhatsAppMessage(), parseBoolean(), parseList() (+25 more)
+Cohesion: 0.17
+Nodes (13): authorizeWhatsAppMessage(), WhatsAppConfig, defaultLogger, InvalidWhatsAppPayloadError, isCoreMessage(), isSelfSentPayload(), UnauthorizedWhatsAppMessageError, WhatsAppAuthState (+5 more)
 
-### Community 1 - "developer-agent/src/index.ts"
-Cohesion: 0.13
-Nodes (12): Worker, ControlPlaneOptions, DomainEvent, DomainEventType, EventBus, EventHandler, eventTypes, InMemoryEventBus (+4 more)
+### Community 1 - "EventBus"
+Cohesion: 0.18
+Nodes (8): Worker, DomainEvent, DomainEventType, EventBus, EventHandler, eventTypes, InMemoryEventBus, forbiddenTools
 
 ### Community 3 - "application.ts"
 Cohesion: 0.15
@@ -121,8 +133,8 @@ Cohesion: 0.13
 Nodes (6): DeveloperSessionState, DeveloperSessionStateError, DeveloperSessionStore, InMemoryDeveloperSessionStore, isSessionMap(), JsonDeveloperSessionStore
 
 ### Community 6 - "ToolRegistry"
-Cohesion: 0.15
-Nodes (5): AllowlistedToolRegistry, DeveloperCapabilityError, ToolHandler, ToolNotAllowedError, ToolRegistry
+Cohesion: 0.14
+Nodes (6): AllowlistedToolRegistry, DeveloperCapabilityError, ToolHandler, ToolNotAllowedError, ToolRegistry, ChatbotRuntime
 
 ### Community 7 - "Developer-agent runtime design"
 Cohesion: 0.12
@@ -192,13 +204,13 @@ Nodes (6): Phase 1: Architectural foundation — Complete, Phase 2: Local WhatsA
 Cohesion: 0.11
 Nodes (17): Changes, Changes, Changes, Changes, Changes, Concerns, Review Fix Round 1, Review Fix Round 2 (+9 more)
 
-### Community 37 - "gateway/src/index.ts"
-Cohesion: 0.18
-Nodes (8): GatewayConfigurationError, GatewayDependencies, createConversationContext(), Channel, Route, ConfigurationRouter, RouteNotFoundError, RouteResolver
+### Community 37 - "core/src/index.ts"
+Cohesion: 0.11
+Nodes (18): GatewayConfigurationError, GatewayDependencies, talkarisAgent, ConversationStore, createConversationContext(), InMemoryConversationStore, AgentRuntime, AgentType (+10 more)
 
-### Community 39 - "contracts.ts"
-Cohesion: 0.16
-Nodes (12): WorkspacePolicy, DeveloperAgentAvailability, DeveloperAgentFailureReason, DeveloperAgentProcessMetadata, DeveloperAgentRequest, DeveloperAgentResult, DeveloperExecutionContext, DeveloperProcessError (+4 more)
+### Community 39 - "Critical Issues"
+Cohesion: 0.09
+Nodes (22): CR-01: Foreign external sessions are returned to the caller, CR-02: `/init` can take over another owner’s chat and cannot reactivate closed chats, CR-03: Queued executions never finalize managed state, CR-04: Cancellation can start a queued task after cancelling the active task, CR-05: Idempotency is racy and consumes messages rejected for queue overflow, CR-06: A malformed slash message can reach the provider, CR-07: Role configuration can promote viewers to owners and ordinary prompts have no role gate, CR-08: An invalid default workspace is persisted as malformed control-plane state (+14 more)
 
 ### Community 40 - "agent-remote"
 Cohesion: 0.25
@@ -208,9 +220,9 @@ Nodes (7): agent-remote, Configuration, Doctor and startup, Install, Provider be
 Cohesion: 0.33
 Nodes (5): Global Constraints, Phase 4: Operational Integration & Real WhatsApp Acceptance, Task 1: Operational configuration and application composition, Task 2: Doctor, lifecycle diagnostics, and unknown-route UX, Task 3: Documentation and real provider readiness
 
-### Community 44 - "persistence.ts"
-Cohesion: 0.06
-Nodes (17): clone(), ControlPlaneRepositories, ControlPlaneStateError, ConversationRepository, IdempotencyRecord, IdempotencyRepository, InMemoryControlPlaneStore, isIdempotencyRecord() (+9 more)
+### Community 44 - "JsonControlPlaneStore"
+Cohesion: 0.08
+Nodes (6): clone(), InMemoryControlPlaneStore, JsonControlPlaneStore, persistedConversation(), providerKey(), selectionKey()
 
 ### Community 45 - "Tasks"
 Cohesion: 0.25
@@ -221,72 +233,88 @@ Cohesion: 0.40
 Nodes (4): Delivered, Phase 4 Plan 02 Summary, Remaining manual acceptance, Verification
 
 ### Community 47 - "ControlPlane"
-Cohesion: 0.10
-Nodes (6): ConfiguredModelPolicy, ControlPlane, ExecutionQueue, ModelPolicy, ModelUnavailableError, ManagedConversation
+Cohesion: 0.14
+Nodes (4): ConfiguredModelPolicy, ControlPlane, roleAtLeast(), Message
 
 ### Community 48 - "copilot/src/index.ts"
-Cohesion: 0.15
-Nodes (8): claudeAdapter, createClaudeAdapter(), Resolver, copilotAdapter, createCopilotAdapter(), Resolver, SessionIdFactory, DeveloperAgentAdapter
+Cohesion: 0.12
+Nodes (13): claudeAdapter, createClaudeAdapter(), Resolver, codexAdapter, createCodexAdapter(), Resolver, copilotAdapter, createCopilotAdapter() (+5 more)
 
 ### Community 49 - "Enterprise Conversational Control Plane Design"
 Cohesion: 0.14
 Nodes (13): Architecture, Authorization and security, Command registry, Context, Enterprise Conversational Control Plane Design, Events and safe output, Execution, queues, and cancellation, Goals (+5 more)
 
 ### Community 50 - "doctor.ts"
-Cohesion: 0.16
-Nodes (15): ApplicationConfig, loadEnvironment(), defaults(), DoctorCheck, DoctorDependencies, DoctorStatus, execFile, exists() (+7 more)
+Cohesion: 0.24
+Nodes (11): ApplicationConfig, controlPlaneStateCheck(), defaults(), DoctorCheck, DoctorDependencies, DoctorStatus, execFile, exists() (+3 more)
 
 ### Community 51 - "security/src/index.ts"
 Cohesion: 0.29
 Nodes (4): canonicalizeExistingAncestor(), createRestrictedDeveloperCapabilities(), LocalDeveloperOperations, WorkspaceAccessError
 
-### Community 52 - "translate.ts"
-Cohesion: 0.25
-Nodes (14): attachmentKinds, extractAttachments(), extractText(), isNonConversation(), numberValue(), objectValue(), RawMessageKey, RawWhatsAppMessage (+6 more)
-
-### Community 53 - "core/src/index.ts"
+### Community 52 - "WhatsAppChannel"
 Cohesion: 0.22
-Nodes (9): CommandContext, ConversationStore, InMemoryConversationStore, AgentType, Conversation, ExecutionContext, Message, Metadata (+1 more)
+Nodes (4): chunkText(), disconnectStatusCode(), messageIdFromPayload(), WhatsAppChannel
+
+### Community 53 - "contracts.ts"
+Cohesion: 0.20
+Nodes (10): WorkspacePolicy, DeveloperAgentAvailability, DeveloperAgentFailureReason, DeveloperAgentProcessMetadata, DeveloperAgentRequest, DeveloperAgentResult, DeveloperExecutionContext, DeveloperProcessError (+2 more)
 
 ### Community 55 - "control-plane/src/index.ts"
-Cohesion: 0.18
-Nodes (11): CommandAction, CommandCategory, CommandDefinition, CommandResult, CommandStatus, ControlPlaneIdentity, ModelResolution, ParsedCommand (+3 more)
+Cohesion: 0.14
+Nodes (14): CommandAction, CommandCategory, CommandContext, CommandDefinition, CommandResult, CommandStatus, ControlPlaneIdentity, ControlPlaneOptions (+6 more)
 
-### Community 57 - "ConversationAgent"
-Cohesion: 0.27
-Nodes (5): talkarisAgent, AgentRuntime, ConversationAgent, ChatbotRuntime, forbiddenTools
-
-### Community 58 - "AgentResponse"
-Cohesion: 0.42
-Nodes (4): AgentResponse, ConversationContext, DeveloperAgentRuntime, createDeveloperSessionKey()
+### Community 58 - "DeveloperAgentRuntime"
+Cohesion: 0.44
+Nodes (3): ConversationContext, DeveloperAgentRuntime, createDeveloperSessionKey()
 
 ### Community 59 - "Phase 5 Verification: Enterprise Conversational Control Plane"
 Cohesion: 0.29
 Nodes (6): Automated verification, Conclusion, Doctor, Graphify, Phase 5 Verification: Enterprise Conversational Control Plane, Real acceptance
 
-### Community 62 - "codex/src/index.ts"
-Cohesion: 0.50
-Nodes (3): codexAdapter, createCodexAdapter(), Resolver
+### Community 61 - "developer-agent/src/index.ts"
+Cohesion: 0.18
+Nodes (6): DeveloperCapabilities, DeveloperProcessRunner, DeveloperAgentRuntimeOptions, ResolvedDeveloperAgentRuntimeOptions, RuntimeFailureReason, NodeDeveloperProcessRunner
+
+### Community 62 - "persistence.ts"
+Cohesion: 0.33
+Nodes (7): ControlPlaneStateError, IdempotencyRecord, isIdempotencyRecord(), isManagedConversation(), isPersistedState(), isRecord(), PersistedState
+
+### Community 66 - "main.ts"
+Cohesion: 0.47
+Nodes (4): loadEnvironment(), acquireProcessLock(), isProcessAlive(), env
+
+### Community 69 - "translate.ts"
+Cohesion: 0.27
+Nodes (13): attachmentKinds, extractAttachments(), extractText(), isNonConversation(), numberValue(), objectValue(), RawMessageKey, RawWhatsAppMessage (+5 more)
+
+### Community 70 - "whatsapp.ts"
+Cohesion: 0.24
+Nodes (8): Gateway, createWhatsAppGateway(), isCoreMessage(), WhatsAppGatewayApplication, WhatsAppGatewayOptions, WhatsAppAuthLoader, WhatsAppLogger, WhatsAppSocketFactory
+
+### Community 71 - "config.ts"
+Cohesion: 0.39
+Nodes (6): parseBoolean(), parseList(), parsePositiveInteger(), parseWhatsAppConfig(), WhatsAppAuthorization, WhatsAppConfigurationError
 
 ## Knowledge Gaps
-- **219 isolated node(s):** `DoctorStatus`, `DoctorCheck`, `env`, `defaultLogger`, `RawMessageKey` (+214 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 386 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **238 isolated node(s):** `DoctorStatus`, `DoctorCheck`, `env`, `defaultLogger`, `RawMessageKey` (+233 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 413 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ControlPlane` connect `ControlPlane` to `developer-agent/src/index.ts`, `application.ts`, `persistence.ts`, `control-plane/src/index.ts`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
-- **Why does `JsonControlPlaneStore` connect `persistence.ts` to `application.ts`, `control-plane/src/index.ts`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
-- **Why does `InMemoryControlPlaneStore` connect `persistence.ts` to `ControlPlane`, `control-plane/src/index.ts`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+- **Why does `JsonControlPlaneStore` connect `JsonControlPlaneStore` to `doctor.ts`, `application.ts`, `persistence.ts`, `control-plane/src/index.ts`?**
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
+- **Why does `ControlPlane` connect `ControlPlane` to `EventBus`, `application.ts`, `ControlPlaneRepositories`, `control-plane/src/index.ts`?**
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+- **Why does `InMemoryControlPlaneStore` connect `JsonControlPlaneStore` to `ControlPlaneRepositories`, `ControlPlane`, `persistence.ts`, `control-plane/src/index.ts`?**
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `createApplication()` (e.g. with `printQr()` and `.drain()`) actually correct?**
   _`createApplication()` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `DoctorStatus`, `DoctorCheck`, `env` to the rest of the system?**
-  _219 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `lifecycle.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.05754527162977867 - nodes in this community are weakly interconnected._
-- **Should `developer-agent/src/index.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.12857142857142856 - nodes in this community are weakly interconnected._
+  _238 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `application.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.14855072463768115 - nodes in this community are weakly interconnected._
+- **Should `compilerOptions` be split into smaller, more focused modules?**
+  _Cohesion score 0.1 - nodes in this community are weakly interconnected._

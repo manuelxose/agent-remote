@@ -5,10 +5,15 @@ Date: 2026-09-11
 ## Automated verification
 
 - `npm run build`: PASS.
-- `npm test`: PASS — 109 tests, 107 passed, 0 failed, 2 skipped.
+- `npm test`: PASS — 118 tests, 116 passed, 0 failed, 2 skipped.
 - Focused control-plane tests: PASS — atomic JSON persistence, corruption failure,
   registry help, initialization restrictions, multiple chats, idempotency,
   cancellation, queue bounds, and concurrent logical chats.
+- Deep review remediation: PASS — 17 findings (9 blockers, 8 warnings) were
+  addressed, including foreign-owner isolation, queue terminal finalization,
+  cancellation draining, atomic idempotency claims, role gates, workspace
+  validation, durable reset cleanup, prompt redaction, state diagnostics, and
+  reconnect listener scoping.
 - Adapter tests: PASS — explicit Claude/Codex model argv, resume behavior, fixed
   argv boundaries, workspace rejection, and safe failures.
 - WhatsApp tests: PASS — transport boundary, authorization, restart lifecycle,
@@ -21,7 +26,7 @@ Date: 2026-09-11
 ## Graphify
 
 - `graphify update .`: PASS.
-- Refreshed graph: 736 nodes, 1194 edges, 63 communities.
+- Refreshed graph: 779 nodes, 1270 edges, 75 communities.
 - Focused query identifies `ControlPlane`, `CommandRegistry`,
   `JsonControlPlaneStore`, `application.ts`, and `WhatsAppChannel` as separate
   modules. A directed control-plane-to-channel path is absent because the

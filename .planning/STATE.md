@@ -34,7 +34,7 @@ The Phase 5 control plane is implemented: central command registry, explicit sta
 - WhatsApp stability fix: duplicate gateway processes were stopped; `fromMe` self-messages are now allowlisted in explicit one-number mode even when Baileys supplies only an `@lid` identity. Status `440` was traced to concurrent sessions, not authentication loss.
 - Phase 5 design approved and committed as `a66d1ff`; implementation plan is recorded in `docs/superpowers/plans/2026-09-11-enterprise-conversational-control-plane.md`.
 - Managed control-plane state uses `data/control-plane.json`; native provider sessions remain independently stored in `data/developer-agent-sessions.json`.
-- Phase 5 verification: `npm run build` passes; `npm test` reports 109 tests, 107 passed, 0 failed, 2 skipped; `graphify update .` refreshed 736 nodes, 1194 edges, and 63 communities.
+- Phase 5 verification: `npm run build` passes; `npm test` reports 118 tests, 116 passed, 0 failed, 2 skipped; the deep review's 17 findings were remediated; `graphify update .` refreshed 779 nodes, 1270 edges, and 75 communities.
 - Local doctor with explicit configuration reports truthful PASS/WARN/FAIL results; Codex smoke is available, while Claude, Copilot, and live WhatsApp acceptance are UNVERIFIED because the required local executables/auth state are unavailable in this worktree.
 
 ## Next Action

@@ -114,3 +114,83 @@ test("same-chat work is bounded and queued while another chat can run", async ()
   await new Promise(resolve => setTimeout(resolve, 0));
   assert.equal(started, 3);
 });
+
+test("foreign owners cannot initialize or execute another managed chat", async () => {
+  const { control, calls } = setup();
+  await control.handle(messages("owner-init", "/init private", "shared"), { id: "owner", role: "owner" });
+  await control.handle(messages("owner-agent", "/claude", "shared"), { id: "owner", role: "owner" });
+  const takeover = await control.handle({ ...messages("other-init", "/init takeover", "shared"), senderId: "other" }, { id: "other", role: "owner" });
+  const prompt = await control.handle({ ...messages("other-prompt", "secret", "shared"), senderId: "other" }, { id: "other", role: "owner" });
+  assert.match(takeover.text, /already managed|not authorized/i);
+  assert.match(prompt.text, /not initialized|not authorized/i);
+  assert.equal(calls.length, 0);
+});
+
+test("malformed slash input never reaches a provider", async () => {
+  const { control, calls } = setup();
+  await control.handle(messages("slash-init", "/init"), { id: "owner", role: "owner" });
+  await control.handle(messages("slash-agent", "/claude"), { id: "owner", role: "owner" });
+  const result = await control.handle(messages("slash-bad", "/   "), { id: "owner", role: "owner" });
+  assert.match(result.text, /Unknown command|Use \/help/);
+  assert.equal(calls.length, 0);
+});
+
+test("queued execution finalizes state after the active execution releases", async () => {
+  let release!: () => void;
+  const gate = new Promise<void>(resolve => { release = resolve; });
+  const agent = { id: "claude", type: "developer-agent" as const, async handleMessage() { throw new Error("unused"); } };
+  const runtime = { type: "developer-agent" as const, async execute(context: any) {
+    if (context.message.text === "first") await gate;
+    return { text: `done:${context.message.text}`, metadata: { sessionId: `session-${context.message.text}` } };
+  } };
+  const repositories = new InMemoryControlPlaneStore();
+  const control = new ControlPlane({ repositories, agents: { claude: agent }, runtimes: { "developer-agent": runtime }, workspacePolicy: new WorkspacePolicy([root]), defaultWorkspace: root, modelPolicy: new ConfiguredModelPolicy({ claude: { sonnet: "configured" } }), maxQueueDepth: 1 });
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("final-init", "/init", "final-chat"), identity);
+  await control.handle(messages("final-agent", "/claude", "final-chat"), identity);
+  const first = control.handle(messages("final-first", "first", "final-chat"), identity);
+  await new Promise(resolve => setImmediate(resolve));
+  const queued = await control.handle(messages("final-second", "second", "final-chat"), identity);
+  assert.match(queued.text, /Queued/);
+  release();
+  await first;
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal((await repositories.get((await repositories.getSelection("owner", "test"))!))?.status, "IDLE");
+});
+
+test("cancel rejects pending work without starting it", async () => {
+  let started!: () => void;
+  let release!: () => void;
+  const gate = new Promise<void>(resolve => { release = resolve; });
+  let executions = 0;
+  const agent = { id: "claude", type: "developer-agent" as const, async handleMessage() { throw new Error("unused"); } };
+  const runtime = { type: "developer-agent" as const, async execute(context: any) {
+    executions++;
+    started();
+    await new Promise<void>(resolve => context.execution.signal.addEventListener("abort", resolve, { once: true }));
+    return { text: "cancelled", metadata: { reason: "cancelled" } };
+  } };
+  const control = new ControlPlane({ repositories: new InMemoryControlPlaneStore(), agents: { claude: agent }, runtimes: { "developer-agent": runtime }, workspacePolicy: new WorkspacePolicy([root]), defaultWorkspace: root, modelPolicy: new ConfiguredModelPolicy({ claude: { sonnet: "configured" } }), maxQueueDepth: 1 });
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("cancel-init", "/init", "cancel-queued"), identity);
+  await control.handle(messages("cancel-agent", "/claude", "cancel-queued"), identity);
+  const active = control.handle(messages("cancel-active", "active", "cancel-queued"), identity);
+  await new Promise<void>(resolve => { started = resolve; });
+  const pending = control.handle(messages("cancel-pending", "pending", "cancel-queued"), identity);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.match((await control.handle(messages("cancel-command", "/cancel", "cancel-queued"), identity)).text, /Cancelled/);
+  release();
+  await active;
+  await pending;
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(executions, 1);
+});
+
+test("viewer cannot submit ordinary provider prompts", async () => {
+  const { control, calls } = setup();
+  await control.handle(messages("viewer-init", "/init", "viewer-chat"), { id: "owner", role: "owner" });
+  await control.handle(messages("viewer-agent", "/claude", "viewer-chat"), { id: "owner", role: "owner" });
+  const result = await control.handle({ ...messages("viewer-prompt", "secret", "viewer-chat"), senderId: "owner" }, { id: "owner", role: "viewer" });
+  assert.match(result.text, /not authorized/i);
+  assert.equal(calls.length, 0);
+});

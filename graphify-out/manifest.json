@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "channels/whatsapp/src/lifecycle.ts": {
-    "mtime": 1789132739.3756084,
-    "seen": 1789132810.5650542,
-    "ast_hash": "2e6b060a7c1fe81503d1cdb4fceff839",
+    "mtime": 1789134161.3815796,
+    "seen": 1789134347.435622,
+    "ast_hash": "3278116cbc9c4ea9ce0edb6814afbb8f",
     "semantic_hash": ""
   },
   "channels/whatsapp/src/translate.ts": {
@@ -240,9 +240,9 @@
     "semantic_hash": ""
   },
   ".planning/STATE.md": {
-    "mtime": 1789133037.549204,
-    "seen": 1789133248.8704727,
-    "ast_hash": "9c367eaa618249eb6a1e5d9bad165394",
+    "mtime": 1789134469.8082833,
+    "seen": 1789134600.6287456,
+    "ast_hash": "ef477ef80fa83c10cdf01182d22926f5",
     "semantic_hash": ""
   },
   ".planning/phases/01-architectural-foundation/01-01-PLAN.md": {
@@ -348,15 +348,15 @@
     "semantic_hash": ""
   },
   "apps/gateway/src/application.ts": {
-    "mtime": 1789133205.5920644,
-    "seen": 1789133248.8704305,
-    "ast_hash": "6713f2ff2b8b9bd33f64ac07e2b26fcb",
+    "mtime": 1789134138.0502276,
+    "seen": 1789134347.4356148,
+    "ast_hash": "196ba22b2f30c8f62cdeb47013d73fb7",
     "semantic_hash": ""
   },
   "apps/gateway/src/doctor.ts": {
-    "mtime": 1789132901.5291376,
-    "seen": 1789132953.740586,
-    "ast_hash": "1329b2c44c672ded87db92e75d6857cd",
+    "mtime": 1789134270.113212,
+    "seen": 1789134347.4356163,
+    "ast_hash": "649766af6eef8a5bdde52a3e6083a6a9",
     "semantic_hash": ""
   },
   "apps/gateway/src/main.ts": {
@@ -372,9 +372,9 @@
     "semantic_hash": ""
   },
   "test/operational.test.ts": {
-    "mtime": 1789132401.5007591,
-    "seen": 1789132810.5650744,
-    "ast_hash": "f324e84f8abd2ace2c87675d9ef59794",
+    "mtime": 1789134262.553212,
+    "seen": 1789134347.435643,
+    "ast_hash": "ca8c6c4bfc319e69fea8e21bdf804328",
     "semantic_hash": ""
   },
   "types/qrcode-terminal.d.ts": {
@@ -390,9 +390,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1789133205.5920644,
-    "seen": 1789133248.870481,
-    "ast_hash": "5aba84c8f2ebd845fcdf1604e33cd77f",
+    "mtime": 1789134456.958251,
+    "seen": 1789134462.6859398,
+    "ast_hash": "72b35b710b7bc87f4b2c3d14739687bd",
     "semantic_hash": ""
   },
   ".planning/phases/04-operational-integration-real-whatsapp-acceptance/04-01-SUMMARY.md": {
@@ -426,27 +426,27 @@
     "semantic_hash": ""
   },
   "packages/control-plane/src/index.ts": {
-    "mtime": 1789132884.9192832,
-    "seen": 1789132953.7406008,
-    "ast_hash": "68f0c70f5ddbf7cc45224fb0ffb3d950",
+    "mtime": 1789134590.6044068,
+    "seen": 1789134600.628719,
+    "ast_hash": "95739e778b24a1cd40b92d7fb243a8c4",
     "semantic_hash": ""
   },
   "packages/control-plane/src/persistence.ts": {
-    "mtime": 1789132018.9852533,
-    "seen": 1789132810.5650604,
-    "ast_hash": "249c4fcea5d77672cf6c21e250d2afdd",
+    "mtime": 1789134200.8771954,
+    "seen": 1789134347.4356282,
+    "ast_hash": "6e779adbb41f03e0afa16fc4c0fee768",
     "semantic_hash": ""
   },
   "test/control-plane-persistence.test.ts": {
-    "mtime": 1789132070.2493253,
-    "seen": 1789132810.565069,
-    "ast_hash": "69d3e43d91e39b9058e0aa8aa28ed4a9",
+    "mtime": 1789133829.0676265,
+    "seen": 1789134347.4356377,
+    "ast_hash": "c2fc94a0a8e00a7c0740639477135662",
     "semantic_hash": ""
   },
   "test/control-plane.test.ts": {
-    "mtime": 1789132770.4967299,
-    "seen": 1789132810.56507,
-    "ast_hash": "22af2e87fe5ae8ac65e90458e0e7f511",
+    "mtime": 1789134590.6044068,
+    "seen": 1789134600.6287315,
+    "ast_hash": "a70120a05c3d9b18261de5a566fe5040",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-11-enterprise-conversational-control-plane-design.md": {
@@ -456,9 +456,15 @@
     "semantic_hash": ""
   },
   ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md": {
-    "mtime": 1789133012.7887092,
-    "seen": 1789133248.8704793,
-    "ast_hash": "70e4bf069b05f28c72c044cd626189c5",
+    "mtime": 1789134469.8082833,
+    "seen": 1789134600.6287525,
+    "ast_hash": "40666d681638673ab501b25bb842e64a",
+    "semantic_hash": ""
+  },
+  ".planning/phases/05-enterprise-conversational-control-plane/05-REVIEW.md": {
+    "mtime": 1789134361.7083926,
+    "seen": 1789134462.6859374,
+    "ast_hash": "20ab815384f569d8585f7e0c2171261d",
     "semantic_hash": ""
   }
 }

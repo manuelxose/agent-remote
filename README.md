@@ -23,7 +23,7 @@ Use an absolute or repository-relative path for `AGENT_REMOTE_WORKSPACE_ROOTS`. 
 - `AGENT_REMOTE_ROUTES_PATH`: JSON route file, default `config/routes.json`.
 - `AGENT_REMOTE_WORKSPACE_ROOTS`: comma-separated approved workspace roots.
 - `AGENT_REMOTE_DEFAULT_WORKSPACE`: fallback workspace for routes without `workspaceRoot`.
-- `AGENT_REMOTE_WORKSPACE_ALIASES`: optional JSON object mapping safe names to approved workspace roots.
+- `AGENT_REMOTE_WORKSPACE_ALIASES`: optional JSON object mapping safe names to paths under the approved workspace roots.
 - `AGENT_REMOTE_SESSION_PATH`: persistent provider session map.
 - `AGENT_REMOTE_CONTROL_PLANE_PATH`: versioned managed-chat, binding, selection, and idempotency state (default `data/control-plane.json`).
 - `AGENT_REMOTE_TIMEOUT_MS` and `AGENT_REMOTE_MAX_OUTPUT_BYTES`: execution limits.
@@ -73,7 +73,7 @@ Normal messages are forwarded as prompts after `/init` and explicit agent select
 
 Send `/workspace` from an authorized WhatsApp chat to see the effective workspace path. It is the same local project directory used by this gateway and the provider CLI; the command does not expose file contents.
 
-The command set includes `/help`, `/init [name]`, `/chats`, `/chat`, `/rename`, `/close`, `/claude`, `/codex`, `/copilot`, `/agent`, `/model`, `/workspace`, `/workspaces`, `/status`, `/running`, `/cancel`, `/retry`, `/reset confirm`, `/history`, `/doctor`, `/health`, `/version`, and `/whoami`. Before initialization, only `/help`, `/init`, `/status`, and `/whoami` work. After `/claude` or `/codex`, ordinary messages continue in that provider's isolated session.
+The command set includes `/help`, `/init [name]`, `/chats`, `/chat`, `/rename`, `/close`, `/claude`, `/codex`, `/copilot`, `/agent`, `/model`, `/workspace`, `/workspaces`, `/status`, `/running`, `/cancel`, `/retry`, `/reset confirm`, `/history`, `/doctor`, `/health`, `/version`, and `/whoami`. Before initialization, only `/help`, `/init`, `/status`, and `/whoami` work. After `/claude` or `/codex`, ordinary messages continue in that provider's isolated session. Retry prompts are retained only in memory and are omitted from durable control-plane state.
 
 Only one gateway process may use the WhatsApp auth directory at a time. A second `npm start` exits with the existing process ID instead of creating a competing WhatsApp session.
 

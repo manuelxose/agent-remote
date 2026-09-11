@@ -9,7 +9,7 @@ import { InMemoryConversationStore } from "../../../packages/conversations/src/i
 import { ConfiguredModelPolicy, ControlPlane, JsonControlPlaneStore, type Role } from "../../../packages/control-plane/src/index.js";
 import { InMemoryEventBus } from "../../../packages/events/src/index.js";
 import { ConfigurationRouter } from "../../../packages/routing/src/index.js";
-import { createRestrictedDeveloperCapabilities, type LocalDeveloperOperations } from "../../../packages/security/src/index.js";
+import { createRestrictedDeveloperCapabilities, WorkspacePolicy, type LocalDeveloperOperations } from "../../../packages/security/src/index.js";
 import { createClaudeAdapter } from "../../../developer-agents/claude/src/index.js";
 import { createCodexAdapter } from "../../../developer-agents/codex/src/index.js";
 import { createCopilotAdapter } from "../../../developer-agents/copilot/src/index.js";
@@ -84,9 +84,11 @@ export function loadApplicationConfig(
   const configuredRoots = parseList(env.AGENT_REMOTE_WORKSPACE_ROOTS);
   const routeRoots = Object.values(routes).flatMap(route => route.workspaceRoot ? [route.workspaceRoot] : []);
   const workspaceAliases = parseObject(env.AGENT_REMOTE_WORKSPACE_ALIASES);
-  const workspaceRoots = unique([...configuredRoots, ...routeRoots, ...Object.values(workspaceAliases)].map(root => resolveFrom(cwd, root)));
+  const workspaceRoots = unique([...configuredRoots, ...routeRoots].map(root => resolveFrom(cwd, root)));
   if (workspaceRoots.length === 0) throw new Error("AGENT_REMOTE_WORKSPACE_ROOTS is required when routes have no workspaceRoot");
-  const defaultWorkspaceRoot = resolveFrom(cwd, env.AGENT_REMOTE_DEFAULT_WORKSPACE ?? workspaceRoots[0]);
+  const workspacePolicy = new WorkspacePolicy(workspaceRoots);
+  const defaultWorkspaceRoot = workspacePolicy.assertPath(resolveFrom(cwd, env.AGENT_REMOTE_DEFAULT_WORKSPACE ?? workspaceRoots[0]));
+  const resolvedWorkspaceAliases = Object.fromEntries(Object.entries(workspaceAliases).map(([alias, path]) => [alias, workspacePolicy.assertPath(resolveFrom(cwd, path))]));
   return {
     cwd,
     env,
@@ -94,7 +96,7 @@ export function loadApplicationConfig(
     routes,
     workspaceRoots,
     defaultWorkspaceRoot,
-    workspaceAliases: Object.fromEntries(Object.entries(workspaceAliases).map(([alias, root]) => [alias, resolveFrom(cwd, root)])),
+    workspaceAliases: resolvedWorkspaceAliases,
     sessionPath: resolveFrom(cwd, env.AGENT_REMOTE_SESSION_PATH ?? "data/developer-agent-sessions.json"),
     timeoutMs: positiveInteger(env.AGENT_REMOTE_TIMEOUT_MS, 120_000),
     maxOutputBytes: positiveInteger(env.AGENT_REMOTE_MAX_OUTPUT_BYTES, 64 * 1024),
@@ -236,13 +238,14 @@ function optionalValue(value: string | undefined): string | undefined {
 }
 
 function roleFor(env: Readonly<Record<string, string | undefined>>, senderId: string): Role {
-  const owners = parseList(env.AGENT_REMOTE_OWNER_IDS ?? env.WHATSAPP_ALLOWED_USERS);
+  const owners = parseList(env.AGENT_REMOTE_OWNER_IDS);
   const operators = parseList(env.AGENT_REMOTE_OPERATOR_IDS);
   const viewers = parseList(env.AGENT_REMOTE_VIEWER_IDS);
-  if (owners.includes(senderId)) return "owner";
-  if (operators.includes(senderId)) return "operator";
   if (viewers.includes(senderId)) return "viewer";
-  return "owner";
+  if (operators.includes(senderId)) return "operator";
+  if (owners.includes(senderId)) return "owner";
+  if (parseList(env.WHATSAPP_ALLOWED_USERS).includes(senderId)) return "owner";
+  return "viewer";
 }
 
 function messageFromPayload(payload: unknown): Message | undefined {

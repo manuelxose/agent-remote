@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { parseWhatsAppConfig } from "../../../channels/whatsapp/src/config.js";
 import { resolveDeveloperExecutable } from "../../../runtime/developer-agent/src/process.js";
 import { WorkspacePolicy } from "../../../packages/security/src/index.js";
+import { ControlPlaneStateError, JsonControlPlaneStore } from "../../../packages/control-plane/src/index.js";
 import type { ApplicationConfig } from "./application.js";
 
 const execFile = promisify(nodeExecFile);
@@ -30,7 +31,7 @@ export async function runDoctor(config: ApplicationConfig, dependencies: DoctorD
     config.workspaceRoots.forEach(root => policy.assertPath(root));
     checks.push({ name: "Workspace roots", status: "PASS", message: `${config.workspaceRoots.length} approved root${config.workspaceRoots.length === 1 ? "" : "s"}` });
   } catch (error) { checks.push({ name: "Workspace roots", status: "FAIL", message: messageOf(error) }); }
-  checks.push(await pathCheck("Persistence", config.controlPlanePath, true));
+  checks.push(await controlPlaneStateCheck(config.controlPlanePath));
   checks.push(await pathCheck("Conversation store", config.controlPlanePath, true));
   checks.push(await pathCheck("Session store", config.sessionPath, true));
   checks.push({ name: "Graphify", status: await exists(join(config.cwd, "graphify-out", "graph.json")) ? "PASS" : "WARN", message: "graphify-out/graph.json" });
@@ -72,6 +73,22 @@ async function pathCheck(name: string, path: string | undefined, createOnStart: 
   catch (error) {
     if (createOnStart && (error as NodeJS.ErrnoException).code === "ENOENT") return { name, status: "WARN", message: `${path} will be created on first start` };
     return { name, status: "FAIL", message: `${path}: ${messageOf(error)}` };
+  }
+}
+
+async function controlPlaneStateCheck(path: string): Promise<DoctorCheck> {
+  try {
+    await stat(path);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return { name: "Persistence", status: "WARN", message: `${path} will be created on first start` };
+    return { name: "Persistence", status: "FAIL", message: `${path}: ${messageOf(error)}` };
+  }
+  try {
+    await new JsonControlPlaneStore(path).load();
+    return { name: "Persistence", status: "PASS", message: path };
+  } catch (error) {
+    if (error instanceof ControlPlaneStateError) return { name: "Persistence", status: "FAIL", message: error.message };
+    return { name: "Persistence", status: "FAIL", message: `${path}: ${messageOf(error)}` };
   }
 }
 
