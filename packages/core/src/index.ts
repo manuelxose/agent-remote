@@ -2,6 +2,21 @@ export type RuntimeType = "developer-agent" | "chatbot";
 
 export type AgentType = string;
 
+export type LogicalParticipantKind = "human" | "agent" | "system";
+
+export interface LogicalParticipant {
+  id: string;
+  kind: LogicalParticipantKind;
+  displayName: string;
+}
+
+export interface MessageOrigin {
+  type: LogicalParticipantKind;
+  agentId?: string;
+  executionId?: string;
+  logicalSessionId?: string;
+}
+
 export type Metadata = Record<string, string>;
 
 export interface MessageReference {
@@ -15,6 +30,7 @@ export interface OutboundMessage {
   text: string;
   replyTo?: MessageReference;
   metadata?: Metadata;
+  origin?: MessageOrigin;
 }
 
 export interface MessageAttachment {
@@ -35,6 +51,7 @@ export interface Message {
   attachments?: MessageAttachment[];
   metadata?: Metadata;
   replyReference?: MessageReference;
+  origin?: MessageOrigin;
 }
 
 export interface Conversation {

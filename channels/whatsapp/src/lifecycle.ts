@@ -6,6 +6,7 @@ import makeWASocket, {
 } from "@whiskeysockets/baileys";
 import type { Channel, Message, OutboundMessage } from "../../../packages/core/src/index.js";
 import { authorizeWhatsAppMessage, type WhatsAppAuthorization, type WhatsAppConfig } from "./config.js";
+import { AgentMessageRegistry } from "./agent-registry.js";
 import { translateWhatsAppMessage } from "./translate.js";
 
 export type WhatsAppStatus = "stopped" | "connecting" | "qr" | "connected" | "reconnecting" | "logged_out" | "failed";
@@ -108,7 +109,7 @@ export class WhatsAppChannel implements Channel {
   private lastErrorCode?: number;
   private status: WhatsAppStatus = "stopped";
   private changedAt = new Date();
-  private readonly outboundMessageIds = new Map<string, number>();
+  private readonly agentRegistry = new AgentMessageRegistry({ maxEntries: 256, ttlMs: 120_000 });
   private readonly replyContexts = new Map<string, { conversationId: string; senderId?: string; quoted: unknown; createdAt: number }>();
 
   constructor(options: WhatsAppChannelOptions | ((conversationId: string, text: string) => Promise<void>)) {
@@ -156,7 +157,6 @@ export class WhatsAppChannel implements Channel {
     }
     const socket = this.socket;
     this.socket = undefined;
-    this.outboundMessageIds.clear();
     this.replyContexts.clear();
     this.removeListeners(socket);
     if (socket) await socket.end(undefined);
@@ -198,7 +198,13 @@ export class WhatsAppChannel implements Channel {
         ? await this.socket.sendMessage(conversationId, { text: chunk }, { quoted: context.quoted as any })
         : await this.socket.sendMessage(conversationId, { text: chunk });
       const messageId = messageIdFromPayload(sent);
-      if (messageId) this.rememberOutboundMessage(messageId);
+      if (messageId && response.origin) this.agentRegistry.remember({
+        whatsappMessageId: messageId,
+        conversationId,
+        origin: response.origin,
+        ...(response.replyTo?.messageId ? { replyToMessageId: response.replyTo.messageId } : {}),
+        createdAt: Date.now()
+      });
     }
   }
 
@@ -206,6 +212,10 @@ export class WhatsAppChannel implements Channel {
     if (!this.socket || this.status !== "connected" || !this.socket.sendPresenceUpdate) return;
     try { await this.socket.sendPresenceUpdate(presence, conversationId); }
     catch { this.logger.warn("whatsapp_presence_failed", { conversationId }); }
+  }
+
+  agentMessageRegistry(): ReadonlyArray<import("./agent-registry.js").AgentGeneratedMessageMetadata> {
+    return this.agentRegistry.snapshot();
   }
 
   private async connect(): Promise<void> {
@@ -300,16 +310,6 @@ export class WhatsAppChannel implements Channel {
     this.changedAt = new Date();
   }
 
-  private rememberOutboundMessage(messageId: string): void {
-    this.pruneOutboundMessageIds();
-    // ponytail: a 256-entry/2-minute ceiling keeps echo suppression bounded; use a durable outbound-id store if Baileys ever delays echoes beyond it.
-    if (this.outboundMessageIds.size >= 256) {
-      const oldest = this.outboundMessageIds.keys().next().value;
-      if (typeof oldest === "string") this.outboundMessageIds.delete(oldest);
-    }
-    this.outboundMessageIds.set(messageId, Date.now());
-  }
-
   private rememberReplyContext(payload: unknown): void {
     if (!payload || typeof payload !== "object") return;
     const raw = payload as Record<string, unknown>;
@@ -343,15 +343,7 @@ export class WhatsAppChannel implements Channel {
   private isTrackedOutbound(payload: unknown): boolean {
     const messageId = messageIdFromPayload(payload);
     if (!messageId) return false;
-    this.pruneOutboundMessageIds();
-    return this.outboundMessageIds.delete(messageId);
-  }
-
-  private pruneOutboundMessageIds(): void {
-    const cutoff = Date.now() - 120_000;
-    for (const [messageId, createdAt] of this.outboundMessageIds) {
-      if (createdAt < cutoff) this.outboundMessageIds.delete(messageId);
-    }
+    return this.agentRegistry.has(messageId);
   }
 
   private logRejection(message: Message, authorization: Exclude<WhatsAppAuthorization, { allowed: true }>): void {

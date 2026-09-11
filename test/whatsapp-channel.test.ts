@@ -70,7 +70,7 @@ test("responses are sent as normal messages without quoted context", async () =>
   await channel.start();
   events.emit("connection.update", { connection: "open" });
   await channel.receive({ key: { id: "incoming-1", remoteJid: "u@s.whatsapp.net" }, message: { conversation: "hello" } });
-  await channel.send("u@s.whatsapp.net", { text: "reply" });
+  await channel.send("u@s.whatsapp.net", { text: "reply", origin: { type: "agent", agentId: "codex" } });
   assert.equal((sent[0] as any[]).length, 2);
   assert.equal((sent[0] as any[])[1].text, "reply");
   await channel.stop();
@@ -128,7 +128,7 @@ test("one-number mode accepts manual self-messages and ignores gateway echoes", 
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(received.length, 1);
 
-  await channel.send("u@s.whatsapp.net", { text: "reply" });
+  await channel.send("u@s.whatsapp.net", { text: "reply", origin: { type: "agent", agentId: "codex" } });
   events.emit("messages.upsert", {
     messages: [{ key: { id: "gateway-reply-1", remoteJid: "u@s.whatsapp.net", fromMe: true }, message: { conversation: "reply" } }]
   });

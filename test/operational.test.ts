@@ -7,6 +7,80 @@ import { createApplication, formatWorkspaceCommand, loadApplicationConfig, loadR
 import { formatOperationalError, runDoctor } from "../dist/apps/gateway/src/doctor.js";
 import { RouteNotFoundError } from "../dist/packages/routing/src/index.js";
 import { acquireProcessLock } from "../dist/apps/gateway/src/lock.js";
+import { InMemoryEventBus } from "../dist/packages/events/src/index.js";
+import { DeveloperAgentRuntime } from "../dist/runtime/developer-agent/src/index.js";
+import { InMemoryDeveloperSessionStore } from "../dist/runtime/developer-agent/src/sessions.js";
+import { WorkspacePolicy } from "../dist/packages/security/src/index.js";
+
+class FakeEvents {
+  private readonly listeners = new Map<string, Set<(value: any) => void>>();
+  on(event: string, listener: (value: any) => void): void { const listeners = this.listeners.get(event) ?? new Set(); listeners.add(listener); this.listeners.set(event, listeners); }
+  off(event: string, listener: (value: any) => void): void { this.listeners.get(event)?.delete(listener); }
+  emit(event: string, value: any): void { for (const listener of this.listeners.get(event) ?? []) listener(value); }
+  count(event: string): number { return this.listeners.get(event)?.size ?? 0; }
+}
+
+async function settle(): Promise<void> {
+  for (let index = 0; index < 4; index += 1) await new Promise(resolve => setImmediate(resolve));
+}
+
+async function gatewayFixture(adapter: any) {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-presentation-"));
+  const routesPath = join(directory, "routes.json");
+  await writeFile(routesPath, "{}");
+  const config = loadApplicationConfig({
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_CONTROL_PLANE_PATH: join(directory, "control-plane.json"),
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "a@s.whatsapp.net,b@s.whatsapp.net"
+  }, process.cwd());
+  const events = new FakeEvents();
+  const sent: any[] = [];
+  const messages: any[] = [];
+  const messageWaiters = new Set<() => void>();
+  const waitForMessages = async (count: number): Promise<void> => {
+    if (messages.length >= count) return;
+    await new Promise<void>(resolve => {
+      const check = () => {
+        if (messages.length < count) return;
+        messageWaiters.delete(check);
+        resolve();
+      };
+      messageWaiters.add(check);
+    });
+  };
+  const socket = {
+    ev: events,
+    async sendMessage(...args: any[]) { sent.push(args); messages.push(args); for (const waiter of messageWaiters) waiter(); return { key: { id: `out-${sent.length}` } }; },
+    async sendPresenceUpdate(...args: any[]) { sent.push(["presence", ...args]); },
+    async end() {}
+  };
+  const runtime = new DeveloperAgentRuntime({
+    policy: new WorkspacePolicy([process.cwd()]), shell: async () => "", readFile: async () => "", writeFile: async () => undefined, git: async () => ""
+  }, {
+    adapters: { codex: adapter }, sessions: new InMemoryDeveloperSessionStore(), defaultWorkspaceRoot: process.cwd(), events: new InMemoryEventBus()
+  });
+  const application = createApplication(config, {
+    runtime,
+    whatsapp: {
+      loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+      createSocket: () => socket,
+      logger: { info() {}, warn() {}, error() {} }
+    }
+  } as any);
+  assert.equal(application.runtime, runtime);
+  await application.start();
+  events.emit("connection.update", { connection: "open" });
+  await settle();
+  assert.equal(application.channel.health().status, "connected");
+  assert.equal(events.count("messages.upsert"), 1);
+  return { application, events, sent, waitForMessages };
+}
+
+function receive(events: FakeEvents, id: string, text: string, conversationId = "a@s.whatsapp.net"): void {
+  events.emit("messages.upsert", { messages: [{ key: { id, remoteJid: conversationId }, message: { conversation: text } }] });
+}
 
 test("loads routes and composes the existing developer-agent graph", async () => {
   const directory = await mkdtemp(join(tmpdir(), "agent-remote-operational-"));
@@ -36,16 +110,156 @@ test("loads routes and composes the existing developer-agent graph", async () =>
   await application.stop();
 });
 
-test("loads bounded realtime delivery settings", () => {
+test("gateway presents a successful execution without a processing acknowledgement", async () => {
+  const adapter = {
+    id: "codex",
+    async isAvailable() { return true; },
+    async getAvailability() { return { available: true as const, executable: "codex" }; },
+    async execute(request: any, execution: any) {
+      await execution.observer?.onEvent({ type: "assistant.delta", occurredAt: new Date(), executionId: request.executionId, correlationId: request.correlationId, logicalSessionId: request.logicalSessionId, payload: { text: "partial" } });
+      return { status: "completed" as const, text: "final", sessionId: "native-a" };
+    }
+  };
+  const { application, events, sent, waitForMessages } = await gatewayFixture(adapter);
+  try {
+    receive(events, "init-a", "/init");
+    await waitForMessages(1);
+    receive(events, "agent-a", "/codex");
+    await waitForMessages(2);
+    receive(events, "prompt-a", "hello");
+    await waitForMessages(3);
+
+    const generated = application.channel.agentMessageRegistry().filter(message => message.origin?.executionId === "prompt-a");
+    assert.deepEqual(sent.filter(message => message[0] === "presence"), [["presence", "composing", "a@s.whatsapp.net"], ["presence", "paused", "a@s.whatsapp.net"]]);
+    assert.equal(sent.some(message => String(message[1]?.text ?? "").includes("Procesando")), false);
+    assert.deepEqual(generated.map(message => ({ replyTo: message.replyToMessageId, origin: message.origin })), [{
+      replyTo: "prompt-a", origin: { type: "agent", agentId: "codex", executionId: "prompt-a", logicalSessionId: generated[0]?.origin?.logicalSessionId }
+    }]);
+  } finally {
+    await application.stop();
+  }
+});
+
+test("gateway pauses failed and cancelled runtime executions without delayed delivery", async () => {
+  let entered!: () => void;
+  const enteredCancellation = new Promise<void>(resolve => { entered = resolve; });
+  const adapter = {
+    id: "codex",
+    async isAvailable() { return true; },
+    async getAvailability() { return { available: true as const, executable: "codex" }; },
+    async execute(request: any, execution: any) {
+      if (request.prompt === "fail") return { status: "failed" as const, reason: "execution-failed" as const };
+      entered();
+      await new Promise<void>(resolve => execution.signal?.addEventListener("abort", () => resolve(), { once: true }));
+      return { status: "failed" as const, reason: "cancelled" as const };
+    }
+  };
+  const { application, events, sent, waitForMessages } = await gatewayFixture(adapter);
+  try {
+    receive(events, "init-a", "/init");
+    await waitForMessages(1);
+    receive(events, "agent-a", "/codex");
+    await waitForMessages(2);
+    receive(events, "fail-a", "fail");
+    await waitForMessages(3);
+    receive(events, "cancel-a", "cancel");
+    await enteredCancellation;
+    receive(events, "stop-a", "/cancel");
+    await waitForMessages(5);
+
+    const presences = sent.filter(message => message[0] === "presence");
+    assert.equal(presences.filter(message => message[1] === "composing").length, 2);
+    assert.equal(presences.filter(message => message[1] === "paused").length, 2);
+    assert.equal(application.channel.agentMessageRegistry().some(message => message.origin?.executionId === "fail-a" || message.origin?.executionId === "cancel-a"), true);
+    assert.equal(sent.some(message => String(message[1]?.text ?? "").includes("Procesando")), false);
+  } finally {
+    await application.stop();
+  }
+});
+
+test("gateway keeps concurrent execution reply references and origins distinct", async () => {
+  const adapter = {
+    id: "codex",
+    async isAvailable() { return true; },
+    async getAvailability() { return { available: true as const, executable: "codex" }; },
+    async execute(request: any) { return { status: "completed" as const, text: `final:${request.prompt}`, sessionId: `native-${request.executionId}` }; }
+  };
+  const { application, events, waitForMessages } = await gatewayFixture(adapter);
+  try {
+    receive(events, "init-a", "/init", "a@s.whatsapp.net");
+    await waitForMessages(1);
+    receive(events, "agent-a", "/codex", "a@s.whatsapp.net");
+    await waitForMessages(2);
+    receive(events, "init-b", "/init", "b@s.whatsapp.net");
+    await waitForMessages(3);
+    receive(events, "agent-b", "/codex", "b@s.whatsapp.net");
+    await waitForMessages(4);
+    receive(events, "prompt-a", "alpha", "a@s.whatsapp.net");
+    receive(events, "prompt-b", "beta", "b@s.whatsapp.net");
+    await waitForMessages(6);
+
+    const generated = application.channel.agentMessageRegistry().filter(message => message.origin?.executionId === "prompt-a" || message.origin?.executionId === "prompt-b");
+    assert.deepEqual(generated.map(message => ({ replyTo: message.replyToMessageId, executionId: message.origin?.executionId, agentId: message.origin?.agentId })).sort((left, right) => left.replyTo.localeCompare(right.replyTo)), [
+      { replyTo: "prompt-a", executionId: "prompt-a", agentId: "codex" },
+      { replyTo: "prompt-b", executionId: "prompt-b", agentId: "codex" }
+    ]);
+  } finally {
+    await application.stop();
+  }
+});
+
+test("loads final-only WhatsApp delivery settings", () => {
   const config = loadApplicationConfig({
     AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
-    AGENT_REMOTE_STREAM_MIN_CHARS: "32",
-    AGENT_REMOTE_STREAM_MAX_INTERVAL_MS: "250",
+    AGENT_REMOTE_PROGRESS_AFTER_MS: "250",
+    AGENT_REMOTE_PROGRESS_TEXT: "Sigo trabajando…",
     AGENT_REMOTE_STREAM_MAX_MESSAGES: "4",
     WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
     WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
   }, process.cwd());
-  assert.deepEqual(config.streamingDelivery, { minChars: 32, maxIntervalMs: 250, maxMessagesPerExecution: 4 });
+  assert.deepEqual(config.streamingDelivery, { progressAfterMs: 250, progressText: "Sigo trabajando…", maxMessagesPerExecution: 4 });
+  const defaults = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd());
+  assert.deepEqual(defaults.streamingDelivery, { progressAfterMs: 0, progressText: "Sigo trabajando…", maxMessagesPerExecution: 2 });
+  assert.throws(() => loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_PROGRESS_AFTER_MS: "-1",
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd()), /non-negative integer/);
+});
+
+test("loads opt-in presentation bridge configuration without exposing its token", async () => {
+  const disabled = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd());
+  const enabled = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net",
+    AGENT_REMOTE_PRESENTATION_ENABLED: "true",
+    AGENT_REMOTE_PRESENTATION_PORT: "9876",
+    AGENT_REMOTE_PRESENTATION_TOKEN: "secret-presentation-token"
+  }, process.cwd());
+  const invalid = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net",
+    AGENT_REMOTE_PRESENTATION_ENABLED: "true"
+  }, process.cwd());
+
+  assert.deepEqual(disabled.presentation, { enabled: false, port: 8765 });
+  assert.deepEqual(enabled.presentation, { enabled: true, port: 9876, token: "secret-presentation-token" });
+  assert.match(invalid.presentation.error ?? "", /token/i);
+  const report = await runDoctor(invalid, { resolveExecutable: async () => undefined, readVersion: async () => "" });
+  const bridge = report.find(check => check.name === "Presentation bridge");
+  assert.equal(bridge?.status, "FAIL");
+  assert.doesNotMatch(bridge?.message ?? "", /secret-presentation-token/);
 });
 
 test("application control-plane state survives restart without reinitialization", async () => {
@@ -137,6 +351,7 @@ test("doctor reports unavailable providers instead of passing them", async () =>
   assert.equal(report.find(check => check.name === "Claude CLI")?.status, "FAIL");
   assert.equal(report.find(check => check.name === "Codex CLI")?.status, "FAIL");
   assert.match(report.find(check => check.name === "Routes")?.message ?? "", /1 route/);
+  assert.match(report.find(check => check.name === "Streaming delivery")?.message ?? "", /0 ms.*2 messages/);
 });
 
 test("doctor reports malformed control-plane state as a failure", async () => {

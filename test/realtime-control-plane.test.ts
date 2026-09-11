@@ -8,15 +8,47 @@ import { WorkspacePolicy } from "../dist/packages/security/src/index.js";
 const root = process.cwd();
 const message = (id: string, text: string, conversationId = "chat-1") => ({ id, channel: "test", conversationId, senderId: "owner", text, receivedAt: new Date() });
 
-test("stream delivery aggregates deltas and preserves the triggering reply reference", async () => {
+test("short execution sends one final response after streamed deltas", async () => {
   const sent: any[] = [];
-  const policy: StreamingDeliveryPolicy = { minChars: 8, maxIntervalMs: 1000, maxMessagesPerExecution: 3 };
+  const policy: StreamingDeliveryPolicy = { progressAfterMs: 0, progressText: "Sigo trabajando…", maxMessagesPerExecution: 2 };
   const delivery = new StreamDelivery(policy, value => { sent.push(value); }, { channel: "test", conversationId: "chat-1", messageId: "input-1" });
   await delivery.push("hello");
   await delivery.push(" world");
   await delivery.complete("hello world!");
-  assert.deepEqual(sent.map(item => item.text), ["hello world", "!"]);
-  assert.equal(sent.every(item => item.replyTo.messageId === "input-1"), true);
+  assert.deepEqual(sent.map(item => item.text), ["hello world!"]);
+  assert.equal(sent[0]?.replyTo?.messageId, "input-1");
+});
+
+test("long execution emits at most one delayed progress message and preserves final origin", async () => {
+  const sent: any[] = [];
+  const policy: StreamingDeliveryPolicy = { progressAfterMs: 5, progressText: "Sigo trabajando…", maxMessagesPerExecution: 2 };
+  const delivery = new StreamDelivery(policy, value => { sent.push(value); }, { channel: "test", conversationId: "chat-1", messageId: "input-1" });
+  await delivery.push("partial");
+  await new Promise(resolve => setTimeout(resolve, 10));
+  await delivery.complete("final", { type: "agent", agentId: "codex", executionId: "exec-1", logicalSessionId: "session-1" });
+  assert.deepEqual(sent.map(item => item.text), ["Sigo trabajando…", "final"]);
+  assert.equal(sent[0]?.replyTo?.messageId, "input-1");
+  assert.deepEqual(sent[1]?.origin, { type: "agent", agentId: "codex", executionId: "exec-1", logicalSessionId: "session-1" });
+});
+
+test("failed delivery cancels delayed progress and sends nothing", async () => {
+  const sent: any[] = [];
+  const delivery = new StreamDelivery(
+    { progressAfterMs: 20, progressText: "Sigo trabajando…", maxMessagesPerExecution: 2 },
+    value => { sent.push(value); },
+    { channel: "test", conversationId: "chat-1", messageId: "input-1" }
+  );
+  await delivery.push("partial");
+  await delivery.fail();
+  await new Promise(resolve => setTimeout(resolve, 30));
+  assert.deepEqual(sent, []);
+});
+
+test("delivery requires at least one message slot", () => {
+  assert.throws(() => new StreamDelivery(
+    { progressAfterMs: 0, progressText: "Sigo trabajando…", maxMessagesPerExecution: 0 },
+    () => {}
+  ), /maxMessagesPerExecution must be at least 1/);
 });
 
 test("execution telemetry records identity and derives only complete latency spans", () => {
@@ -58,7 +90,7 @@ test("control-plane command and streamed execution results correlate to the inbo
   const running = control.handle(message("prompt", "hello"), identity);
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(streamed[0].payload.text, "partial");
-  assert.equal(streamed[0].replyTo.messageId, "prompt");
+  assert.deepEqual(streamed[0].replyTo, { channel: "test", conversationId: "chat-1", messageId: "prompt", senderId: "owner" });
   release();
   const result = await running;
   assert.equal(result.replyTo?.messageId, "prompt");

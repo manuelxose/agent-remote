@@ -15,11 +15,12 @@ import { createCodexAdapter } from "../../../developer-agents/codex/src/index.js
 import { createCopilotAdapter } from "../../../developer-agents/copilot/src/index.js";
 import { DeveloperAgentRuntime } from "../../../runtime/developer-agent/src/index.js";
 import { JsonDeveloperSessionStore } from "../../../runtime/developer-agent/src/sessions.js";
-import { createWhatsAppGateway, type WhatsAppGatewayApplication } from "./whatsapp.js";
+import { createWhatsAppGateway, type WhatsAppGatewayApplication, type WhatsAppGatewayOptions } from "./whatsapp.js";
 import { formatOperationalError } from "./doctor.js";
 import { translateWhatsAppMessage } from "../../../channels/whatsapp/src/index.js";
 import { resolveDeveloperExecutable } from "../../../runtime/developer-agent/src/process.js";
 import { StreamDelivery, type StreamingDeliveryPolicy } from "../../../packages/control-plane/src/delivery.js";
+import { createPresentationBridge, type PresentationBridge } from "./presentation-bridge.js";
 
 const execFile = promisify(nodeExecFile);
 
@@ -42,14 +43,28 @@ export interface ApplicationConfig {
   claudeModel?: string;
   codexModel?: string;
   streamingDelivery: StreamingDeliveryPolicy;
+  presentation: PresentationConfig;
+}
+
+export interface PresentationConfig {
+  enabled: boolean;
+  port: number;
+  token?: string;
+  error?: string;
 }
 
 export interface AgentRemoteApplication extends WhatsAppGatewayApplication {
   readonly routes: Readonly<Record<string, Route>>;
   readonly runtime: DeveloperAgentRuntime;
   readonly controlPlane: ControlPlane;
+  readonly presentationBridge?: PresentationBridge;
   start(): Promise<void>;
   stop(): Promise<void>;
+}
+
+export interface ApplicationDependencies {
+  runtime?: DeveloperAgentRuntime;
+  whatsapp?: Pick<WhatsAppGatewayOptions, "onQr" | "logger" | "loadAuthState" | "createSocket">;
 }
 
 export function loadRoutes(path: string): Record<string, Route> {
@@ -92,6 +107,7 @@ export function loadApplicationConfig(
   const codexModel = optionalValue(env.AGENT_REMOTE_CODEX_MODEL);
   const claudeModels = { ...parseObject(env.AGENT_REMOTE_CLAUDE_MODELS, "Claude model aliases"), ...(claudeModel ? { sonnet: claudeModel } : {}) };
   const codexModels = { ...parseObject(env.AGENT_REMOTE_CODEX_MODELS, "Codex model aliases"), ...(codexModel ? { luna: codexModel } : {}) };
+  const presentation = parsePresentationConfig(env);
   const workspaceRoots = unique([...configuredRoots, ...routeRoots].map(root => resolveFrom(cwd, root)));
   if (workspaceRoots.length === 0) throw new Error("AGENT_REMOTE_WORKSPACE_ROOTS is required when routes have no workspaceRoot");
   const workspacePolicy = new WorkspacePolicy(workspaceRoots);
@@ -116,17 +132,18 @@ export function loadApplicationConfig(
     claudeModel,
     codexModel,
     streamingDelivery: {
-      minChars: positiveInteger(env.AGENT_REMOTE_STREAM_MIN_CHARS, 120),
-      maxIntervalMs: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_INTERVAL_MS, 1500),
-      maxMessagesPerExecution: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_MESSAGES, 8)
-    }
+      progressAfterMs: nonNegativeInteger(env.AGENT_REMOTE_PROGRESS_AFTER_MS, 0),
+      progressText: optionalValue(env.AGENT_REMOTE_PROGRESS_TEXT) ?? "Sigo trabajando…",
+      maxMessagesPerExecution: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_MESSAGES, 2)
+    },
+    presentation
   };
 }
 
-export function createApplication(config: ApplicationConfig): AgentRemoteApplication {
+export function createApplication(config: ApplicationConfig, dependencies: ApplicationDependencies = {}): AgentRemoteApplication {
   const events = new InMemoryEventBus();
   const capabilities = createRestrictedDeveloperCapabilities(config.workspaceRoots, localOperations());
-  const runtime = new DeveloperAgentRuntime(capabilities, {
+  const runtime = dependencies.runtime ?? new DeveloperAgentRuntime(capabilities, {
     adapters: {
       claude: createClaudeAdapter(() => resolveDeveloperExecutable("claude", config.env.AGENT_REMOTE_CLAUDE_EXECUTABLE)),
       codex: createCodexAdapter(() => resolveDeveloperExecutable("codex", config.env.AGENT_REMOTE_CODEX_EXECUTABLE)),
@@ -156,15 +173,13 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
       const executionId = response.metadata?.executionId;
       const delivery = executionId ? deliveries.get(executionId) : undefined;
       if (delivery) {
-        await delivery.complete(response.text);
+        await delivery.complete(response.text, response.origin);
         deliveries.delete(executionId!);
       } else await whatsapp.channel.send(session.externalConversationId, response);
       if (executionId) controlPlane.markExecutionTransportReply(executionId, true);
     },
     onExecutionAccepted: async (session, message) => {
       await whatsapp.channel.setPresence(session.externalConversationId, "composing");
-      await whatsapp.channel.send(session.externalConversationId, { text: "⏳ Recibido. Procesando…", replyTo: message.replyReference ?? { channel: message.channel, conversationId: message.conversationId, messageId: message.id, senderId: message.senderId } });
-      controlPlane.markExecutionTransportReply(message.id);
     },
     onExecutionEvent: async (session, _message, event) => {
       if (event.type === "assistant.delta" && typeof event.payload?.text === "string") {
@@ -178,6 +193,10 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
         }
         await delivery.push(event.payload.text);
       }
+      if (["execution.failed", "execution.cancelled"].includes(event.type)) {
+        await deliveries.get(event.executionId)?.fail();
+        deliveries.delete(event.executionId);
+      }
       if (["execution.completed", "execution.failed", "execution.cancelled"].includes(event.type)) await whatsapp.channel.setPresence(session.externalConversationId, "paused");
     },
     version: "phase-6",
@@ -185,7 +204,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     runtimeDiagnostics: async () => {
       const providers = await runtime.providerHealth();
       const providerSummary = Object.entries(providers).map(([id, availability]) => `${id}=${availability.available ? "available" : availability.reason}`).join(", ");
-      return `Providers: ${providerSummary || "none"}\nSessions: ${runtime.sessionHealth().length}\nStreaming: ${config.streamingDelivery.minChars} chars / ${config.streamingDelivery.maxIntervalMs} ms / ${config.streamingDelivery.maxMessagesPerExecution} messages`;
+      return `Providers: ${providerSummary || "none"}\nSessions: ${runtime.sessionHealth().length}\nStreaming: ${config.streamingDelivery.progressAfterMs} ms progress / ${config.streamingDelivery.maxMessagesPerExecution} messages`;
     }
   });
   let whatsapp!: WhatsAppGatewayApplication;
@@ -197,12 +216,13 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     events
   }, {
     env: config.env,
-    onQr: printQr,
+    ...dependencies.whatsapp,
+    onQr: dependencies.whatsapp?.onQr ?? printQr,
     onMessage: async (message, channel) => {
       const result = await controlPlane.handle(message, { id: resolveWhatsAppIdentity(config.env, message.senderId), role: resolveWhatsAppRole(config.env, message.senderId) });
       const delivery = result.metadata?.executionId ? deliveries.get(result.metadata.executionId) : undefined;
       if (delivery && result.metadata?.executionId) {
-        await delivery.complete(result.text);
+        await delivery.complete(result.text, result.origin);
         deliveries.delete(result.metadata.executionId);
       } else await channel.send(message.conversationId, result);
       if (result.metadata?.executionId) controlPlane.markExecutionTransportReply(result.metadata.executionId, true);
@@ -212,13 +232,24 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
       if (message) await channel.send(message.conversationId, { text: formatOperationalError(error, message.conversationId) });
     }
   });
+  if (config.presentation.error) throw new Error(config.presentation.error);
+  const presentationBridge = config.presentation.enabled
+    ? createPresentationBridge({
+      host: "127.0.0.1",
+      port: config.presentation.port,
+      token: config.presentation.token!,
+      readRegistry: () => whatsapp.channel.agentMessageRegistry(),
+      allowedOrigin: "https://web.whatsapp.com"
+    })
+    : undefined;
   return {
     ...whatsapp,
     routes: config.routes,
     runtime,
     controlPlane,
-    start: async () => { await controlPlane.load(); await whatsapp.channel.start(); },
-    stop: async () => { controlPlane.stopAccepting(); await controlPlane.drain(config.timeoutMs); await runtime.close(); await whatsapp.channel.stop(); }
+    presentationBridge,
+    start: async () => { await controlPlane.load(); await whatsapp.channel.start(); await presentationBridge?.start(); },
+    stop: async () => { await presentationBridge?.stop(); controlPlane.stopAccepting(); await controlPlane.drain(config.timeoutMs); await runtime.close(); await whatsapp.channel.stop(); }
   };
 }
 
@@ -273,6 +304,13 @@ function positiveInteger(value: string | undefined, fallback: number): number {
   return parsed;
 }
 
+function nonNegativeInteger(value: string | undefined, fallback: number): number {
+  if (value === undefined || value.trim() === "") return fallback;
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 0) throw new Error(`Invalid non-negative integer configuration value: ${value}`);
+  return parsed;
+}
+
 function resolveFrom(cwd: string, path: string): string {
   return isAbsolute(path) ? resolve(path) : resolve(cwd, path);
 }
@@ -289,6 +327,22 @@ function printQr(qr: string): void {
 function optionalValue(value: string | undefined): string | undefined {
   const trimmed = value?.trim();
   return trimmed || undefined;
+}
+
+function parsePresentationConfig(env: Readonly<Record<string, string | undefined>>): PresentationConfig {
+  const rawEnabled = env.AGENT_REMOTE_PRESENTATION_ENABLED?.trim().toLowerCase();
+  if (rawEnabled !== undefined && rawEnabled !== "" && rawEnabled !== "true" && rawEnabled !== "false") {
+    return { enabled: false, port: 8765, error: "AGENT_REMOTE_PRESENTATION_ENABLED must be true or false" };
+  }
+  const enabled = rawEnabled === "true";
+  const rawPort = env.AGENT_REMOTE_PRESENTATION_PORT?.trim();
+  const port = rawPort ? Number(rawPort) : 8765;
+  if (!Number.isInteger(port) || port <= 0 || port > 65535) {
+    return { enabled, port: 8765, error: "AGENT_REMOTE_PRESENTATION_PORT must be an integer from 1 to 65535" };
+  }
+  const token = optionalValue(env.AGENT_REMOTE_PRESENTATION_TOKEN);
+  if (enabled && !token) return { enabled, port, error: "AGENT_REMOTE_PRESENTATION_TOKEN is required when presentation is enabled" };
+  return { enabled, port, ...(token ? { token } : {}) };
 }
 
 export function resolveWhatsAppRole(env: Readonly<Record<string, string | undefined>>, senderId: string): Role {
