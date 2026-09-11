@@ -116,9 +116,9 @@ export function loadApplicationConfig(
     claudeModel,
     codexModel,
     streamingDelivery: {
-      minChars: positiveInteger(env.AGENT_REMOTE_STREAM_MIN_CHARS, 120),
-      maxIntervalMs: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_INTERVAL_MS, 1500),
-      maxMessagesPerExecution: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_MESSAGES, 8)
+      progressAfterMs: nonNegativeInteger(env.AGENT_REMOTE_PROGRESS_AFTER_MS, 0),
+      progressText: optionalValue(env.AGENT_REMOTE_PROGRESS_TEXT) ?? "Sigo trabajando…",
+      maxMessagesPerExecution: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_MESSAGES, 2)
     }
   };
 }
@@ -156,15 +156,13 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
       const executionId = response.metadata?.executionId;
       const delivery = executionId ? deliveries.get(executionId) : undefined;
       if (delivery) {
-        await delivery.complete(response.text);
+        await delivery.complete(response.text, response.origin);
         deliveries.delete(executionId!);
       } else await whatsapp.channel.send(session.externalConversationId, response);
       if (executionId) controlPlane.markExecutionTransportReply(executionId, true);
     },
     onExecutionAccepted: async (session, message) => {
       await whatsapp.channel.setPresence(session.externalConversationId, "composing");
-      await whatsapp.channel.send(session.externalConversationId, { text: "⏳ Recibido. Procesando…", replyTo: message.replyReference ?? { channel: message.channel, conversationId: message.conversationId, messageId: message.id, senderId: message.senderId } });
-      controlPlane.markExecutionTransportReply(message.id);
     },
     onExecutionEvent: async (session, _message, event) => {
       if (event.type === "assistant.delta" && typeof event.payload?.text === "string") {
@@ -178,6 +176,10 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
         }
         await delivery.push(event.payload.text);
       }
+      if (["execution.failed", "execution.cancelled"].includes(event.type)) {
+        await deliveries.get(event.executionId)?.fail();
+        deliveries.delete(event.executionId);
+      }
       if (["execution.completed", "execution.failed", "execution.cancelled"].includes(event.type)) await whatsapp.channel.setPresence(session.externalConversationId, "paused");
     },
     version: "phase-6",
@@ -185,7 +187,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     runtimeDiagnostics: async () => {
       const providers = await runtime.providerHealth();
       const providerSummary = Object.entries(providers).map(([id, availability]) => `${id}=${availability.available ? "available" : availability.reason}`).join(", ");
-      return `Providers: ${providerSummary || "none"}\nSessions: ${runtime.sessionHealth().length}\nStreaming: ${config.streamingDelivery.minChars} chars / ${config.streamingDelivery.maxIntervalMs} ms / ${config.streamingDelivery.maxMessagesPerExecution} messages`;
+      return `Providers: ${providerSummary || "none"}\nSessions: ${runtime.sessionHealth().length}\nStreaming: ${config.streamingDelivery.progressAfterMs} ms progress / ${config.streamingDelivery.maxMessagesPerExecution} messages`;
     }
   });
   let whatsapp!: WhatsAppGatewayApplication;
@@ -202,7 +204,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
       const result = await controlPlane.handle(message, { id: resolveWhatsAppIdentity(config.env, message.senderId), role: resolveWhatsAppRole(config.env, message.senderId) });
       const delivery = result.metadata?.executionId ? deliveries.get(result.metadata.executionId) : undefined;
       if (delivery && result.metadata?.executionId) {
-        await delivery.complete(result.text);
+        await delivery.complete(result.text, result.origin);
         deliveries.delete(result.metadata.executionId);
       } else await channel.send(message.conversationId, result);
       if (result.metadata?.executionId) controlPlane.markExecutionTransportReply(result.metadata.executionId, true);
@@ -270,6 +272,13 @@ function positiveInteger(value: string | undefined, fallback: number): number {
   if (value === undefined || value.trim() === "") return fallback;
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed <= 0) throw new Error(`Invalid positive integer configuration value: ${value}`);
+  return parsed;
+}
+
+function nonNegativeInteger(value: string | undefined, fallback: number): number {
+  if (value === undefined || value.trim() === "") return fallback;
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 0) throw new Error(`Invalid non-negative integer configuration value: ${value}`);
   return parsed;
 }
 

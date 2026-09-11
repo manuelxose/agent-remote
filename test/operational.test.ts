@@ -36,16 +36,28 @@ test("loads routes and composes the existing developer-agent graph", async () =>
   await application.stop();
 });
 
-test("loads bounded realtime delivery settings", () => {
+test("loads final-only WhatsApp delivery settings", () => {
   const config = loadApplicationConfig({
     AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
-    AGENT_REMOTE_STREAM_MIN_CHARS: "32",
-    AGENT_REMOTE_STREAM_MAX_INTERVAL_MS: "250",
+    AGENT_REMOTE_PROGRESS_AFTER_MS: "250",
+    AGENT_REMOTE_PROGRESS_TEXT: "Sigo trabajando…",
     AGENT_REMOTE_STREAM_MAX_MESSAGES: "4",
     WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
     WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
   }, process.cwd());
-  assert.deepEqual(config.streamingDelivery, { minChars: 32, maxIntervalMs: 250, maxMessagesPerExecution: 4 });
+  assert.deepEqual(config.streamingDelivery, { progressAfterMs: 250, progressText: "Sigo trabajando…", maxMessagesPerExecution: 4 });
+  const defaults = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd());
+  assert.deepEqual(defaults.streamingDelivery, { progressAfterMs: 0, progressText: "Sigo trabajando…", maxMessagesPerExecution: 2 });
+  assert.throws(() => loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_PROGRESS_AFTER_MS: "-1",
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd()), /non-negative integer/);
 });
 
 test("application control-plane state survives restart without reinitialization", async () => {
@@ -137,6 +149,7 @@ test("doctor reports unavailable providers instead of passing them", async () =>
   assert.equal(report.find(check => check.name === "Claude CLI")?.status, "FAIL");
   assert.equal(report.find(check => check.name === "Codex CLI")?.status, "FAIL");
   assert.match(report.find(check => check.name === "Routes")?.message ?? "", /1 route/);
+  assert.match(report.find(check => check.name === "Streaming delivery")?.message ?? "", /0 ms.*2 messages/);
 });
 
 test("doctor reports malformed control-plane state as a failure", async () => {
