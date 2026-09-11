@@ -87,6 +87,18 @@ test("Codex builds exec JSON argv and parses JSONL thread and final message", as
   assert.deepEqual(spec.argv, ["exec", "--json", "--sandbox", "workspace-write", "--skip-git-repo-check", "resume", "codex-thread", "--", request.prompt]);
 });
 
+test("Claude and Codex pass explicitly resolved models to their CLIs", async () => {
+  const claudeCalls: any[] = [];
+  const claude = createClaudeAdapter(async () => "/bin/claude");
+  await claude.execute({ ...request, model: "claude-sonnet-configured" }, { ...context, processRunner: { run: async (spec: any) => { claudeCalls.push(spec); return { stdout: JSON.stringify({ type: "result", session_id: "s", result: "ok" }), stderr: "", exitCode: 0, signal: null, durationMs: 1 }; } } });
+  assert.deepEqual(claudeCalls[0].argv, ["-p", "--output-format", "json", "--add-dir", process.cwd(), "--model", "claude-sonnet-configured", "--", request.prompt]);
+
+  let codexSpec: any;
+  const codex = createCodexAdapter(async () => "/bin/codex");
+  await codex.execute({ ...request, model: "codex-luna-configured" }, { ...context, processRunner: { run: async (spec: any) => { codexSpec = spec; return { stdout: `${JSON.stringify({ type: "thread.started", thread_id: "s" })}\n${JSON.stringify({ type: "item.completed", item: { type: "agent_message", text: "ok" } })}`, stderr: "", exitCode: 0, signal: null, durationMs: 1 }; } } });
+  assert.deepEqual(codexSpec.argv, ["exec", "--json", "--sandbox", "workspace-write", "--skip-git-repo-check", "--model", "codex-luna-configured", "--", request.prompt]);
+});
+
 test("Copilot uses an exact UUID session ID and silent prompt mode", async () => {
   let spec: any;
   const sessionId = "00000000-0000-4000-8000-000000000000";

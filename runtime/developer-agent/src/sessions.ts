@@ -13,6 +13,7 @@ export interface DeveloperSessionStore {
   load(): Promise<void>;
   get(key: string): Promise<DeveloperSessionState | undefined>;
   set(key: string, state: DeveloperSessionState): Promise<void>;
+  delete?(key: string): Promise<void>;
 }
 
 export class DeveloperSessionStateError extends Error {
@@ -33,6 +34,10 @@ export class InMemoryDeveloperSessionStore implements DeveloperSessionStore {
 
   async set(key: string, state: DeveloperSessionState): Promise<void> {
     this.sessions.set(key, state);
+  }
+
+  async delete(key: string): Promise<void> {
+    this.sessions.delete(key);
   }
 }
 
@@ -72,6 +77,19 @@ export class JsonDeveloperSessionStore implements DeveloperSessionStore {
       await writeFile(temporaryPath, `${JSON.stringify(Object.fromEntries(snapshot), null, 2)}\n`, "utf8");
       await rename(temporaryPath, this.path);
       this.sessions.set(key, state);
+    });
+    this.writeQueue = current.catch(() => undefined);
+    await current;
+  }
+
+  async delete(key: string): Promise<void> {
+    await this.load();
+    const current = this.writeQueue.then(async () => {
+      this.sessions.delete(key);
+      await mkdir(dirname(this.path), { recursive: true });
+      const temporaryPath = `${this.path}.tmp`;
+      await writeFile(temporaryPath, `${JSON.stringify(Object.fromEntries(this.sessions), null, 2)}\n`, "utf8");
+      await rename(temporaryPath, this.path);
     });
     this.writeQueue = current.catch(() => undefined);
     await current;

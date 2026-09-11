@@ -18,8 +18,10 @@ export interface DoctorDependencies {
 
 export async function runDoctor(config: ApplicationConfig, dependencies: DoctorDependencies = defaults()): Promise<DoctorCheck[]> {
   const checks: DoctorCheck[] = [];
+  checks.push({ name: "Gateway", status: "PASS", message: "composition is available" });
   try { parseWhatsAppConfig(config.env); checks.push({ name: "Configuration", status: "PASS", message: "environment is valid" }); }
   catch (error) { checks.push({ name: "Configuration", status: "FAIL", message: messageOf(error) }); }
+  checks.push({ name: "WhatsApp", status: config.env.WHATSAPP_AUTH_PATH ? "PASS" : "FAIL", message: config.env.WHATSAPP_AUTH_PATH ? "configuration is present" : "WHATSAPP_AUTH_PATH is required" });
   const routeCount = Object.keys(config.routes).length;
   checks.push({ name: "Routes", status: routeCount > 0 ? "PASS" : "FAIL", message: `${routeCount} route${routeCount === 1 ? "" : "s"} loaded from ${config.routesPath}` });
   checks.push(await pathCheck("WhatsApp auth", config.env.WHATSAPP_AUTH_PATH, true));
@@ -28,7 +30,9 @@ export async function runDoctor(config: ApplicationConfig, dependencies: DoctorD
     config.workspaceRoots.forEach(root => policy.assertPath(root));
     checks.push({ name: "Workspace roots", status: "PASS", message: `${config.workspaceRoots.length} approved root${config.workspaceRoots.length === 1 ? "" : "s"}` });
   } catch (error) { checks.push({ name: "Workspace roots", status: "FAIL", message: messageOf(error) }); }
-  checks.push(await pathCheck("Session storage", config.sessionPath, true));
+  checks.push(await pathCheck("Persistence", config.controlPlanePath, true));
+  checks.push(await pathCheck("Conversation store", config.controlPlanePath, true));
+  checks.push(await pathCheck("Session store", config.sessionPath, true));
   checks.push({ name: "Graphify", status: await exists(join(config.cwd, "graphify-out", "graph.json")) ? "PASS" : "WARN", message: "graphify-out/graph.json" });
   for (const [label, executable] of [["Claude CLI", "claude"], ["Codex CLI", "codex"], ["Copilot CLI", "copilot"]] as const) {
     const path = await dependencies.resolveExecutable(executable, config.env[`AGENT_REMOTE_${executable.toUpperCase()}_EXECUTABLE`]);
@@ -39,6 +43,10 @@ export async function runDoctor(config: ApplicationConfig, dependencies: DoctorD
       } catch (error) {
         checks.push({ name: label, status: "WARN", message: `${path} found, but --version failed: ${messageOf(error)}` });
       }
+    }
+    if (executable === "claude" || executable === "codex") {
+      const model = config.env[`AGENT_REMOTE_${executable.toUpperCase()}_MODEL`]?.trim();
+      checks.push({ name: `${label.replace(" CLI", "")} configured model`, status: model ? "PASS" : "FAIL", message: model ? `${executable} model is configured` : `AGENT_REMOTE_${executable.toUpperCase()}_MODEL is required` });
     }
   }
   return checks;

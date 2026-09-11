@@ -5,6 +5,7 @@ export interface DeveloperAgentRequest {
   prompt: string;
   conversationId: string;
   sessionId?: string;
+  model?: string;
   timeoutMs: number;
   maxOutputBytes: number;
 }

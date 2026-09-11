@@ -5,6 +5,7 @@ export interface WhatsAppConfig {
   allowSelfMessages: boolean;
   reconnectBaseDelayMs: number;
   reconnectMaxDelayMs: number;
+  maxResponseChars: number;
 }
 
 export class WhatsAppConfigurationError extends Error {
@@ -30,7 +31,8 @@ export function parseWhatsAppConfig(env: Readonly<Record<string, string | undefi
     allowedChats: parseList(env.WHATSAPP_ALLOWED_CHATS),
     allowSelfMessages: parseBoolean(env.WHATSAPP_ALLOW_SELF_MESSAGES, false),
     reconnectBaseDelayMs,
-    reconnectMaxDelayMs
+    reconnectMaxDelayMs,
+    maxResponseChars: parsePositiveInteger(env.WHATSAPP_MAX_RESPONSE_CHARS, 4000)
   };
 }
 

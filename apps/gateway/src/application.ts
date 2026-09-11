@@ -6,6 +6,7 @@ import { isAbsolute, resolve } from "node:path";
 import qrcode from "qrcode-terminal";
 import type { ConversationAgent, Message, Route } from "../../../packages/core/src/index.js";
 import { InMemoryConversationStore } from "../../../packages/conversations/src/index.js";
+import { ConfiguredModelPolicy, ControlPlane, JsonControlPlaneStore, type Role } from "../../../packages/control-plane/src/index.js";
 import { InMemoryEventBus } from "../../../packages/events/src/index.js";
 import { ConfigurationRouter } from "../../../packages/routing/src/index.js";
 import { createRestrictedDeveloperCapabilities, type LocalDeveloperOperations } from "../../../packages/security/src/index.js";
@@ -31,40 +32,19 @@ export interface ApplicationConfig {
   sessionPath: string;
   timeoutMs: number;
   maxOutputBytes: number;
+  controlPlanePath: string;
+  maxQueueDepth: number;
+  rateLimitPerMinute: number;
+  claudeModel?: string;
+  codexModel?: string;
 }
 
 export interface AgentRemoteApplication extends WhatsAppGatewayApplication {
   readonly routes: Readonly<Record<string, Route>>;
   readonly runtime: DeveloperAgentRuntime;
+  readonly controlPlane: ControlPlane;
   start(): Promise<void>;
   stop(): Promise<void>;
-}
-
-export type OneNumberCommand =
-  | { kind: "init" }
-  | { kind: "agent"; agent: "claude" | "codex"; prompt: string };
-
-export type OneNumberCommandAction = "initialize" | "workspace" | "agent" | "usage" | "ignore";
-
-export function parseOneNumberCommand(text: string): OneNumberCommand | undefined {
-  const command = text.trim();
-  if (/^\/init$/i.test(command)) return { kind: "init" };
-  const match = command.match(/^\/(claude|codex)(?:\s+(.+))$/is);
-  if (!match) return undefined;
-  return { kind: "agent", agent: match[1].toLowerCase() as "claude" | "codex", prompt: match[2].trim() };
-}
-
-export function oneNumberCommandAction(
-  conversationId: string,
-  text: string,
-  initializedConversations: ReadonlySet<string>
-): OneNumberCommandAction {
-  const command = text.trim();
-  if (/^\/init$/i.test(command)) return "initialize";
-  if (!initializedConversations.has(conversationId)) return "ignore";
-  if (/^\/workspace$/i.test(command)) return "workspace";
-  if (/^\/(claude|codex)$/i.test(command)) return "usage";
-  return parseOneNumberCommand(command)?.kind === "agent" ? "agent" : "ignore";
 }
 
 export function loadRoutes(path: string): Record<string, Route> {
@@ -114,13 +94,17 @@ export function loadApplicationConfig(
     defaultWorkspaceRoot,
     sessionPath: resolveFrom(cwd, env.AGENT_REMOTE_SESSION_PATH ?? "data/developer-agent-sessions.json"),
     timeoutMs: positiveInteger(env.AGENT_REMOTE_TIMEOUT_MS, 120_000),
-    maxOutputBytes: positiveInteger(env.AGENT_REMOTE_MAX_OUTPUT_BYTES, 64 * 1024)
+    maxOutputBytes: positiveInteger(env.AGENT_REMOTE_MAX_OUTPUT_BYTES, 64 * 1024),
+    controlPlanePath: resolveFrom(cwd, env.AGENT_REMOTE_CONTROL_PLANE_PATH ?? "data/control-plane.json"),
+    maxQueueDepth: positiveInteger(env.AGENT_REMOTE_MAX_QUEUE_DEPTH, 8),
+    rateLimitPerMinute: positiveInteger(env.AGENT_REMOTE_RATE_LIMIT_PER_MINUTE, 60),
+    claudeModel: optionalValue(env.AGENT_REMOTE_CLAUDE_MODEL),
+    codexModel: optionalValue(env.AGENT_REMOTE_CODEX_MODEL)
   };
 }
 
 export function createApplication(config: ApplicationConfig): AgentRemoteApplication {
   const events = new InMemoryEventBus();
-  const initializedConversations = new Set<string>();
   const capabilities = createRestrictedDeveloperCapabilities(config.workspaceRoots, localOperations());
   const runtime = new DeveloperAgentRuntime(capabilities, {
     adapters: {
@@ -135,7 +119,22 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     maxOutputBytes: config.maxOutputBytes
   });
   const agents = Object.fromEntries(["claude", "codex", "copilot"].map(id => [id, createAgent(id)]));
-  const whatsapp = createWhatsAppGateway({
+  const controlPlane = new ControlPlane({
+    repositories: new JsonControlPlaneStore(config.controlPlanePath),
+    agents,
+    runtimes: { "developer-agent": runtime },
+    workspacePolicy: capabilities.policy,
+    defaultWorkspace: config.defaultWorkspaceRoot,
+    modelPolicy: new ConfiguredModelPolicy({ claude: config.claudeModel ? { sonnet: config.claudeModel } : {}, codex: config.codexModel ? { luna: config.codexModel } : {} }),
+    maxQueueDepth: config.maxQueueDepth,
+    rateLimitPerMinute: config.rateLimitPerMinute,
+    resetProviderSession: (session, agent) => runtime.resetSession(session.channel, session.logicalSessionId, agent, session.workspace),
+    onExecutionResponse: async (session, response) => { await whatsapp.channel.send(session.externalConversationId, response); },
+    version: "phase-5",
+    diagnostics: () => "Run the gateway doctor command for provider and persistence diagnostics."
+  });
+  let whatsapp!: WhatsAppGatewayApplication;
+  whatsapp = createWhatsAppGateway({
     conversations: new InMemoryConversationStore(),
     router: new ConfigurationRouter(config.routes),
     runtimes: { "developer-agent": runtime },
@@ -144,33 +143,9 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
   }, {
     env: config.env,
     onQr: printQr,
-    onCommand: async (payload, channel, gateway) => {
-      const message = messageFromPayload(payload);
-      if (!message) return false;
-      const action = oneNumberCommandAction(message.conversationId, message.text, initializedConversations);
-      if (action === "ignore") return true;
-      if (action === "initialize") {
-        initializedConversations.add(message.conversationId);
-        await channel.send(message.conversationId, { text: "✅ One-number mode ready.\n\n/claude <prompt> — Claude Code\n/codex <prompt> — Codex\n/workspace — show workspace" });
-        return true;
-      }
-      if (action === "workspace") {
-        await channel.send(message.conversationId, { text: `Workspace: ${formatWorkspaceCommand(message.conversationId, config.routes, config.defaultWorkspaceRoot)}` });
-        return true;
-      }
-      if (action === "usage") {
-        await channel.send(message.conversationId, { text: "Uso: /claude <prompt> o /codex <prompt>" });
-        return true;
-      }
-      const command = parseOneNumberCommand(message.text);
-      if (!command || command.kind !== "agent") return true;
-      await gateway.handle({ ...message, text: command.prompt }, {
-        id: `whatsapp-one-number-${command.agent}`,
-        runtime: "developer-agent",
-        agent: command.agent,
-        workspaceRoot: config.defaultWorkspaceRoot
-      });
-      return true;
+    onMessage: async (message, channel) => {
+      const result = await controlPlane.handle(message, { id: message.senderId, role: roleFor(config.env, message.senderId) });
+      await channel.send(message.conversationId, result);
     },
     onError: async (error, payload, channel) => {
       const message = messageFromPayload(payload);
@@ -181,8 +156,9 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     ...whatsapp,
     routes: config.routes,
     runtime,
-    start: () => whatsapp.channel.start(),
-    stop: () => whatsapp.channel.stop()
+    controlPlane,
+    start: async () => { await controlPlane.load(); await whatsapp.channel.start(); },
+    stop: async () => { controlPlane.stopAccepting(); await controlPlane.drain(config.timeoutMs); await whatsapp.channel.stop(); }
   };
 }
 
@@ -242,6 +218,21 @@ function printQr(qr: string): void {
   qrcode.generate(qr, { small: true });
 }
 
+function optionalValue(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed || undefined;
+}
+
+function roleFor(env: Readonly<Record<string, string | undefined>>, senderId: string): Role {
+  const owners = parseList(env.AGENT_REMOTE_OWNER_IDS ?? env.WHATSAPP_ALLOWED_USERS);
+  const operators = parseList(env.AGENT_REMOTE_OPERATOR_IDS);
+  const viewers = parseList(env.AGENT_REMOTE_VIEWER_IDS);
+  if (owners.includes(senderId)) return "owner";
+  if (operators.includes(senderId)) return "operator";
+  if (viewers.includes(senderId)) return "viewer";
+  return "owner";
+}
+
 function messageFromPayload(payload: unknown): Message | undefined {
   if (isMessage(payload)) return payload;
   return translateWhatsAppMessage(payload) ?? undefined;
@@ -250,10 +241,6 @@ function messageFromPayload(payload: unknown): Message | undefined {
 function isMessage(value: unknown): value is Message {
   if (!value || typeof value !== "object") return false;
   const message = value as Partial<Message>;
-  return typeof message.id === "string"
-    && typeof message.conversationId === "string"
-    && typeof message.channel === "string"
-    && typeof message.senderId === "string"
-    && typeof message.text === "string"
-    && message.receivedAt instanceof Date;
+  return typeof message.id === "string" && typeof message.conversationId === "string" && typeof message.channel === "string"
+    && typeof message.senderId === "string" && typeof message.text === "string" && message.receivedAt instanceof Date;
 }

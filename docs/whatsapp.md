@@ -18,7 +18,7 @@ The adapter fails closed when both allowlists are empty. A configured user list 
 
 ## Startup and shutdown
 
-The gateway composition helper returns both the `Gateway` and `WhatsAppChannel`:
+The gateway composition helper returns the `Gateway` and `WhatsAppChannel`; the application composition root also wires the channel-neutral control plane:
 
 ```ts
 const { gateway, channel } = createWhatsAppGateway(dependencies, {
@@ -36,4 +36,8 @@ Health snapshots contain only lifecycle status, transition time, reconnect attem
 
 ## Message boundary
 
-Incoming messages are translated to the channel-neutral core `Message` model. The adapter supplies sender ID, conversation ID, optional group ID, text/caption, timestamp, and basic attachment descriptors. It ignores self-sent messages, broadcast/status traffic, unsupported textless payloads, and Baileys request-ID replay traffic. The gateway remains responsible for publishing `MessageReceived`, route resolution, runtime execution, and delivering the resulting `AgentResponse` through the channel.
+Incoming messages are translated to the channel-neutral core `Message` model. The adapter supplies sender ID, conversation ID, optional group ID, text/caption, timestamp, and basic attachment descriptors. It ignores self-sent messages, broadcast/status traffic, unsupported textless payloads, and Baileys request-ID replay traffic. The application callback passes the translated message to the channel-neutral control plane and sends its `CommandResult` or agent result through WhatsApp. Future Telegram/Web adapters can invoke the same control-plane entry point with their own core `Message` values.
+
+## Control-plane commands
+
+Use `/help` for the registry-generated list. The first-contact restriction allows only `/help`, `/init`, `/status`, and `/whoami` before initialization. Initialize with `/init [name]`, select an agent with `/claude`, `/codex`, or `/copilot`, then send ordinary text. `/chats`, `/chat <name|id>`, `/rename`, and `/close` manage owner-scoped logical chats. `/model` exposes configured aliases, `/workspace` and `/workspaces` enforce approved roots, and `/running`, `/cancel`, `/retry`, and `/reset confirm` manage execution state.

@@ -44,6 +44,21 @@ test("authorized incoming messages reach the supplied gateway handler", async ()
   assert.equal(channel.health().status, "connected");
 });
 
+test("long responses are split at the configured WhatsApp size limit", async () => {
+  const events = new FakeEvents();
+  const sent: unknown[] = [];
+  const socket = { ev: events, async sendMessage(...args: unknown[]) { sent.push(args); return undefined; }, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net", WHATSAPP_MAX_RESPONSE_CHARS: "4" }),
+    onMessage: async () => {}, loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }), createSocket: () => socket
+  });
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  await channel.send("chat@s.whatsapp.net", { text: "abcdefghij" });
+  assert.deepEqual(sent.map(args => (args as any[])[1].text), ["abcd", "efgh", "ij"]);
+  await channel.stop();
+});
+
 test("unauthorized messages are logged and do not reach the gateway handler", async () => {
   const events = new FakeEvents();
   const received: unknown[] = [];

@@ -48,6 +48,12 @@ export class DeveloperAgentRuntime implements AgentRuntime {
       : { available: false as const, reason: "adapter-not-configured" as const, executable: agentId };
   }
 
+  async resetSession(channel: string, conversationId: string, agentId: string, workspaceRoot: string): Promise<void> {
+    const workingDirectory = this.capabilities.policy.assertPath(workspaceRoot);
+    const key = createDeveloperSessionKey(channel, conversationId, agentId, workingDirectory);
+    await this.options.sessions.delete?.(key);
+  }
+
   async execute(context: ConversationContext, agent: ConversationAgent): Promise<AgentResponse> {
     if (context.route.runtime !== this.type || agent.type !== this.type || agent.id !== context.route.agent) throw new Error("Developer runtime received a mismatched developer agent");
     const workspaceRoot = context.execution.workspaceRoot ?? context.route.workspaceRoot ?? this.options.defaultWorkspaceRoot;
@@ -94,6 +100,7 @@ export class DeveloperAgentRuntime implements AgentRuntime {
         prompt: context.message.text,
         conversationId: context.conversation.id,
         sessionId: session?.nativeSessionId,
+        model: context.execution.metadata?.model,
         timeoutMs: this.options.timeoutMs ?? 120_000,
         maxOutputBytes: this.options.maxOutputBytes ?? 64 * 1024
       }, {

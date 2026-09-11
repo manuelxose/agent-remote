@@ -3,9 +3,9 @@
 ## System shape
 
 ```text
-Messaging Channel -> Conversation Core -> Router -> Agent Runtime -> Agent
-        ^                                                        |
-        +---------------- Channel response ---------------------+
+Messaging Channel -> Core Message -> Control Plane -> Agent Runtime -> Agent
+        ^                         |                         |
+        +------ neutral result --+---- durable state --------+
 ```
 
 The local process hosts the gateway, worker, in-memory event bus, routing configuration, and registered adapters. Channels translate transport concerns; the core owns conversation semantics; runtimes enforce trust policies; agents integrate with local or future chatbot behavior.
@@ -17,6 +17,7 @@ apps/gateway       composition root / message ingress and egress
 apps/worker        composition root / event and execution worker
 packages/core      domain contracts and errors
 packages/conversations conversation lifecycle/context assembly
+packages/control-plane command registry, state machine, policy, queue, persistence
 packages/routing   configuration-driven route resolution
 packages/events    event contracts and in-memory bus
 packages/agents    agent registry and shared agent contracts
@@ -31,7 +32,7 @@ integrations/talkaris future registration placeholder only
 
 Imports point toward the domain. `packages/core` imports no channel, CLI, or chatbot code. `channels/whatsapp` depends on channel/core contracts only. Developer adapters are reachable only from the developer runtime composition root; chatbot runtime has no developer adapter imports.
 
-The in-memory conversation store keys state by `(channel, conversationId)`, so two channels can use the same provider-local ID without sharing state. The gateway fails with `GatewayConfigurationError` when a route names an unregistered runtime or agent.
+Transport conversations and managed logical conversations are distinct. The control plane persists owner, external conversation, logical session, active agent, model alias, workspace, provider bindings, state, and idempotency. The legacy gateway still supports route-based adapter tests; the application composition root uses the control plane for conversational commands.
 
 ## Core contracts
 
@@ -51,7 +52,7 @@ The developer-agent runtime can use shell, filesystem, git, and the configured d
 
 Developer-agent process execution crosses the boundary through Node's direct child-process API with an executable and typed argv array. It never invokes a shell or turns WhatsApp text into a command string. The runner validates the working directory before spawn, captures bounded stdout/stderr, and reports exit code, signal, timeout, cancellation, output-limit, and lifecycle information.
 
-Conversation session mappings use a collision-free JSON tuple of channel, conversation ID, adapter ID, and canonical approved workspace root. The default JSON path is `data/developer-agent-sessions.json`; trusted runtime setup may supply another store/path. Each value stores only the native session ID; agent and workspace identity remain in the lookup key. Agent or workspace changes therefore start a new native session, and same-session turns are serialized.
+Conversation session mappings use a collision-free JSON tuple of channel, logical conversation ID, adapter ID, and canonical approved workspace root. The default native-session path is `data/developer-agent-sessions.json`; managed control-plane state defaults to `data/control-plane.json`. Managed writes are versioned and atomic; malformed state fails closed.
 
 Unavailable CLIs produce structured `executable-missing` diagnostics without installation or fallback. Adapter, workspace, malformed-output, timeout, cancellation, non-zero-exit, output-limit, and execution failures remain stable runtime failure states and are surfaced as safe gateway responses.
 
@@ -77,8 +78,16 @@ Telegram or Web Chat plugs in by implementing `Channel` in a separate channel pa
 
 ## WhatsApp transport
 
-The WhatsApp adapter uses Baileys behind a transport-only `WhatsAppChannel`. It owns local multi-file auth persistence, QR notification, reconnect and shutdown state, allowlist checks, message translation, response delivery, and a sanitized health snapshot. The gateway composition helper supplies `Gateway.handle` as the inbound callback and exposes the channel health object to the application.
+The WhatsApp adapter uses Baileys behind a transport-only `WhatsAppChannel`. It owns local multi-file auth persistence, QR notification, reconnect and shutdown state, allowlist checks, message translation, response delivery, and a sanitized health snapshot. The gateway composition helper can supply the neutral control-plane callback; the adapter has no slash-command, managed-session, or provider-product logic.
+
+## Control-plane state and policy
+
+Commands are registered once with category, usage, initialization requirement, role, and description metadata. The registry generates `/help`, while the state machine enforces pre-init restrictions and explicit agent selection. Roles are `owner`, `operator`, and `viewer`; role mapping is configuration-driven.
+
+Claude's `sonnet` and Codex's `luna` are product aliases. Their underlying model identifiers must be configured explicitly. Adapters receive only the resolved model value through fixed provider argv options. Workspaces resolve through configured aliases or the approved-root policy.
+
+Each logical conversation has an independent bounded queue and abort controller. Duplicate inbound IDs are persisted and ignored. Control-plane lifecycle events include command, state, queue, execution, duplicate, and security events without secrets or provider stderr.
 
 ## Intentionally not implemented
 
-Production-grade credential storage, distributed events, long-lived interactive CLI processes, and multi-tenant scheduling are deferred until their concrete requirements exist. Developer-agent CLI execution and JSON session persistence are implemented as trusted local runtime capabilities. WhatsApp account authentication remains local to the configured auth directory.
+Production-grade credential storage, distributed events, long-lived interactive CLI processes, and multi-tenant scheduling are deferred until their concrete requirements exist. Developer-agent CLI execution and both native-session and managed-control-plane JSON persistence are implemented as trusted local runtime capabilities. WhatsApp account authentication remains local to the configured auth directory.

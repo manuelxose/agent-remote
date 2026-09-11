@@ -63,7 +63,8 @@ test("configuration fails closed and requires an auth path", () => {
     allowedChats: [],
     allowSelfMessages: false,
     reconnectBaseDelayMs: 1000,
-    reconnectMaxDelayMs: 30000
+    reconnectMaxDelayMs: 30000,
+    maxResponseChars: 4000
   });
 });
 

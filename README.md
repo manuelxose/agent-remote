@@ -1,6 +1,6 @@
 # agent-remote
 
-Local WhatsApp gateway for isolated Claude, Codex, and Copilot developer-agent conversations. Baileys handles transport; the existing channel-neutral gateway, router, workspace policy, process runner, and persistent provider sessions remain the execution path.
+Local conversational control plane for isolated Claude, Codex, and Copilot developer-agent conversations. WhatsApp is the first transport; command semantics, durable managed chats, authorization, queues, and model/workspace policy are channel-neutral.
 
 ## Install
 
@@ -24,7 +24,11 @@ Use an absolute or repository-relative path for `AGENT_REMOTE_WORKSPACE_ROOTS`. 
 - `AGENT_REMOTE_WORKSPACE_ROOTS`: comma-separated approved workspace roots.
 - `AGENT_REMOTE_DEFAULT_WORKSPACE`: fallback workspace for routes without `workspaceRoot`.
 - `AGENT_REMOTE_SESSION_PATH`: persistent provider session map.
+- `AGENT_REMOTE_CONTROL_PLANE_PATH`: versioned managed-chat, binding, selection, and idempotency state (default `data/control-plane.json`).
 - `AGENT_REMOTE_TIMEOUT_MS` and `AGENT_REMOTE_MAX_OUTPUT_BYTES`: execution limits.
+- `AGENT_REMOTE_MAX_QUEUE_DEPTH`: bounded pending executions per logical chat.
+- `AGENT_REMOTE_CLAUDE_MODEL` and `AGENT_REMOTE_CODEX_MODEL`: underlying provider model identifiers for the `sonnet` and `luna` aliases.
+- `AGENT_REMOTE_OWNER_IDS`, `AGENT_REMOTE_OPERATOR_IDS`, and `AGENT_REMOTE_VIEWER_IDS`: optional role mappings; allowlisted users default to owners.
 - `AGENT_REMOTE_<CLAUDE|CODEX|COPILOT>_EXECUTABLE`: optional absolute executable override, including a `/mnt/c/.../*.exe` path when the gateway runs in WSL.
 
 Route keys use the existing resolver contract: `whatsapp-<conversation-id>`. Each value selects one provider and workspace without recompiling:
@@ -47,7 +51,7 @@ npm run doctor
 npm start
 ```
 
-`doctor` reports `PASS`, `WARN`, or `FAIL` for configuration, routes, auth/session paths, approved workspaces, Graphify, and the installed Claude/Codex/Copilot executables. Missing CLIs are never reported as ready.
+`doctor` reports `PASS`, `WARN`, or `FAIL` for configuration, routes, WhatsApp, persistence, approved workspaces, Graphify, provider executables, and configured models. Missing CLIs or models are never reported as ready.
 
 ## WhatsApp pairing
 
@@ -58,23 +62,23 @@ npm start
 
 Baileys persists credentials under `WHATSAPP_AUTH_PATH`; later restarts reuse them and should not require pairing again. The account must be in `WHATSAPP_ALLOWED_USERS` and the chat must have a route. An authorized but unmapped chat receives its conversation ID and the required route key in the response.
 
-Create three groups containing the linked account and the owner account, then send a message in each. After the first authorized message, use its printed conversation ID to add three route entries for Claude, Codex, and Copilot. Keep each provider, workspace, session, and execution queue separate.
+After pairing, an authorized chat is initialized with `/init [name]`. Managed chats, agents, workspaces, provider sessions, queues, and state are controlled by the central command registry.
 
 ## Provider behavior
 
 The application checks the installed provider executables at runtime and invokes them through their existing adapters with direct argv, bounded output, timeouts, approved workspaces, and persisted native sessions. It does not install missing CLIs.
 
-Normal messages are forwarded as prompts. Provider failures return a short WhatsApp-safe message; detailed stderr and lifecycle diagnostics remain in logs. `/status`-style commands are not required for normal operation.
+Normal messages are forwarded as prompts after `/init` and explicit agent selection. Provider failures return a short WhatsApp-safe message; detailed stderr and lifecycle diagnostics remain in logs.
 
 Send `/workspace` from an authorized WhatsApp chat to see the effective workspace path. It is the same local project directory used by this gateway and the provider CLI; the command does not expose file contents.
 
-With one-number mode enabled, initialize only the chat you want to use with `/init`, then select the provider inline: `/claude <prompt>` or `/codex <prompt>`. The two provider sessions and queues stay isolated even though both commands use the same WhatsApp conversation. Other chats, or this chat after a restart until `/init` is sent again, are ignored before any agent request is created.
+The command set includes `/help`, `/init [name]`, `/chats`, `/chat`, `/rename`, `/close`, `/claude`, `/codex`, `/copilot`, `/agent`, `/model`, `/workspace`, `/workspaces`, `/status`, `/running`, `/cancel`, `/retry`, `/reset confirm`, `/history`, `/doctor`, `/health`, `/version`, and `/whoami`. Before initialization, only `/help`, `/init`, `/status`, and `/whoami` work. After `/claude` or `/codex`, ordinary messages continue in that provider's isolated session.
 
 Only one gateway process may use the WhatsApp auth directory at a time. A second `npm start` exits with the existing process ID instead of creating a competing WhatsApp session.
 
 ## Restart and troubleshooting
 
-Stop with `Ctrl-C` or `SIGTERM`; the gateway closes the socket cleanly. Start it again without deleting `WHATSAPP_AUTH_PATH`, then send another message. Provider session mappings remain in `AGENT_REMOTE_SESSION_PATH` and are keyed by channel, conversation, agent, and canonical workspace.
+Stop with `Ctrl-C` or `SIGTERM`; the gateway closes the socket cleanly. Start it again without deleting `WHATSAPP_AUTH_PATH`, then send another message. Managed conversation state remains in `AGENT_REMOTE_CONTROL_PLANE_PATH`; native provider session mappings remain in `AGENT_REMOTE_SESSION_PATH` and are keyed by channel, logical conversation, agent, and canonical workspace. Both stores use atomic JSON replacement.
 
 If startup fails, run `npm run doctor`. Check the auth path, owner/chat allowlists, route key spelling, approved workspace roots, and that the provider executable is on `PATH`. Never paste auth files or provider credentials into logs or Git.
 

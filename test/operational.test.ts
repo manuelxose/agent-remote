@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createApplication, formatWorkspaceCommand, loadApplicationConfig, loadRoutes, oneNumberCommandAction, parseOneNumberCommand } from "../dist/apps/gateway/src/application.js";
+import { createApplication, formatWorkspaceCommand, loadApplicationConfig, loadRoutes } from "../dist/apps/gateway/src/application.js";
 import { formatOperationalError, runDoctor } from "../dist/apps/gateway/src/doctor.js";
 import { RouteNotFoundError } from "../dist/packages/routing/src/index.js";
 import { acquireProcessLock } from "../dist/apps/gateway/src/lock.js";
@@ -33,6 +33,30 @@ test("loads routes and composes the existing developer-agent graph", async () =>
   assert.equal(application.routes["whatsapp-chat"].agent, "codex");
   assert.deepEqual(await application.runtime.getAvailability("codex"), await application.runtime.getAvailability("codex"));
   await application.stop();
+});
+
+test("application control-plane state survives restart without reinitialization", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-restart-"));
+  const routesPath = join(directory, "routes.json");
+  const controlPlanePath = join(directory, "control-plane.json");
+  await writeFile(routesPath, JSON.stringify({}));
+  const env = {
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_CONTROL_PLANE_PATH: controlPlanePath,
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  };
+  const first = createApplication(loadApplicationConfig(env, process.cwd()));
+  const message = (id: string, text: string) => ({ id, channel: "whatsapp", conversationId: "chat", senderId: "owner@s.whatsapp.net", text, receivedAt: new Date() });
+  await first.controlPlane.handle(message("init", "/init backend-api"), { id: "owner@s.whatsapp.net", role: "owner" });
+  await first.controlPlane.handle(message("claude", "/claude"), { id: "owner@s.whatsapp.net", role: "owner" });
+  await first.stop();
+  const second = createApplication(loadApplicationConfig(env, process.cwd()));
+  const status = await second.controlPlane.handle(message("status", "/status"), { id: "owner@s.whatsapp.net", role: "owner" });
+  assert.match(status.text, /backend-api/);
+  assert.match((await second.controlPlane.handle(message("agent", "/agent"), { id: "owner@s.whatsapp.net", role: "owner" })).text, /claude/);
+  await second.stop();
 });
 
 test("requires approved workspace roots before composing the gateway", () => {
@@ -83,23 +107,6 @@ test("workspace command reports the route workspace or the configured default", 
   };
   assert.equal(formatWorkspaceCommand("known-chat", routes, "/workspace/default"), "/workspace/default");
   assert.equal(formatWorkspaceCommand("known", routes, "/workspace/default"), "/workspace/specific");
-});
-
-test("parses one-number initialization and agent commands", () => {
-  assert.deepEqual(parseOneNumberCommand("/init"), { kind: "init" });
-  assert.deepEqual(parseOneNumberCommand("/claude revisa el proyecto"), { kind: "agent", agent: "claude", prompt: "revisa el proyecto" });
-  assert.deepEqual(parseOneNumberCommand("/CODEX ejecuta npm test"), { kind: "agent", agent: "codex", prompt: "ejecuta npm test" });
-  assert.equal(parseOneNumberCommand("hola"), undefined);
-});
-
-test("scopes one-number commands to initialized conversations", () => {
-  const initialized = new Set(["self-chat"]);
-  assert.equal(oneNumberCommandAction("other-chat", "/claude hello", initialized), "ignore");
-  assert.equal(oneNumberCommandAction("self-chat", "/claude hello", initialized), "agent");
-  assert.equal(oneNumberCommandAction("self-chat", "/workspace", initialized), "workspace");
-  assert.equal(oneNumberCommandAction("self-chat", "/claude", initialized), "usage");
-  assert.equal(oneNumberCommandAction("other-chat", "/init", initialized), "initialize");
-  assert.equal(oneNumberCommandAction("self-chat", "ordinary text", initialized), "ignore");
 });
 
 test("prevents a second local gateway from using the WhatsApp session", async () => {

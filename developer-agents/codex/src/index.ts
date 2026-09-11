@@ -16,7 +16,7 @@ export function createCodexAdapter(resolve: Resolver = () => resolveDeveloperExe
       const availability = await getAvailability();
       if (!availability.available) return { status: "failed", reason: "unavailable" };
       try { context.workspacePolicy.assertPath(context.workingDirectory); } catch { return { status: "failed", reason: "workspace-rejected" }; }
-      const argv = ["exec", "--json", "--sandbox", "workspace-write", "--skip-git-repo-check", ...(request.sessionId ? ["resume", request.sessionId] : []), "--", request.prompt];
+      const argv = ["exec", "--json", "--sandbox", "workspace-write", "--skip-git-repo-check", ...(request.model ? ["--model", request.model] : []), ...(request.sessionId ? ["resume", request.sessionId] : []), "--", request.prompt];
       let process;
       try {
         process = await context.processRunner.run({ executable: availability.executable, argv, workingDirectory: context.workingDirectory, signal: context.signal, timeoutMs: request.timeoutMs, maxOutputBytes: request.maxOutputBytes });

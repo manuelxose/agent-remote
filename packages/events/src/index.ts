@@ -6,7 +6,23 @@ export const eventTypes = [
   "ApprovalRequested",
   "AgentExecutionCompleted",
   "AgentExecutionFailed",
-  "MessageSent"
+  "MessageSent",
+  "conversation.initialized",
+  "conversation.closed",
+  "conversation.renamed",
+  "agent.selected",
+  "model.resolved",
+  "workspace.selected",
+  "command.received",
+  "command.completed",
+  "command.rejected",
+  "execution.queued",
+  "execution.started",
+  "execution.completed",
+  "execution.failed",
+  "execution.cancelled",
+  "message.duplicate",
+  "security.denied"
 ] as const;
 
 export type DomainEventType = (typeof eventTypes)[number];

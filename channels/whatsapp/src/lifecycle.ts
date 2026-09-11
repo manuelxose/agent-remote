@@ -188,9 +188,11 @@ export class WhatsAppChannel implements Channel {
   async send(conversationId: string, response: AgentResponse): Promise<void> {
     if (this.legacyDeliver) return this.legacyDeliver(conversationId, response.text);
     if (!this.socket || this.status !== "connected") throw new WhatsAppNotConnectedError();
-    const sent = await this.socket.sendMessage(conversationId, { text: response.text });
-    const messageId = messageIdFromPayload(sent);
-    if (messageId) this.rememberOutboundMessage(messageId);
+    for (const chunk of chunkText(response.text, this.config?.maxResponseChars ?? 4000)) {
+      const sent = await this.socket.sendMessage(conversationId, { text: chunk });
+      const messageId = messageIdFromPayload(sent);
+      if (messageId) this.rememberOutboundMessage(messageId);
+    }
   }
 
   private async connect(): Promise<void> {
@@ -353,4 +355,11 @@ function isSelfSentPayload(value: unknown): boolean {
   if (!value || typeof value !== "object") return false;
   const key = (value as Record<string, unknown>).key;
   return Boolean(key && typeof key === "object" && (key as Record<string, unknown>).fromMe === true);
+}
+
+function chunkText(text: string, maxChars: number): string[] {
+  if (text.length <= maxChars) return [text];
+  const chunks: string[] = [];
+  for (let offset = 0; offset < text.length; offset += maxChars) chunks.push(text.slice(offset, offset + maxChars));
+  return chunks;
 }
