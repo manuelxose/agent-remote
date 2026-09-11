@@ -6,7 +6,7 @@ Phase 3 — Developer-agent runtime (implemented)
 
 ## Status
 
-Implementation and documentation complete; full verification passed with 81 tests (79 passed, 0 failed, 2 skipped).
+Implementation and documentation complete; full verification passed with 85 tests (83 passed, 0 failed, 2 skipped).
 
 ## Decisions
 
@@ -18,8 +18,8 @@ Implementation and documentation complete; full verification passed with 81 test
 ## Verification
 
 - `npm run build`: passes.
-- `npm test`: 81 tests, 79 passed, 0 failed, 2 skipped; Claude and Copilot skipped as unavailable, and installed Codex smoke completed successfully with the bounded 60-second limit.
-- `graphify update .`: completed successfully; graph refreshed to 473 nodes and 676 edges.
+- `npm test`: 85 tests, 83 passed, 0 failed, 2 skipped; Claude and Copilot skipped as unavailable, and installed Codex smoke completed successfully with the bounded 60-second limit.
+- `graphify update .`: completed successfully; graph refreshed to 474 nodes and 677 edges.
 - Static tests confirm core and WhatsApp dependency boundaries.
 - Runtime tests confirm chatbot allowlisting, developer workspace restrictions, collision-free tuple keys, and canonical equivalent-path queue serialization.
 - Baileys channel tests cover translation, attachment metadata, allowlists, QR handling, auth persistence, reconnect, logout, shutdown, health, and gateway response delivery.

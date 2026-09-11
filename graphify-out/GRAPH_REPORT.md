@@ -1,16 +1,16 @@
 # Graph Report - developer-agent-runtime  (2026-09-11)
 
 ## Corpus Check
-- 57 files · ~23,176 words
+- 57 files · ~23,479 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 473 nodes · 676 edges · 39 communities (23 shown, 10 thin omitted)
+- 474 nodes · 677 edges · 39 communities (23 shown, 10 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `72da968d`
+- Built from commit: `940b1428`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -62,12 +62,12 @@
 10. `AgentResponse` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `GatewayDependencies` --references--> `ConversationStore`  [EXTRACTED]
-  apps/gateway/src/index.ts → packages/conversations/src/index.ts
-- `GatewayDependencies` --references--> `Channel`  [EXTRACTED]
+- `GatewayDependencies` --references--> `AgentRuntime`  [EXTRACTED]
   apps/gateway/src/index.ts → packages/core/src/index.ts
-- `GatewayDependencies` --references--> `RouteResolver`  [EXTRACTED]
-  apps/gateway/src/index.ts → packages/routing/src/index.ts
+- `GatewayDependencies` --references--> `ConversationAgent`  [EXTRACTED]
+  apps/gateway/src/index.ts → packages/core/src/index.ts
+- `GatewayDependencies` --references--> `EventBus`  [EXTRACTED]
+  apps/gateway/src/index.ts → packages/events/src/index.ts
 - `Worker` --references--> `EventBus`  [EXTRACTED]
   apps/worker/src/index.ts → packages/events/src/index.ts
 - `WhatsAppChannel` --implements--> `Channel`  [EXTRACTED]
@@ -84,7 +84,7 @@ Nodes (27): Gateway, createWhatsAppGateway(), WhatsAppGatewayApplication, WhatsA
 
 ### Community 1 - "developer-agent/src/index.ts"
 Cohesion: 0.10
-Nodes (21): GatewayDependencies, Worker, AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, DomainEvent, DomainEventType (+13 more)
+Nodes (20): Worker, AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, DomainEvent, DomainEventType, EventBus (+12 more)
 
 ### Community 3 - "contracts.ts"
 Cohesion: 0.06
@@ -107,8 +107,8 @@ Cohesion: 0.12
 Nodes (15): Adapters, Architecture, Availability, Claude, Codex, Contracts, Copilot, Developer-agent runtime design (+7 more)
 
 ### Community 8 - "translate.ts"
-Cohesion: 0.27
-Nodes (13): attachmentKinds, extractAttachments(), extractText(), isNonConversation(), numberValue(), objectValue(), RawMessageKey, RawWhatsAppMessage (+5 more)
+Cohesion: 0.31
+Nodes (12): attachmentKinds, extractAttachments(), extractText(), isNonConversation(), numberValue(), objectValue(), RawMessageKey, RawWhatsAppMessage (+4 more)
 
 ### Community 9 - "agent-remote architecture"
 Cohesion: 0.15
@@ -167,8 +167,8 @@ Cohesion: 0.11
 Nodes (17): Changes, Changes, Changes, Changes, Changes, Concerns, Review Fix Round 1, Review Fix Round 2 (+9 more)
 
 ### Community 37 - "core/src/index.ts"
-Cohesion: 0.10
-Nodes (16): GatewayConfigurationError, talkarisAgent, ConversationStore, createConversationContext(), InMemoryConversationStore, AgentType, Channel, Conversation (+8 more)
+Cohesion: 0.11
+Nodes (18): GatewayConfigurationError, GatewayDependencies, talkarisAgent, ConversationStore, createConversationContext(), InMemoryConversationStore, AgentType, Channel (+10 more)
 
 ## Knowledge Gaps
 - **154 isolated node(s):** `defaultLogger`, `RawMessageKey`, `RawWhatsAppMessage`, `attachmentKinds`, `Resolver` (+149 more)
@@ -179,16 +179,16 @@ Nodes (16): GatewayConfigurationError, talkarisAgent, ConversationStore, createC
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `AgentResponse` connect `developer-agent/src/index.ts` to `lifecycle.ts`, `core/src/index.ts`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Why does `EventBus` connect `developer-agent/src/index.ts` to `contracts.ts`, `core/src/index.ts`, `ToolRegistry`?**
   _High betweenness centrality (0.026) - this node is a cross-community bridge._
 - **Why does `WhatsAppChannel` connect `lifecycle.ts` to `core/src/index.ts`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
+  _High betweenness centrality (0.021) - this node is a cross-community bridge._
 - **What connects `defaultLogger`, `RawMessageKey`, `RawWhatsAppMessage` to the rest of the system?**
   _154 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `lifecycle.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.07402597402597402 - nodes in this community are weakly interconnected._
 - **Should `developer-agent/src/index.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.10256410256410256 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0975609756097561 - nodes in this community are weakly interconnected._
 - **Should `contracts.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.0611764705882353 - nodes in this community are weakly interconnected._

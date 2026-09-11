@@ -251,19 +251,6 @@
       "source_location": "L11"
     },
     {
-      "id": "apps_gateway_src_index_gatewaydependencies",
-      "label": "GatewayDependencies",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "gatewaydependencies",
-      "source_file": "apps/gateway/src/index.ts",
-      "source_location": "L6"
-    },
-    {
       "id": "apps_worker_src_index_worker",
       "label": "Worker",
       "_callable": true,
@@ -771,6 +758,19 @@
       "source_location": "L15"
     },
     {
+      "id": "apps_gateway_src_index_gatewaydependencies",
+      "label": "GatewayDependencies",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "gatewaydependencies",
+      "source_file": "apps/gateway/src/index.ts",
+      "source_location": "L6"
+    },
+    {
       "id": "packages_conversations_src_index_conversationstore",
       "label": "ConversationStore",
       "_callable": true,
@@ -860,6 +860,19 @@
       "norm_label": "message",
       "source_file": "packages/core/src/index.ts",
       "source_location": "L14"
+    },
+    {
+      "id": "packages_core_src_index_messageattachment",
+      "label": "MessageAttachment",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "messageattachment",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L7"
     },
     {
       "id": "packages_core_src_index_metadata",
@@ -1094,19 +1107,6 @@
       "norm_label": "rawwhatsappmessage",
       "source_file": "channels/whatsapp/src/translate.ts",
       "source_location": "L11"
-    },
-    {
-      "id": "packages_core_src_index_messageattachment",
-      "label": "MessageAttachment",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "translate.ts",
-      "file_type": "code",
-      "norm_label": "messageattachment",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L7"
     },
     {
       "id": "apps_gateway_src_index_gateway_constructor",
@@ -1673,6 +1673,18 @@
       "source_location": "L8"
     },
     {
+      "id": "test_core_test_handlemessage",
+      "label": "handleMessage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "handlemessage()",
+      "source_file": "test/core.test.ts",
+      "source_location": "L9"
+    },
+    {
       "id": "test_whatsapp_gateway_test_end",
       "label": "end()",
       "_callable": true,
@@ -2018,7 +2030,7 @@
       "file_type": "code",
       "norm_label": "execute()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L288"
+      "source_location": "L314"
     },
     {
       "id": "test_developer_agent_runtime_test_fakeadapter",
@@ -2054,7 +2066,7 @@
       "file_type": "code",
       "norm_label": "get()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L216"
+      "source_location": "L234"
     },
     {
       "id": "test_developer_agent_runtime_test_getavailability",
@@ -2066,7 +2078,7 @@
       "file_type": "code",
       "norm_label": "getavailability()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L287"
+      "source_location": "L313"
     },
     {
       "id": "test_developer_agent_runtime_test_isavailable",
@@ -2078,7 +2090,7 @@
       "file_type": "code",
       "norm_label": "isavailable()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L286"
+      "source_location": "L312"
     },
     {
       "id": "test_developer_agent_runtime_test_load",
@@ -2090,7 +2102,7 @@
       "file_type": "code",
       "norm_label": "load()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L216"
+      "source_location": "L234"
     },
     {
       "id": "test_developer_agent_runtime_test_set",
@@ -2102,7 +2114,7 @@
       "file_type": "code",
       "norm_label": "set()",
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L216"
+      "source_location": "L234"
     },
     {
       "id": "test_gateway_test_execute",
@@ -2558,7 +2570,19 @@
       "file_type": "code",
       "norm_label": "resolvedeveloperexecutable()",
       "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L109"
+      "source_location": "L123"
+    },
+    {
+      "id": "test_developer_agent_process_test_aborted",
+      "label": "aborted()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 35,
+      "community_name": "developer-agent-process.test.ts",
+      "file_type": "code",
+      "norm_label": "aborted()",
+      "source_file": "test/developer-agent-process.test.ts",
+      "source_location": "L113"
     },
     {
       "id": "test_developer_agent_process_test_script",
@@ -2703,18 +2727,6 @@
       "norm_label": ".resolve()",
       "source_file": "packages/routing/src/index.ts",
       "source_location": "L4"
-    },
-    {
-      "id": "test_core_test_handlemessage",
-      "label": "handleMessage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "handlemessage()",
-      "source_file": "test/core.test.ts",
-      "source_location": "L9"
     },
     {
       "id": "runtime_developer_agent_src_sessions_developersessionstateerror_constructor",
@@ -3242,6 +3254,17 @@
       "file_type": "code",
       "norm_label": "developer-agent/src/index.ts",
       "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "test_core_test",
+      "label": "core.test.ts",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "core.test.ts",
+      "source_file": "test/core.test.ts",
       "source_location": "L1"
     },
     {
@@ -5033,17 +5056,6 @@
       "source_location": "L1"
     },
     {
-      "id": "test_core_test",
-      "label": "core.test.ts",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "core.test.ts",
-      "source_file": "test/core.test.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "test_developer_agent_smoke_test",
       "label": "developer-agent-smoke.test.ts",
       "_origin": "ast",
@@ -6396,7 +6408,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -6408,7 +6420,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L77",
+      "source_location": "L78",
       "weight": 1.0
     },
     {
@@ -6456,7 +6468,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L112",
+      "source_location": "L126",
       "weight": 1.0
     },
     {
@@ -6564,7 +6576,7 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L119",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -11233,17 +11245,6 @@
     },
     {
       "source": "runtime_developer_agent_src_process",
-      "target": "runtime_developer_agent_src_process_resolvedeveloperexecutable",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L109",
-      "weight": 1.0
-    },
-    {
-      "source": "runtime_developer_agent_src_process",
       "target": "runtime_developer_agent_src_process_execfile",
       "relation": "contains",
       "_origin": "ast",
@@ -11251,6 +11252,17 @@
       "confidence_score": 1.0,
       "source_file": "runtime/developer-agent/src/process.ts",
       "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "runtime_developer_agent_src_process",
+      "target": "runtime_developer_agent_src_process_resolvedeveloperexecutable",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/developer-agent/src/process.ts",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -11563,6 +11575,17 @@
     },
     {
       "source": "test_developer_agent_process_test",
+      "target": "test_developer_agent_process_test_aborted",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/developer-agent-process.test.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "test_developer_agent_process_test",
       "target": "test_developer_agent_process_test_script",
       "relation": "contains",
       "_origin": "ast",
@@ -11613,7 +11636,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L216",
+      "source_location": "L234",
       "weight": 1.0
     },
     {
@@ -11624,7 +11647,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L216",
+      "source_location": "L234",
       "weight": 1.0
     },
     {
@@ -11635,40 +11658,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L216",
-      "weight": 1.0
-    },
-    {
-      "source": "test_developer_agent_runtime_test",
-      "target": "test_developer_agent_runtime_test_isavailable",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L286",
-      "weight": 1.0
-    },
-    {
-      "source": "test_developer_agent_runtime_test",
-      "target": "test_developer_agent_runtime_test_getavailability",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L287",
-      "weight": 1.0
-    },
-    {
-      "source": "test_developer_agent_runtime_test",
-      "target": "test_developer_agent_runtime_test_execute",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "test/developer-agent-runtime.test.ts",
-      "source_location": "L288",
+      "source_location": "L234",
       "weight": 1.0
     },
     {
@@ -11680,6 +11670,39 @@
       "confidence_score": 1.0,
       "source_file": "test/developer-agent-runtime.test.ts",
       "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "test_developer_agent_runtime_test",
+      "target": "test_developer_agent_runtime_test_isavailable",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/developer-agent-runtime.test.ts",
+      "source_location": "L312",
+      "weight": 1.0
+    },
+    {
+      "source": "test_developer_agent_runtime_test",
+      "target": "test_developer_agent_runtime_test_getavailability",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/developer-agent-runtime.test.ts",
+      "source_location": "L313",
+      "weight": 1.0
+    },
+    {
+      "source": "test_developer_agent_runtime_test",
+      "target": "test_developer_agent_runtime_test_execute",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/developer-agent-runtime.test.ts",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -13399,5 +13422,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "72da968d5fe5a3dc8c17e03ded09ae2fa11e10ce"
+  "built_at_commit": "940b142873fd74158f01dd43a7ba227da130720f"
 }

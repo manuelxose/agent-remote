@@ -60,9 +60,9 @@
     "semantic_hash": ""
   },
   "developer-agents/codex/src/index.ts": {
-    "mtime": 1789067421.972128,
-    "seen": 1789067463.5243356,
-    "ast_hash": "3b678b8ff0f9b787b2c1b0b8703b62a3",
+    "mtime": 1789113320.3737335,
+    "seen": 1789113584.1466415,
+    "ast_hash": "90e6c70614d5ebe3b3b396a80c4fcf30",
     "semantic_hash": ""
   },
   "developer-agents/copilot/src/index.ts": {
@@ -132,9 +132,9 @@
     "semantic_hash": ""
   },
   "runtime/developer-agent/src/index.ts": {
-    "mtime": 1789071703.6173308,
-    "seen": 1789071811.868922,
-    "ast_hash": "aaf75ae9effbc8ed5d8061ca636c7cf5",
+    "mtime": 1789113451.893431,
+    "seen": 1789113584.1466649,
+    "ast_hash": "214f606c4467b62b334fe2863033f50f",
     "semantic_hash": ""
   },
   "runtime/developer-agent/src/sessions.ts": {
@@ -144,9 +144,9 @@
     "semantic_hash": ""
   },
   "test/adapters.test.ts": {
-    "mtime": 1789067768.177495,
-    "seen": 1789067808.734021,
-    "ast_hash": "4d8055662bb37c92e6629fa2cb2a46df",
+    "mtime": 1789113305.3117888,
+    "seen": 1789113584.146672,
+    "ast_hash": "7f7c0122d94fb3a77b0f9d7abe964292",
     "semantic_hash": ""
   },
   "test/boundaries.test.ts": {
@@ -234,15 +234,15 @@
     "semantic_hash": ""
   },
   ".planning/ROADMAP.md": {
-    "mtime": 1789072021.4684546,
-    "seen": 1789113219.7694728,
-    "ast_hash": "e319eb830fe82be4feac7630d4413496",
+    "mtime": 1789113578.294566,
+    "seen": 1789113584.1467083,
+    "ast_hash": "7833b239281b521132888665d225a21d",
     "semantic_hash": ""
   },
   ".planning/STATE.md": {
-    "mtime": 1789072020.3455105,
-    "seen": 1789113219.7694764,
-    "ast_hash": "59113899983ce664f38414960ce324cf",
+    "mtime": 1789113578.294566,
+    "seen": 1789113584.14671,
+    "ast_hash": "ea5be615fffe9e2573c2fa6148b2f171",
     "semantic_hash": ""
   },
   ".planning/phases/01-architectural-foundation/01-01-PLAN.md": {
@@ -270,9 +270,9 @@
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-10-developer-agent-runtime.md": {
-    "mtime": 1789071755.9935133,
-    "seen": 1789071811.8689442,
-    "ast_hash": "6a9100a1de53a9170a8c5d0a1d9cbf8c",
+    "mtime": 1789113257.0086112,
+    "seen": 1789113584.1467226,
+    "ast_hash": "905ac8ceddbae6159da1cd0b895e148f",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-09-10-whatsapp-channel-adapter.md": {
@@ -306,15 +306,15 @@
     "semantic_hash": ""
   },
   "runtime/developer-agent/src/process.ts": {
-    "mtime": 1789113094.0634863,
-    "seen": 1789113219.7694201,
-    "ast_hash": "5551d4c960f9458ed9de2e1a2b0cb110",
+    "mtime": 1789113451.893431,
+    "seen": 1789113584.1466677,
+    "ast_hash": "34585ae8dd655159e923e1380b800df1",
     "semantic_hash": ""
   },
   "test/developer-agent-process.test.ts": {
-    "mtime": 1789113078.6995237,
-    "seen": 1789113219.7694345,
-    "ast_hash": "9d1283218369cddd45deaeb652b1aa97",
+    "mtime": 1789113451.893431,
+    "seen": 1789113584.1466777,
+    "ast_hash": "c9fdefde0850cd4e096dc08245907753",
     "semantic_hash": ""
   },
   ".superpowers/sdd/2026-09-10-developer-agent-runtime/task-3-report.md": {
@@ -330,15 +330,15 @@
     "semantic_hash": ""
   },
   "test/developer-agent-runtime.test.ts": {
-    "mtime": 1789071681.0623438,
-    "seen": 1789071811.8689277,
-    "ast_hash": "dcef42c86f11685459f6095bd2cc789c",
+    "mtime": 1789113494.967906,
+    "seen": 1789113584.14668,
+    "ast_hash": "794a34dfe4286fcbe7c4c01601c22f1c",
     "semantic_hash": ""
   },
   "test/developer-agent-smoke.test.ts": {
-    "mtime": 1789113193.3282628,
-    "seen": 1789113219.769442,
-    "ast_hash": "b07b31324f99ffe48f94bc346e2042fe",
+    "mtime": 1789113451.893431,
+    "seen": 1789113584.1466842,
+    "ast_hash": "d329efdc86c66da7bda7a3ad4eb24161",
     "semantic_hash": ""
   }
 }
