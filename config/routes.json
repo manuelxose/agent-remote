@@ -1,4 +1,4 @@
-{
+    {
   "whatsapp-group-claude": {
     "id": "whatsapp-group-claude",
     "runtime": "developer-agent",
