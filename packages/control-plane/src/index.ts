@@ -46,19 +46,19 @@ export class ConfiguredModelPolicy implements ModelPolicy {
   resolve(agent: string, alias = this.defaults[agent]): ModelResolution | undefined {
     const selected = alias ?? (agent === "claude" ? "sonnet" : agent === "codex" ? "luna" : undefined);
     if (!selected) return undefined;
-    const providerModel = this.aliases[agent]?.[selected];
-    if (!providerModel && alias === undefined && this.defaults[agent] === undefined && !this.aliases[agent]?.[selected]) return undefined;
-    if (!providerModel) throw new ModelUnavailableError(agent, selected);
-    return { alias: selected, providerModel };
+    const configured = Object.entries(this.aliases[agent] ?? {}).find(([name, model]) => name === selected || model === selected);
+    if (!configured && alias === undefined && this.defaults[agent] === undefined) return undefined;
+    if (!configured) throw new ModelUnavailableError(agent, selected);
+    return { alias: configured[0], providerModel: configured[1] };
   }
 
   describe(agent: string): string {
     const alias = this.defaults[agent] ?? (agent === "claude" ? "sonnet" : agent === "codex" ? "luna" : "default");
     const providerModel = this.aliases[agent]?.[alias];
-    return providerModel ? `${alias} (${providerModel})` : "provider default";
+    return providerModel ?? "provider default";
   }
 
-  list(agent: string): readonly string[] { return Object.keys(this.aliases[agent] ?? {}).sort(); }
+  list(agent: string): readonly string[] { return [...new Set(Object.values(this.aliases[agent] ?? {}))].sort(); }
 }
 
 export interface CommandContext {
@@ -129,6 +129,7 @@ export interface ControlPlaneOptions {
   resetProviderSession?: (session: ManagedConversation, agent: string) => Promise<void>;
   onExecutionResponse?: (session: ManagedConversation, response: AgentResponse) => Promise<void>;
   onExecutionAccepted?: (session: ManagedConversation, message: Message) => Promise<void>;
+  defaultAgent?: string;
   rateLimitPerMinute?: number;
 }
 
@@ -168,9 +169,12 @@ export class ControlPlane {
       if (!(await this.claim(message, identity))) return this.duplicate(correlationId, identity.id);
       return this.rejected(correlationId, "Malformed command. Use /help to see available commands.");
     }
-    const session = parsed?.name === "init"
+    let session = parsed?.name === "init"
       ? await this.repositories.findByExternal(message.channel, message.conversationId).then(value => value?.ownerId === identity.id ? value : undefined)
       : await this.resolveSession(message, identity);
+    if (!session && roleAtLeast(identity.role, "operator") && (!parsed || ["claude", "codex", "copilot"].includes(parsed.name))) {
+      session = await this.autoInitialize(message, identity, parsed?.name);
+    }
     if (parsed) {
       await this.publish("command.received", correlationId, { name: parsed.name, ownerId: identity.id });
       const definition = this.registry.get(parsed.name);
@@ -234,7 +238,7 @@ export class ControlPlane {
     add("reset", "Start a fresh provider context for the active agent.", "/reset confirm", "SESSION", context => this.reset(context), { requiredRole: "operator", states: ["READY_NO_AGENT", "IDLE", "ERROR"] });
     for (const agent of ["claude", "codex", "copilot"]) add(agent, `Select ${agent} as the active developer agent.`, `/${agent}`, "AGENTS", context => this.selectAgent(context, agent), { requiredRole: "operator", states: ["READY_NO_AGENT", "IDLE", "ERROR"] });
     add("agent", "Show the currently selected agent.", "/agent", "AGENTS", async context => ({ text: `Agent: ${context.session?.activeAgent ?? "none"}` }));
-    add("model", "Show or change the configured provider model.", "/model [allowed-alias]", "AGENTS", context => this.model(context), { requiredRole: "operator", states: ["READY_NO_AGENT", "IDLE", "ERROR"] });
+    add("model", "Show or change the configured provider model.", "/model [provider-model-id]", "AGENTS", context => this.model(context), { requiredRole: "operator", states: ["READY_NO_AGENT", "IDLE", "ERROR"] });
     add("workspace", "Show or change the approved workspace.", "/workspace [use <alias-or-approved-path>]", "WORKSPACE", context => this.workspace(context), { requiredRole: "operator", states: ["READY_NO_AGENT", "IDLE", "ERROR"] });
     add("workspaces", "List approved workspaces.", "/workspaces", "WORKSPACE", context => this.workspaces(context));
     add("status", "Show safe gateway and conversation status.", "/status", "EXECUTION", context => this.status(context), { requiresInitialization: false });
@@ -270,6 +274,26 @@ export class ControlPlane {
     await this.repositories.setSelection(context.identity.id, context.message.channel, session.logicalSessionId);
     await this.publish("conversation.initialized", context.message.id, { logicalSessionId: session.logicalSessionId, ownerId: session.ownerId });
     return { text: `Chat initialized: ${session.displayName}\nWorkspace: ${session.workspace}\nSelect an agent with /claude, /codex, or /copilot.` };
+  }
+
+  private async autoInitialize(message: Message, identity: ControlPlaneIdentity, requestedAgent?: string): Promise<ManagedConversation | undefined> {
+    const workspace = this.resolveWorkspace(this.options.defaultWorkspace);
+    if (!workspace) return undefined;
+    const activeAgent = requestedAgent ?? this.options.defaultAgent ?? "codex";
+    if (!["claude", "codex", "copilot"].includes(activeAgent)) return undefined;
+    const existing = await this.repositories.findByExternal(message.channel, message.conversationId);
+    if (existing) return existing.ownerId === identity.id ? existing : undefined;
+    const now = new Date().toISOString();
+    const session: ManagedConversation = {
+      logicalSessionId: randomUUID(), channel: message.channel, externalConversationId: message.conversationId,
+      ownerId: identity.id, displayName: `${message.channel}-${message.conversationId.slice(0, 12)}`,
+      workspace, activeAgent, providerSessionIds: {}, createdAt: now, updatedAt: now,
+      lastActivityAt: now, status: "IDLE"
+    };
+    await this.repositories.save(session);
+    await this.repositories.setSelection(identity.id, message.channel, session.logicalSessionId);
+    await this.publish("conversation.initialized", message.id, { logicalSessionId: session.logicalSessionId, ownerId: session.ownerId, agent: activeAgent, automatic: true });
+    return session;
   }
 
   private async chats(context: CommandContext): Promise<CommandResult> {
@@ -339,7 +363,7 @@ export class ControlPlane {
       if (context.args) context.session.modelAlias = resolution.alias;
       await this.touch(context.session);
       await this.publish("model.resolved", context.message.id, { logicalSessionId: context.session.logicalSessionId, agent: context.session.activeAgent, alias: resolution.alias });
-      return { text: `${context.session.activeAgent} → ${resolution.alias}` };
+      return { text: `${context.session.activeAgent} → ${resolution.providerModel}` };
     } catch (error) {
       return { text: error instanceof ModelUnavailableError ? `${error.message}\nRun /doctor for details.` : "Configured model is unavailable.\nRun /doctor for details.", status: "error" };
     }
@@ -427,11 +451,10 @@ export class ControlPlane {
         response = { text: "Unable to complete the developer-agent request.", metadata: { agent: agentId, reason: "execution-failed" } };
       }
       await this.finalizeExecution(current, message.id, agentId, response);
-      const channelResponse = { ...response, metadata: { ...response.metadata, replyToMessageId: message.id } };
       if (deferred) {
-        try { await this.options.onExecutionResponse?.(current, channelResponse); } catch {}
+        try { await this.options.onExecutionResponse?.(current, response); } catch {}
       }
-      return channelResponse;
+      return response;
     };
     const result = queue.enqueue(task);
     if (!result.started && result.position < 0) {

@@ -40,4 +40,4 @@ Incoming messages are translated to the channel-neutral core `Message` model. Th
 
 ## Control-plane commands
 
-Use `/help` for the registry-generated list. The first-contact restriction allows only `/help`, `/init`, `/status`, and `/whoami` before initialization. Initialize with `/init [name]`, select an agent with `/claude`, `/codex`, or `/copilot`, then send ordinary text. `/chats`, `/chat <name|id>`, `/rename`, and `/close` manage owner-scoped logical chats. `/model` exposes configured aliases, `/workspace` and `/workspaces` enforce approved roots, and `/running`, `/cancel`, `/retry`, and `/reset confirm` manage execution state.
+Use `/help` for the registry-generated list. Authorized ordinary messages automatically initialize their chat with Codex; `/init [name]` remains available for explicit naming, and `/claude`, `/codex`, or `/copilot` select an agent. `/chats`, `/chat <name|id>`, `/rename`, and `/close` manage owner-scoped logical chats. `/model` exposes configured provider model IDs, `/workspace` and `/workspaces` enforce approved roots, and `/running`, `/cancel`, `/retry`, and `/reset confirm` manage execution state.

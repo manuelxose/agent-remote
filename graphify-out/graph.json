@@ -105,7 +105,7 @@
       "file_type": "code",
       "norm_label": "invalidwhatsapppayloaderror",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L47"
+      "source_location": "L46"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_unauthorizedwhatsappmessageerror",
@@ -118,7 +118,7 @@
       "file_type": "code",
       "norm_label": "unauthorizedwhatsappmessageerror",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L54"
+      "source_location": "L53"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappauthloader",
@@ -131,7 +131,7 @@
       "file_type": "code",
       "norm_label": "whatsappauthloader",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L35"
+      "source_location": "L34"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappauthstate",
@@ -144,7 +144,7 @@
       "file_type": "code",
       "norm_label": "whatsappauthstate",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L34"
+      "source_location": "L33"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel",
@@ -157,7 +157,7 @@
       "file_type": "code",
       "norm_label": "whatsappchannel",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L94"
+      "source_location": "L93"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchanneloptions",
@@ -170,7 +170,7 @@
       "file_type": "code",
       "norm_label": "whatsappchanneloptions",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L38"
+      "source_location": "L37"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappevents",
@@ -183,7 +183,7 @@
       "file_type": "code",
       "norm_label": "whatsappevents",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L27"
+      "source_location": "L26"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsapphealth",
@@ -196,7 +196,7 @@
       "file_type": "code",
       "norm_label": "whatsapphealth",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L14"
+      "source_location": "L13"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsapplogger",
@@ -209,7 +209,7 @@
       "file_type": "code",
       "norm_label": "whatsapplogger",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L21"
+      "source_location": "L20"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappnotconnectederror",
@@ -222,7 +222,7 @@
       "file_type": "code",
       "norm_label": "whatsappnotconnectederror",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L61"
+      "source_location": "L60"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappsocket",
@@ -235,7 +235,7 @@
       "file_type": "code",
       "norm_label": "whatsappsocket",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L33"
+      "source_location": "L32"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappsocketfactory",
@@ -248,7 +248,7 @@
       "file_type": "code",
       "norm_label": "whatsappsocketfactory",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L36"
+      "source_location": "L35"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappstatus",
@@ -261,7 +261,72 @@
       "file_type": "code",
       "norm_label": "whatsappstatus",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L12"
+      "source_location": "L11"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_rawmessagekey",
+      "label": "RawMessageKey",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "rawmessagekey",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L3"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_rawwhatsappmessage",
+      "label": "RawWhatsAppMessage",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "rawwhatsappmessage",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_whatsapptranslationoptions",
+      "label": "WhatsAppTranslationOptions",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "whatsapptranslationoptions",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "packages_core_src_index_message",
+      "label": "Message",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "message",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "packages_core_src_index_messageattachment",
+      "label": "MessageAttachment",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "messageattachment",
+      "source_file": "packages/core/src/index.ts",
+      "source_location": "L7"
     },
     {
       "id": "packages_control_plane_src_persistence_jsoncontrolplanestore",
@@ -327,19 +392,6 @@
       "norm_label": "gatewaydependencies",
       "source_file": "apps/gateway/src/index.ts",
       "source_location": "L6"
-    },
-    {
-      "id": "packages_control_plane_src_index_controlplaneoptions",
-      "label": "ControlPlaneOptions",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "core/src/index.ts",
-      "file_type": "code",
-      "norm_label": "controlplaneoptions",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L117"
     },
     {
       "id": "packages_conversations_src_index_conversationstore",
@@ -485,134 +537,17 @@
       "source_location": "L78"
     },
     {
-      "id": "packages_control_plane_src_index_commandaction",
-      "label": "CommandAction",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "commandaction",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L16"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandcategory",
-      "label": "CommandCategory",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "commandcategory",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L14"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandcontext",
-      "label": "CommandContext",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "commandcontext",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L64"
-    },
-    {
-      "id": "packages_control_plane_src_index_commanddefinition",
-      "label": "CommandDefinition",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "commanddefinition",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L71"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandregistry",
-      "label": "CommandRegistry",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "commandregistry",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L83"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandresult",
-      "label": "CommandResult",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "commandresult",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L17"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandstatus",
-      "label": "CommandStatus",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "commandstatus",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L15"
-    },
-    {
-      "id": "packages_control_plane_src_index_configuredmodelpolicy",
-      "label": "ConfiguredModelPolicy",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "configuredmodelpolicy",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L40"
-    },
-    {
       "id": "packages_control_plane_src_index_controlplane",
       "label": "ControlPlane",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": "controlplane",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L135"
-    },
-    {
-      "id": "packages_control_plane_src_index_controlplaneidentity",
-      "label": "ControlPlaneIdentity",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "controlplaneidentity",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L23"
+      "source_location": "L136"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue",
@@ -621,37 +556,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": "executionqueue",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L532"
-    },
-    {
-      "id": "packages_control_plane_src_index_modelpolicy",
-      "label": "ModelPolicy",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "modelpolicy",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L27"
-    },
-    {
-      "id": "packages_control_plane_src_index_modelresolution",
-      "label": "ModelResolution",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "modelresolution",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L26"
+      "source_location": "L555"
     },
     {
       "id": "packages_control_plane_src_index_modelunavailableerror",
@@ -660,50 +569,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": "modelunavailableerror",
       "source_file": "packages/control-plane/src/index.ts",
       "source_location": "L33"
-    },
-    {
-      "id": "packages_control_plane_src_index_parsedcommand",
-      "label": "ParsedCommand",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "parsedcommand",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L24"
-    },
-    {
-      "id": "packages_control_plane_src_index_role",
-      "label": "Role",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "role",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L13"
-    },
-    {
-      "id": "packages_control_plane_src_persistence_conversationstate",
-      "label": "ConversationState",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "conversationstate",
-      "source_file": "packages/control-plane/src/persistence.ts",
-      "source_location": "L4"
     },
     {
       "id": "packages_control_plane_src_persistence_managedconversation",
@@ -712,37 +582,11 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": "managedconversation",
       "source_file": "packages/control-plane/src/persistence.ts",
       "source_location": "L6"
-    },
-    {
-      "id": "packages_core_src_index_message",
-      "label": "Message",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "message",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L14"
-    },
-    {
-      "id": "developer_agents_claude_src_index_resolver",
-      "label": "Resolver",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "resolver",
-      "source_file": "developer-agents/claude/src/index.ts",
-      "source_location": "L4"
     },
     {
       "id": "developer_agents_codex_src_index_resolver",
@@ -756,45 +600,6 @@
       "norm_label": "resolver",
       "source_file": "developer-agents/codex/src/index.ts",
       "source_location": "L4"
-    },
-    {
-      "id": "developer_agents_copilot_src_index_resolver",
-      "label": "Resolver",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "resolver",
-      "source_file": "developer-agents/copilot/src/index.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "developer_agents_copilot_src_index_sessionidfactory",
-      "label": "SessionIdFactory",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "sessionidfactory",
-      "source_file": "developer-agents/copilot/src/index.ts",
-      "source_location": "L6"
-    },
-    {
-      "id": "runtime_developer_agent_src_contracts_developeragentadapter",
-      "label": "DeveloperAgentAdapter",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "developeragentadapter",
-      "source_file": "runtime/developer-agent/src/contracts.ts",
-      "source_location": "L90"
     },
     {
       "id": "runtime_developer_agent_src_contracts_developeragentavailability",
@@ -888,6 +693,19 @@
       "source_location": "L48"
     },
     {
+      "id": "runtime_developer_agent_src_contracts_developerprocessrunner",
+      "label": "DeveloperProcessRunner",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "contracts.ts",
+      "file_type": "code",
+      "norm_label": "developerprocessrunner",
+      "source_file": "runtime/developer-agent/src/contracts.ts",
+      "source_location": "L79"
+    },
+    {
       "id": "runtime_developer_agent_src_contracts_developerprocessspec",
       "label": "DeveloperProcessSpec",
       "_callable": true,
@@ -899,6 +717,19 @@
       "norm_label": "developerprocessspec",
       "source_file": "runtime/developer-agent/src/contracts.ts",
       "source_location": "L39"
+    },
+    {
+      "id": "runtime_developer_agent_src_process_nodedeveloperprocessrunner",
+      "label": "NodeDeveloperProcessRunner",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "contracts.ts",
+      "file_type": "code",
+      "norm_label": "nodedeveloperprocessrunner",
+      "source_file": "runtime/developer-agent/src/process.ts",
+      "source_location": "L14"
     },
     {
       "id": "runtime_developer_agent_src_sessions_developersessionstate",
@@ -1005,6 +836,19 @@
       "source_location": "L13"
     },
     {
+      "id": "packages_security_src_index_developercapabilities",
+      "label": "DeveloperCapabilities",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "WorkspacePolicy",
+      "file_type": "code",
+      "norm_label": "developercapabilities",
+      "source_file": "packages/security/src/index.ts",
+      "source_location": "L60"
+    },
+    {
       "id": "packages_security_src_index_localdeveloperoperations",
       "label": "LocalDeveloperOperations",
       "_callable": true,
@@ -1055,6 +899,19 @@
       "norm_label": "developerexecutioncontext",
       "source_file": "runtime/developer-agent/src/contracts.ts",
       "source_location": "L13"
+    },
+    {
+      "id": "packages_control_plane_src_index_controlplaneoptions",
+      "label": "ControlPlaneOptions",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 53,
+      "community_name": "AgentResponse",
+      "file_type": "code",
+      "norm_label": "controlplaneoptions",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L117"
     },
     {
       "id": "packages_core_src_index_agentresponse",
@@ -1109,56 +966,56 @@
       "source_location": "L26"
     },
     {
-      "id": "channels_whatsapp_src_translate_rawmessagekey",
-      "label": "RawMessageKey",
+      "id": "developer_agents_claude_src_index_resolver",
+      "label": "Resolver",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "rawmessagekey",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L3"
+      "norm_label": "resolver",
+      "source_file": "developer-agents/claude/src/index.ts",
+      "source_location": "L4"
     },
     {
-      "id": "channels_whatsapp_src_translate_rawwhatsappmessage",
-      "label": "RawWhatsAppMessage",
+      "id": "developer_agents_copilot_src_index_resolver",
+      "label": "Resolver",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "rawwhatsappmessage",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L11"
+      "norm_label": "resolver",
+      "source_file": "developer-agents/copilot/src/index.ts",
+      "source_location": "L5"
     },
     {
-      "id": "channels_whatsapp_src_translate_whatsapptranslationoptions",
-      "label": "WhatsAppTranslationOptions",
+      "id": "developer_agents_copilot_src_index_sessionidfactory",
+      "label": "SessionIdFactory",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "whatsapptranslationoptions",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L17"
+      "norm_label": "sessionidfactory",
+      "source_file": "developer-agents/copilot/src/index.ts",
+      "source_location": "L6"
     },
     {
-      "id": "packages_core_src_index_messageattachment",
-      "label": "MessageAttachment",
+      "id": "runtime_developer_agent_src_contracts_developeragentadapter",
+      "label": "DeveloperAgentAdapter",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "messageattachment",
-      "source_file": "packages/core/src/index.ts",
-      "source_location": "L7"
+      "norm_label": "developeragentadapter",
+      "source_file": "runtime/developer-agent/src/contracts.ts",
+      "source_location": "L90"
     },
     {
       "id": "apps_worker_src_index_worker",
@@ -1167,7 +1024,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "worker",
       "source_file": "apps/worker/src/index.ts",
@@ -1180,7 +1037,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "domainevent",
       "source_file": "packages/events/src/index.ts",
@@ -1193,7 +1050,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "domaineventtype",
       "source_file": "packages/events/src/index.ts",
@@ -1206,7 +1063,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "eventbus",
       "source_file": "packages/events/src/index.ts",
@@ -1219,7 +1076,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "eventhandler",
       "source_file": "packages/events/src/index.ts",
@@ -1232,11 +1089,50 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "inmemoryeventbus",
       "source_file": "packages/events/src/index.ts",
       "source_location": "L44"
+    },
+    {
+      "id": "runtime_developer_agent_src_index_developeragentruntimeoptions",
+      "label": "DeveloperAgentRuntimeOptions",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 58,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "developeragentruntimeoptions",
+      "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "runtime_developer_agent_src_index_resolveddeveloperagentruntimeoptions",
+      "label": "ResolvedDeveloperAgentRuntimeOptions",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 58,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "resolveddeveloperagentruntimeoptions",
+      "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "runtime_developer_agent_src_index_runtimefailurereason",
+      "label": "RuntimeFailureReason",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 58,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "runtimefailurereason",
+      "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L9"
     },
     {
       "id": "packages_tools_src_index_allowlistedtoolregistry",
@@ -1317,82 +1213,147 @@
       "source_location": "L8"
     },
     {
-      "id": "packages_security_src_index_developercapabilities",
-      "label": "DeveloperCapabilities",
+      "id": "packages_control_plane_src_index_commandaction",
+      "label": "CommandAction",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 60,
-      "community_name": "developer-agent/src/index.ts",
+      "community_name": "control-plane/src/index.ts",
       "file_type": "code",
-      "norm_label": "developercapabilities",
-      "source_file": "packages/security/src/index.ts",
-      "source_location": "L60"
+      "norm_label": "commandaction",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L16"
     },
     {
-      "id": "runtime_developer_agent_src_contracts_developerprocessrunner",
-      "label": "DeveloperProcessRunner",
+      "id": "packages_control_plane_src_index_commandcategory",
+      "label": "CommandCategory",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 60,
-      "community_name": "developer-agent/src/index.ts",
+      "community_name": "control-plane/src/index.ts",
       "file_type": "code",
-      "norm_label": "developerprocessrunner",
-      "source_file": "runtime/developer-agent/src/contracts.ts",
-      "source_location": "L79"
-    },
-    {
-      "id": "runtime_developer_agent_src_index_developeragentruntimeoptions",
-      "label": "DeveloperAgentRuntimeOptions",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "developeragentruntimeoptions",
-      "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L11"
-    },
-    {
-      "id": "runtime_developer_agent_src_index_resolveddeveloperagentruntimeoptions",
-      "label": "ResolvedDeveloperAgentRuntimeOptions",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "resolveddeveloperagentruntimeoptions",
-      "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L21"
-    },
-    {
-      "id": "runtime_developer_agent_src_index_runtimefailurereason",
-      "label": "RuntimeFailureReason",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "runtimefailurereason",
-      "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L9"
-    },
-    {
-      "id": "runtime_developer_agent_src_process_nodedeveloperprocessrunner",
-      "label": "NodeDeveloperProcessRunner",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": "nodedeveloperprocessrunner",
-      "source_file": "runtime/developer-agent/src/process.ts",
+      "norm_label": "commandcategory",
+      "source_file": "packages/control-plane/src/index.ts",
       "source_location": "L14"
+    },
+    {
+      "id": "packages_control_plane_src_index_commandcontext",
+      "label": "CommandContext",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "commandcontext",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L64"
+    },
+    {
+      "id": "packages_control_plane_src_index_commanddefinition",
+      "label": "CommandDefinition",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "commanddefinition",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L71"
+    },
+    {
+      "id": "packages_control_plane_src_index_commandresult",
+      "label": "CommandResult",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "commandresult",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "packages_control_plane_src_index_commandstatus",
+      "label": "CommandStatus",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "commandstatus",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "packages_control_plane_src_index_controlplaneidentity",
+      "label": "ControlPlaneIdentity",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "controlplaneidentity",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "packages_control_plane_src_index_modelresolution",
+      "label": "ModelResolution",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "modelresolution",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "packages_control_plane_src_index_parsedcommand",
+      "label": "ParsedCommand",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "parsedcommand",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "packages_control_plane_src_index_role",
+      "label": "Role",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "role",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "packages_control_plane_src_persistence_conversationstate",
+      "label": "ConversationState",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "control-plane/src/index.ts",
+      "file_type": "code",
+      "norm_label": "conversationstate",
+      "source_file": "packages/control-plane/src/persistence.ts",
+      "source_location": "L4"
     },
     {
       "id": "apps_gateway_src_application_applicationconfig",
@@ -1538,6 +1499,32 @@
       "source_location": "L53"
     },
     {
+      "id": "packages_control_plane_src_index_configuredmodelpolicy",
+      "label": "ConfiguredModelPolicy",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 64,
+      "community_name": "ConfiguredModelPolicy",
+      "file_type": "code",
+      "norm_label": "configuredmodelpolicy",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "packages_control_plane_src_index_modelpolicy",
+      "label": "ModelPolicy",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 64,
+      "community_name": "ConfiguredModelPolicy",
+      "file_type": "code",
+      "norm_label": "modelpolicy",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L27"
+    },
+    {
       "id": "channels_whatsapp_src_lifecycle_silentbaileyslogger",
       "label": "SilentBaileysLogger",
       "_callable": true,
@@ -1548,7 +1535,7 @@
       "file_type": "code",
       "norm_label": "silentbaileyslogger",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L68"
+      "source_location": "L67"
     },
     {
       "id": "packages_control_plane_src_persistence_conversationrepository",
@@ -1575,6 +1562,19 @@
       "norm_label": "idempotencyrepository",
       "source_file": "packages/control-plane/src/persistence.ts",
       "source_location": "L46"
+    },
+    {
+      "id": "packages_control_plane_src_index_commandregistry",
+      "label": "CommandRegistry",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 69,
+      "community_name": "CommandRegistry",
+      "file_type": "code",
+      "norm_label": "commandregistry",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L83"
     },
     {
       "id": "apps_gateway_src_index_gateway_constructor",
@@ -1718,7 +1718,7 @@
       "file_type": "code",
       "norm_label": "chunktext()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L397"
+      "source_location": "L364"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_disconnectstatuscode",
@@ -1730,7 +1730,7 @@
       "file_type": "code",
       "norm_label": "disconnectstatuscode()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L364"
+      "source_location": "L331"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_invalidwhatsapppayloaderror_constructor",
@@ -1742,7 +1742,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L48"
+      "source_location": "L47"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_iscoremessage",
@@ -1754,7 +1754,7 @@
       "file_type": "code",
       "norm_label": "iscoremessage()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L372"
+      "source_location": "L339"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_isselfsentpayload",
@@ -1766,7 +1766,7 @@
       "file_type": "code",
       "norm_label": "isselfsentpayload()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L391"
+      "source_location": "L358"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_messageidfrompayload",
@@ -1778,7 +1778,7 @@
       "file_type": "code",
       "norm_label": "messageidfrompayload()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L383"
+      "source_location": "L350"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_unauthorizedwhatsappmessageerror_constructor",
@@ -1790,7 +1790,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L55"
+      "source_location": "L54"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_connect",
@@ -1802,7 +1802,7 @@
       "file_type": "code",
       "norm_label": ".connect()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L209"
+      "source_location": "L198"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_constructor",
@@ -1814,19 +1814,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L115"
-    },
-    {
-      "id": "channels_whatsapp_src_lifecycle_whatsappchannel_getinboundmessage",
-      "label": ".getInboundMessage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "lifecycle.ts",
-      "file_type": "code",
-      "norm_label": ".getinboundmessage()",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L335"
+      "source_location": "L113"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_handleconnectionupdate",
@@ -1838,7 +1826,7 @@
       "file_type": "code",
       "norm_label": ".handleconnectionupdate()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L245"
+      "source_location": "L234"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_handlemessages",
@@ -1850,7 +1838,7 @@
       "file_type": "code",
       "norm_label": ".handlemessages()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L230"
+      "source_location": "L219"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_health",
@@ -1862,7 +1850,7 @@
       "file_type": "code",
       "norm_label": ".health()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L167"
+      "source_location": "L164"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_istrackedoutbound",
@@ -1874,7 +1862,7 @@
       "file_type": "code",
       "norm_label": ".istrackedoutbound()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L311"
+      "source_location": "L300"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_logrejection",
@@ -1886,19 +1874,7 @@
       "file_type": "code",
       "norm_label": ".logrejection()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L347"
-    },
-    {
-      "id": "channels_whatsapp_src_lifecycle_whatsappchannel_pruneinboundmessages",
-      "label": ".pruneInboundMessages()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "lifecycle.ts",
-      "file_type": "code",
-      "norm_label": ".pruneinboundmessages()",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L340"
+      "source_location": "L314"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_pruneoutboundmessageids",
@@ -1910,7 +1886,7 @@
       "file_type": "code",
       "norm_label": ".pruneoutboundmessageids()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L318"
+      "source_location": "L307"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_receive",
@@ -1922,19 +1898,7 @@
       "file_type": "code",
       "norm_label": ".receive()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L176"
-    },
-    {
-      "id": "channels_whatsapp_src_lifecycle_whatsappchannel_rememberinboundmessage",
-      "label": ".rememberInboundMessage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "lifecycle.ts",
-      "file_type": "code",
-      "norm_label": ".rememberinboundmessage()",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L325"
+      "source_location": "L173"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_rememberoutboundmessage",
@@ -1946,7 +1910,7 @@
       "file_type": "code",
       "norm_label": ".rememberoutboundmessage()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L301"
+      "source_location": "L290"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_removelisteners",
@@ -1958,7 +1922,7 @@
       "file_type": "code",
       "norm_label": ".removelisteners()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L356"
+      "source_location": "L323"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_schedulereconnect",
@@ -1970,7 +1934,7 @@
       "file_type": "code",
       "norm_label": ".schedulereconnect()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L281"
+      "source_location": "L270"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_send",
@@ -1982,7 +1946,7 @@
       "file_type": "code",
       "norm_label": ".send()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L195"
+      "source_location": "L188"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_setstatus",
@@ -1994,7 +1958,7 @@
       "file_type": "code",
       "norm_label": ".setstatus()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L296"
+      "source_location": "L285"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_start",
@@ -2006,7 +1970,7 @@
       "file_type": "code",
       "norm_label": ".start()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L141"
+      "source_location": "L139"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappchannel_stop",
@@ -2018,7 +1982,7 @@
       "file_type": "code",
       "norm_label": ".stop()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L152"
+      "source_location": "L150"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappevents_off",
@@ -2030,7 +1994,7 @@
       "file_type": "code",
       "norm_label": ".off()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L29"
+      "source_location": "L28"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappevents_on",
@@ -2042,7 +2006,7 @@
       "file_type": "code",
       "norm_label": ".on()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L28"
+      "source_location": "L27"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappevents_removealllisteners",
@@ -2054,7 +2018,7 @@
       "file_type": "code",
       "norm_label": ".removealllisteners()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L30"
+      "source_location": "L29"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsapplogger_error",
@@ -2066,7 +2030,7 @@
       "file_type": "code",
       "norm_label": ".error()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L24"
+      "source_location": "L23"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsapplogger_info",
@@ -2078,7 +2042,7 @@
       "file_type": "code",
       "norm_label": ".info()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L22"
+      "source_location": "L21"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsapplogger_warn",
@@ -2090,7 +2054,7 @@
       "file_type": "code",
       "norm_label": ".warn()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L23"
+      "source_location": "L22"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_whatsappnotconnectederror_constructor",
@@ -2102,7 +2066,115 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L62"
+      "source_location": "L61"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_extractattachments",
+      "label": "extractAttachments()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "extractattachments()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_extracttext",
+      "label": "extractText()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "extracttext()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_isnonconversation",
+      "label": "isNonConversation()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "isnonconversation()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L136"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_numbervalue",
+      "label": "numberValue()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "numbervalue()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L122"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_objectvalue",
+      "label": "objectValue()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "objectvalue()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L132"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_stringvalue",
+      "label": "stringValue()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "stringvalue()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L118"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_timestampmilliseconds",
+      "label": "timestampMilliseconds()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "timestampmilliseconds()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_translatewhatsappmessage",
+      "label": "translateWhatsAppMessage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "translatewhatsappmessage()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_unwrapmessage",
+      "label": "unwrapMessage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "unwrapmessage()",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L72"
     },
     {
       "id": "packages_control_plane_src_persistence_jsoncontrolplanestore_claim",
@@ -2954,7 +3026,7 @@
       "file_type": "code",
       "norm_label": "ismessage()",
       "source_file": "apps/gateway/src/application.ts",
-      "source_location": "L266"
+      "source_location": "L273"
     },
     {
       "id": "apps_gateway_src_application_loadapplicationconfig",
@@ -3002,7 +3074,7 @@
       "file_type": "code",
       "norm_label": "messagefrompayload()",
       "source_file": "apps/gateway/src/application.ts",
-      "source_location": "L261"
+      "source_location": "L268"
     },
     {
       "id": "apps_gateway_src_application_optionalvalue",
@@ -3077,6 +3149,18 @@
       "source_location": "L231"
     },
     {
+      "id": "apps_gateway_src_application_resolvewhatsappidentity",
+      "label": "resolveWhatsAppIdentity()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "application.ts",
+      "file_type": "code",
+      "norm_label": "resolvewhatsappidentity()",
+      "source_file": "apps/gateway/src/application.ts",
+      "source_location": "L261"
+    },
+    {
       "id": "apps_gateway_src_application_resolvewhatsapprole",
       "label": "resolveWhatsAppRole()",
       "_callable": true,
@@ -3122,7 +3206,7 @@
       "file_type": "code",
       "norm_label": ".load()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L152"
+      "source_location": "L153"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_stopaccepting",
@@ -3134,7 +3218,7 @@
       "file_type": "code",
       "norm_label": ".stopaccepting()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L154"
+      "source_location": "L155"
     },
     {
       "id": "test_developer_agent_process_test_aborted",
@@ -3490,83 +3574,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".execute()",
       "source_file": "packages/control-plane/src/index.ts",
       "source_location": "L80"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandregistry_definitions",
-      "label": ".definitions()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".definitions()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L97"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandregistry_get",
-      "label": ".get()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".get()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L90"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandregistry_help",
-      "label": ".help()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".help()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L101"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandregistry_parse",
-      "label": ".parse()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".parse()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L92"
-    },
-    {
-      "id": "packages_control_plane_src_index_commandregistry_register",
-      "label": ".register()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".register()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L86"
-    },
-    {
-      "id": "packages_control_plane_src_index_configuredmodelpolicy_constructor",
-      "label": ".constructor()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".constructor()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L41"
     },
     {
       "id": "packages_control_plane_src_index_configuredmodelpolicy_describe",
@@ -3574,23 +3586,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".describe()",
       "source_file": "packages/control-plane/src/index.ts",
       "source_location": "L55"
-    },
-    {
-      "id": "packages_control_plane_src_index_configuredmodelpolicy_list",
-      "label": ".list()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".list()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L61"
     },
     {
       "id": "packages_control_plane_src_index_configuredmodelpolicy_resolve",
@@ -3598,7 +3598,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".resolve()",
       "source_file": "packages/control-plane/src/index.ts",
@@ -3610,11 +3610,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".acceptrate()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L516"
+      "source_location": "L539"
+    },
+    {
+      "id": "packages_control_plane_src_index_controlplane_autoinitialize",
+      "label": ".autoInitialize()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 47,
+      "community_name": "ControlPlane",
+      "file_type": "code",
+      "norm_label": ".autoinitialize()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L279"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_cancel",
@@ -3622,11 +3634,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".cancel()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L378"
+      "source_location": "L402"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_chat",
@@ -3634,11 +3646,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".chat()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L281"
+      "source_location": "L305"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_chats",
@@ -3646,11 +3658,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".chats()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L275"
+      "source_location": "L299"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_claim",
@@ -3658,11 +3670,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".claim()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L502"
+      "source_location": "L525"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_close",
@@ -3670,11 +3682,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".close()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L298"
+      "source_location": "L322"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_constructor",
@@ -3682,11 +3694,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L144"
+      "source_location": "L145"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_drain",
@@ -3694,11 +3706,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".drain()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L156"
+      "source_location": "L157"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_duplicate",
@@ -3706,11 +3718,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".duplicate()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L507"
+      "source_location": "L530"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_executeprompt",
@@ -3718,11 +3730,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".executeprompt()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L400"
+      "source_location": "L424"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_finalizeexecution",
@@ -3730,11 +3742,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".finalizeexecution()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L454"
+      "source_location": "L477"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_handle",
@@ -3742,11 +3754,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".handle()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L162"
+      "source_location": "L163"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_history",
@@ -3754,11 +3766,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".history()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L395"
+      "source_location": "L419"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_init",
@@ -3766,11 +3778,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".init()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L251"
+      "source_location": "L255"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_model",
@@ -3778,11 +3790,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".model()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L331"
+      "source_location": "L355"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_publish",
@@ -3790,11 +3802,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".publish()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L512"
+      "source_location": "L535"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_queue",
@@ -3802,11 +3814,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".queue()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L488"
+      "source_location": "L511"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_registercommands",
@@ -3814,11 +3826,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".registercommands()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L226"
+      "source_location": "L230"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_rejected",
@@ -3826,11 +3838,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".rejected()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L497"
+      "source_location": "L520"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_rename",
@@ -3838,11 +3850,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".rename()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L290"
+      "source_location": "L314"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_reset",
@@ -3850,11 +3862,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".reset()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L309"
+      "source_location": "L333"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_resolvesession",
@@ -3862,11 +3874,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".resolvesession()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L467"
+      "source_location": "L490"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_resolveworkspace",
@@ -3874,11 +3886,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".resolveworkspace()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L476"
+      "source_location": "L499"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_retry",
@@ -3886,11 +3898,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".retry()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L389"
+      "source_location": "L413"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_running",
@@ -3898,11 +3910,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".running()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L372"
+      "source_location": "L396"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_selectagent",
@@ -3910,11 +3922,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".selectagent()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L320"
+      "source_location": "L344"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_status",
@@ -3922,11 +3934,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".status()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L367"
+      "source_location": "L391"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_touch",
@@ -3934,11 +3946,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".touch()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L481"
+      "source_location": "L504"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_workspace",
@@ -3946,11 +3958,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".workspace()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L348"
+      "source_location": "L372"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_workspaces",
@@ -3958,11 +3970,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".workspaces()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L361"
+      "source_location": "L385"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_cancel",
@@ -3970,11 +3982,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".cancel()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L558"
+      "source_location": "L581"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_constructor",
@@ -3982,11 +3994,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L537"
+      "source_location": "L560"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_depth",
@@ -3994,11 +4006,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".depth()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L540"
+      "source_location": "L563"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_enqueue",
@@ -4006,11 +4018,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".enqueue()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L543"
+      "source_location": "L566"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_hascapacity",
@@ -4018,11 +4030,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".hascapacity()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L541"
+      "source_location": "L564"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_running",
@@ -4030,11 +4042,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".running()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L539"
+      "source_location": "L562"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_start",
@@ -4042,47 +4054,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".start()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L568"
-    },
-    {
-      "id": "packages_control_plane_src_index_modelpolicy_describe",
-      "label": ".describe()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".describe()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L29"
-    },
-    {
-      "id": "packages_control_plane_src_index_modelpolicy_list",
-      "label": ".list()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".list()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L30"
-    },
-    {
-      "id": "packages_control_plane_src_index_modelpolicy_resolve",
-      "label": ".resolve()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".resolve()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L28"
+      "source_location": "L591"
     },
     {
       "id": "packages_control_plane_src_index_modelunavailableerror_constructor",
@@ -4090,35 +4066,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 47,
-      "community_name": "control-plane/src/index.ts",
+      "community_name": "ControlPlane",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "packages/control-plane/src/index.ts",
       "source_location": "L34"
-    },
-    {
-      "id": "packages_control_plane_src_index_roleatleast",
-      "label": "roleAtLeast()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "roleatleast()",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L585"
-    },
-    {
-      "id": "developer_agents_claude_src_index_createclaudeadapter",
-      "label": "createClaudeAdapter()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "createclaudeadapter()",
-      "source_file": "developer-agents/claude/src/index.ts",
-      "source_location": "L6"
     },
     {
       "id": "developer_agents_codex_src_index_createcodexadapter",
@@ -4133,54 +4085,6 @@
       "source_location": "L6"
     },
     {
-      "id": "developer_agents_copilot_src_index_createcopilotadapter",
-      "label": "createCopilotAdapter()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "createcopilotadapter()",
-      "source_file": "developer-agents/copilot/src/index.ts",
-      "source_location": "L8"
-    },
-    {
-      "id": "runtime_developer_agent_src_contracts_developeragentadapter_execute",
-      "label": ".execute()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": ".execute()",
-      "source_file": "runtime/developer-agent/src/contracts.ts",
-      "source_location": "L94"
-    },
-    {
-      "id": "runtime_developer_agent_src_contracts_developeragentadapter_getavailability",
-      "label": ".getAvailability()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": ".getavailability()",
-      "source_file": "runtime/developer-agent/src/contracts.ts",
-      "source_location": "L93"
-    },
-    {
-      "id": "runtime_developer_agent_src_contracts_developeragentadapter_isavailable",
-      "label": ".isAvailable()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": ".isavailable()",
-      "source_file": "runtime/developer-agent/src/contracts.ts",
-      "source_location": "L92"
-    },
-    {
       "id": "runtime_developer_agent_src_contracts_developerprocesserror_constructor",
       "label": ".constructor()",
       "_callable": true,
@@ -4191,6 +4095,30 @@
       "norm_label": ".constructor()",
       "source_file": "runtime/developer-agent/src/contracts.ts",
       "source_location": "L84"
+    },
+    {
+      "id": "runtime_developer_agent_src_contracts_developerprocessrunner_run",
+      "label": ".run()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "contracts.ts",
+      "file_type": "code",
+      "norm_label": ".run()",
+      "source_file": "runtime/developer-agent/src/contracts.ts",
+      "source_location": "L80"
+    },
+    {
+      "id": "runtime_developer_agent_src_process_nodedeveloperprocessrunner_constructor",
+      "label": ".constructor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "contracts.ts",
+      "file_type": "code",
+      "norm_label": ".constructor()",
+      "source_file": "runtime/developer-agent/src/process.ts",
+      "source_location": "L15"
     },
     {
       "id": "runtime_developer_agent_src_process_nodedeveloperprocessrunner_run",
@@ -4529,6 +4457,54 @@
       "source_location": "L75"
     },
     {
+      "id": "packages_security_src_index_developercapabilities_git",
+      "label": ".git()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "WorkspacePolicy",
+      "file_type": "code",
+      "norm_label": ".git()",
+      "source_file": "packages/security/src/index.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "packages_security_src_index_developercapabilities_readfile",
+      "label": ".readFile()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "WorkspacePolicy",
+      "file_type": "code",
+      "norm_label": ".readfile()",
+      "source_file": "packages/security/src/index.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "packages_security_src_index_developercapabilities_shell",
+      "label": ".shell()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "WorkspacePolicy",
+      "file_type": "code",
+      "norm_label": ".shell()",
+      "source_file": "packages/security/src/index.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "packages_security_src_index_developercapabilities_writefile",
+      "label": ".writeFile()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 51,
+      "community_name": "WorkspacePolicy",
+      "file_type": "code",
+      "norm_label": ".writefile()",
+      "source_file": "packages/security/src/index.ts",
+      "source_location": "L64"
+    },
+    {
       "id": "packages_security_src_index_localdeveloperoperations_git",
       "label": ".git()",
       "_callable": true,
@@ -4623,6 +4599,18 @@
       "norm_label": ".handlemessage()",
       "source_file": "packages/core/src/index.ts",
       "source_location": "L64"
+    },
+    {
+      "id": "packages_events_src_index_eventbus_publish",
+      "label": ".publish()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 53,
+      "community_name": "AgentResponse",
+      "file_type": "code",
+      "norm_label": ".publish()",
+      "source_file": "packages/events/src/index.ts",
+      "source_location": "L40"
     },
     {
       "id": "runtime_chatbot_src_index_chatbotruntime_execute",
@@ -4742,7 +4730,7 @@
       "file_type": "code",
       "norm_label": "execute()",
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L64"
+      "source_location": "L74"
     },
     {
       "id": "test_control_plane_test_handlemessage",
@@ -4754,7 +4742,7 @@
       "file_type": "code",
       "norm_label": "handlemessage()",
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L63"
+      "source_location": "L73"
     },
     {
       "id": "test_control_plane_test_messages",
@@ -4790,7 +4778,7 @@
       "file_type": "code",
       "norm_label": "setupwithmodelaliases()",
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L49"
+      "source_location": "L59"
     },
     {
       "id": "test_control_plane_persistence_test_conversation",
@@ -4805,112 +4793,64 @@
       "source_location": "L8"
     },
     {
-      "id": "channels_whatsapp_src_translate_extractattachments",
-      "label": "extractAttachments()",
+      "id": "developer_agents_claude_src_index_createclaudeadapter",
+      "label": "createClaudeAdapter()",
       "_callable": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "extractattachments()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L97"
+      "norm_label": "createclaudeadapter()",
+      "source_file": "developer-agents/claude/src/index.ts",
+      "source_location": "L6"
     },
     {
-      "id": "channels_whatsapp_src_translate_extracttext",
-      "label": "extractText()",
+      "id": "developer_agents_copilot_src_index_createcopilotadapter",
+      "label": "createCopilotAdapter()",
       "_callable": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "extracttext()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L84"
+      "norm_label": "createcopilotadapter()",
+      "source_file": "developer-agents/copilot/src/index.ts",
+      "source_location": "L8"
     },
     {
-      "id": "channels_whatsapp_src_translate_isnonconversation",
-      "label": "isNonConversation()",
+      "id": "runtime_developer_agent_src_contracts_developeragentadapter_execute",
+      "label": ".execute()",
       "_callable": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "isnonconversation()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L136"
+      "norm_label": ".execute()",
+      "source_file": "runtime/developer-agent/src/contracts.ts",
+      "source_location": "L94"
     },
     {
-      "id": "channels_whatsapp_src_translate_numbervalue",
-      "label": "numberValue()",
+      "id": "runtime_developer_agent_src_contracts_developeragentadapter_getavailability",
+      "label": ".getAvailability()",
       "_callable": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "numbervalue()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L122"
+      "norm_label": ".getavailability()",
+      "source_file": "runtime/developer-agent/src/contracts.ts",
+      "source_location": "L93"
     },
     {
-      "id": "channels_whatsapp_src_translate_objectvalue",
-      "label": "objectValue()",
+      "id": "runtime_developer_agent_src_contracts_developeragentadapter_isavailable",
+      "label": ".isAvailable()",
       "_callable": true,
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "objectvalue()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L132"
-    },
-    {
-      "id": "channels_whatsapp_src_translate_stringvalue",
-      "label": "stringValue()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 57,
-      "community_name": "translate.ts",
-      "file_type": "code",
-      "norm_label": "stringvalue()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L118"
-    },
-    {
-      "id": "channels_whatsapp_src_translate_timestampmilliseconds",
-      "label": "timestampMilliseconds()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 57,
-      "community_name": "translate.ts",
-      "file_type": "code",
-      "norm_label": "timestampmilliseconds()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L113"
-    },
-    {
-      "id": "channels_whatsapp_src_translate_translatewhatsappmessage",
-      "label": "translateWhatsAppMessage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 57,
-      "community_name": "translate.ts",
-      "file_type": "code",
-      "norm_label": "translatewhatsappmessage()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L29"
-    },
-    {
-      "id": "channels_whatsapp_src_translate_unwrapmessage",
-      "label": "unwrapMessage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 57,
-      "community_name": "translate.ts",
-      "file_type": "code",
-      "norm_label": "unwrapmessage()",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L72"
+      "norm_label": ".isavailable()",
+      "source_file": "runtime/developer-agent/src/contracts.ts",
+      "source_location": "L92"
     },
     {
       "id": "apps_worker_src_index_createworker",
@@ -4918,23 +4858,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "createworker()",
       "source_file": "apps/worker/src/index.ts",
       "source_location": "L7"
-    },
-    {
-      "id": "packages_events_src_index_eventbus_publish",
-      "label": ".publish()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 58,
-      "community_name": "EventBus",
-      "file_type": "code",
-      "norm_label": ".publish()",
-      "source_file": "packages/events/src/index.ts",
-      "source_location": "L40"
     },
     {
       "id": "packages_events_src_index_eventbus_subscribe",
@@ -4942,7 +4870,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": ".subscribe()",
       "source_file": "packages/events/src/index.ts",
@@ -4954,7 +4882,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": ".publish()",
       "source_file": "packages/events/src/index.ts",
@@ -4966,11 +4894,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": ".subscribe()",
       "source_file": "packages/events/src/index.ts",
       "source_location": "L51"
+    },
+    {
+      "id": "runtime_developer_agent_src_index_developeragentruntime_constructor",
+      "label": ".constructor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 58,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": ".constructor()",
+      "source_file": "runtime/developer-agent/src/index.ts",
+      "source_location": "L32"
     },
     {
       "id": "packages_tools_src_index_allowlistedtoolregistry_constructor",
@@ -5105,88 +5045,16 @@
       "source_location": "L18"
     },
     {
-      "id": "packages_security_src_index_developercapabilities_git",
-      "label": ".git()",
+      "id": "packages_control_plane_src_index_roleatleast",
+      "label": "roleAtLeast()",
       "_callable": true,
       "_origin": "ast",
       "community": 60,
-      "community_name": "developer-agent/src/index.ts",
+      "community_name": "control-plane/src/index.ts",
       "file_type": "code",
-      "norm_label": ".git()",
-      "source_file": "packages/security/src/index.ts",
-      "source_location": "L65"
-    },
-    {
-      "id": "packages_security_src_index_developercapabilities_readfile",
-      "label": ".readFile()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".readfile()",
-      "source_file": "packages/security/src/index.ts",
-      "source_location": "L63"
-    },
-    {
-      "id": "packages_security_src_index_developercapabilities_shell",
-      "label": ".shell()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".shell()",
-      "source_file": "packages/security/src/index.ts",
-      "source_location": "L62"
-    },
-    {
-      "id": "packages_security_src_index_developercapabilities_writefile",
-      "label": ".writeFile()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".writefile()",
-      "source_file": "packages/security/src/index.ts",
-      "source_location": "L64"
-    },
-    {
-      "id": "runtime_developer_agent_src_contracts_developerprocessrunner_run",
-      "label": ".run()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".run()",
-      "source_file": "runtime/developer-agent/src/contracts.ts",
-      "source_location": "L80"
-    },
-    {
-      "id": "runtime_developer_agent_src_index_developeragentruntime_constructor",
-      "label": ".constructor()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".constructor()",
-      "source_file": "runtime/developer-agent/src/index.ts",
-      "source_location": "L32"
-    },
-    {
-      "id": "runtime_developer_agent_src_process_nodedeveloperprocessrunner_constructor",
-      "label": ".constructor()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 60,
-      "community_name": "developer-agent/src/index.ts",
-      "file_type": "code",
-      "norm_label": ".constructor()",
-      "source_file": "runtime/developer-agent/src/process.ts",
-      "source_location": "L15"
+      "norm_label": "roleatleast()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L608"
     },
     {
       "id": "packages_routing_src_index_configurationrouter_constructor",
@@ -5417,6 +5285,66 @@
       "source_location": "L55"
     },
     {
+      "id": "packages_control_plane_src_index_configuredmodelpolicy_constructor",
+      "label": ".constructor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 64,
+      "community_name": "ConfiguredModelPolicy",
+      "file_type": "code",
+      "norm_label": ".constructor()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "packages_control_plane_src_index_configuredmodelpolicy_list",
+      "label": ".list()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 64,
+      "community_name": "ConfiguredModelPolicy",
+      "file_type": "code",
+      "norm_label": ".list()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "packages_control_plane_src_index_modelpolicy_describe",
+      "label": ".describe()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 64,
+      "community_name": "ConfiguredModelPolicy",
+      "file_type": "code",
+      "norm_label": ".describe()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "packages_control_plane_src_index_modelpolicy_list",
+      "label": ".list()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 64,
+      "community_name": "ConfiguredModelPolicy",
+      "file_type": "code",
+      "norm_label": ".list()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "packages_control_plane_src_index_modelpolicy_resolve",
+      "label": ".resolve()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 64,
+      "community_name": "ConfiguredModelPolicy",
+      "file_type": "code",
+      "norm_label": ".resolve()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L28"
+    },
+    {
       "id": "channels_whatsapp_src_lifecycle_silentbaileyslogger_child",
       "label": ".child()",
       "_callable": true,
@@ -5426,7 +5354,7 @@
       "file_type": "code",
       "norm_label": ".child()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L70"
+      "source_location": "L69"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_silentbaileyslogger_debug",
@@ -5438,7 +5366,7 @@
       "file_type": "code",
       "norm_label": ".debug()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L72"
+      "source_location": "L71"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_silentbaileyslogger_error",
@@ -5450,7 +5378,7 @@
       "file_type": "code",
       "norm_label": ".error()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L75"
+      "source_location": "L74"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_silentbaileyslogger_info",
@@ -5462,7 +5390,7 @@
       "file_type": "code",
       "norm_label": ".info()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L73"
+      "source_location": "L72"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_silentbaileyslogger_trace",
@@ -5474,7 +5402,7 @@
       "file_type": "code",
       "norm_label": ".trace()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L71"
+      "source_location": "L70"
     },
     {
       "id": "channels_whatsapp_src_lifecycle_silentbaileyslogger_warn",
@@ -5486,7 +5414,7 @@
       "file_type": "code",
       "norm_label": ".warn()",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L74"
+      "source_location": "L73"
     },
     {
       "id": "apps_gateway_src_application_loadenvironment",
@@ -5621,6 +5549,66 @@
       "source_location": "L48"
     },
     {
+      "id": "packages_control_plane_src_index_commandregistry_definitions",
+      "label": ".definitions()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 69,
+      "community_name": "CommandRegistry",
+      "file_type": "code",
+      "norm_label": ".definitions()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "packages_control_plane_src_index_commandregistry_get",
+      "label": ".get()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 69,
+      "community_name": "CommandRegistry",
+      "file_type": "code",
+      "norm_label": ".get()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L90"
+    },
+    {
+      "id": "packages_control_plane_src_index_commandregistry_help",
+      "label": ".help()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 69,
+      "community_name": "CommandRegistry",
+      "file_type": "code",
+      "norm_label": ".help()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L101"
+    },
+    {
+      "id": "packages_control_plane_src_index_commandregistry_parse",
+      "label": ".parse()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 69,
+      "community_name": "CommandRegistry",
+      "file_type": "code",
+      "norm_label": ".parse()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "packages_control_plane_src_index_commandregistry_register",
+      "label": ".register()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 69,
+      "community_name": "CommandRegistry",
+      "file_type": "code",
+      "norm_label": ".register()",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L86"
+    },
+    {
       "id": "baileys",
       "label": "@whiskeysockets/baileys",
       "_origin": "ast",
@@ -5684,7 +5672,29 @@
       "file_type": "code",
       "norm_label": "defaultlogger",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L88"
+      "source_location": "L87"
+    },
+    {
+      "id": "channels_whatsapp_src_translate",
+      "label": "translate.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "translate.ts",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "channels_whatsapp_src_translate_attachmentkinds",
+      "label": "attachmentKinds",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "lifecycle.ts",
+      "file_type": "code",
+      "norm_label": "attachmentkinds",
+      "source_file": "channels/whatsapp/src/translate.ts",
+      "source_location": "L21"
     },
     {
       "id": "test_whatsapp_gateway_test",
@@ -7484,6 +7494,28 @@
       "source_location": "L1"
     },
     {
+      "id": "integrations_talkaris_src_index",
+      "label": "talkaris/src/index.ts",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "talkaris/src/index.ts",
+      "source_file": "integrations/talkaris/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "integrations_talkaris_src_index_talkarisagent",
+      "label": "talkarisAgent",
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "core/src/index.ts",
+      "file_type": "code",
+      "norm_label": "talkarisagent",
+      "source_file": "integrations/talkaris/src/index.ts",
+      "source_location": "L3"
+    },
+    {
       "id": "packages_conversations_src_index",
       "label": "conversations/src/index.ts",
       "_origin": "ast",
@@ -8076,7 +8108,7 @@
       "node_kind": "heading",
       "norm_label": "doctor and startup",
       "source_file": "README.md",
-      "source_location": "L48"
+      "source_location": "L49"
     },
     {
       "id": "readme_install",
@@ -8100,7 +8132,7 @@
       "node_kind": "heading",
       "norm_label": "provider behavior",
       "source_file": "README.md",
-      "source_location": "L68"
+      "source_location": "L69"
     },
     {
       "id": "readme_restart_and_troubleshooting",
@@ -8112,7 +8144,7 @@
       "node_kind": "heading",
       "norm_label": "restart and troubleshooting",
       "source_file": "README.md",
-      "source_location": "L80"
+      "source_location": "L81"
     },
     {
       "id": "readme_whatsapp_pairing",
@@ -8124,7 +8156,7 @@
       "node_kind": "heading",
       "norm_label": "whatsapp pairing",
       "source_file": "README.md",
-      "source_location": "L57"
+      "source_location": "L58"
     },
     {
       "id": "planning_phases_04_operational_integration_real_whatsapp_acceptance_04_01_plan",
@@ -8406,39 +8438,6 @@
       "source_location": "L16"
     },
     {
-      "id": "packages_control_plane_src_index",
-      "label": "control-plane/src/index.ts",
-      "_origin": "ast",
-      "community": 47,
-      "community_name": "control-plane/src/index.ts",
-      "file_type": "code",
-      "norm_label": "control-plane/src/index.ts",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "developer_agents_claude_src_index",
-      "label": "claude/src/index.ts",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "claude/src/index.ts",
-      "source_file": "developer-agents/claude/src/index.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "developer_agents_claude_src_index_claudeadapter",
-      "label": "claudeAdapter",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "claudeadapter",
-      "source_file": "developer-agents/claude/src/index.ts",
-      "source_location": "L40"
-    },
-    {
       "id": "developer_agents_codex_src_index",
       "label": "codex/src/index.ts",
       "_origin": "ast",
@@ -8458,28 +8457,6 @@
       "file_type": "code",
       "norm_label": "codexadapter",
       "source_file": "developer-agents/codex/src/index.ts",
-      "source_location": "L42"
-    },
-    {
-      "id": "developer_agents_copilot_src_index",
-      "label": "copilot/src/index.ts",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "copilot/src/index.ts",
-      "source_file": "developer-agents/copilot/src/index.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "developer_agents_copilot_src_index_copilotadapter",
-      "label": "copilotAdapter",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "contracts.ts",
-      "file_type": "code",
-      "norm_label": "copilotadapter",
-      "source_file": "developer-agents/copilot/src/index.ts",
       "source_location": "L42"
     },
     {
@@ -8848,28 +8825,6 @@
       "source_location": "L137"
     },
     {
-      "id": "integrations_talkaris_src_index",
-      "label": "talkaris/src/index.ts",
-      "_origin": "ast",
-      "community": 53,
-      "community_name": "AgentResponse",
-      "file_type": "code",
-      "norm_label": "talkaris/src/index.ts",
-      "source_file": "integrations/talkaris/src/index.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "integrations_talkaris_src_index_talkarisagent",
-      "label": "talkarisAgent",
-      "_origin": "ast",
-      "community": 53,
-      "community_name": "AgentResponse",
-      "file_type": "code",
-      "norm_label": "talkarisagent",
-      "source_file": "integrations/talkaris/src/index.ts",
-      "source_location": "L3"
-    },
-    {
       "id": "test_core_test",
       "label": "core.test.ts",
       "_origin": "ast",
@@ -8962,33 +8917,55 @@
       "source_location": "L1"
     },
     {
-      "id": "channels_whatsapp_src_translate",
-      "label": "translate.ts",
+      "id": "developer_agents_claude_src_index",
+      "label": "claude/src/index.ts",
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "translate.ts",
-      "source_file": "channels/whatsapp/src/translate.ts",
+      "norm_label": "claude/src/index.ts",
+      "source_file": "developer-agents/claude/src/index.ts",
       "source_location": "L1"
     },
     {
-      "id": "channels_whatsapp_src_translate_attachmentkinds",
-      "label": "attachmentKinds",
+      "id": "developer_agents_claude_src_index_claudeadapter",
+      "label": "claudeAdapter",
       "_origin": "ast",
       "community": 57,
-      "community_name": "translate.ts",
+      "community_name": "copilot/src/index.ts",
       "file_type": "code",
-      "norm_label": "attachmentkinds",
-      "source_file": "channels/whatsapp/src/translate.ts",
-      "source_location": "L21"
+      "norm_label": "claudeadapter",
+      "source_file": "developer-agents/claude/src/index.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "developer_agents_copilot_src_index",
+      "label": "copilot/src/index.ts",
+      "_origin": "ast",
+      "community": 57,
+      "community_name": "copilot/src/index.ts",
+      "file_type": "code",
+      "norm_label": "copilot/src/index.ts",
+      "source_file": "developer-agents/copilot/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "developer_agents_copilot_src_index_copilotadapter",
+      "label": "copilotAdapter",
+      "_origin": "ast",
+      "community": 57,
+      "community_name": "copilot/src/index.ts",
+      "file_type": "code",
+      "norm_label": "copilotadapter",
+      "source_file": "developer-agents/copilot/src/index.ts",
+      "source_location": "L42"
     },
     {
       "id": "apps_worker_src_index",
       "label": "worker/src/index.ts",
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "worker/src/index.ts",
       "source_file": "apps/worker/src/index.ts",
@@ -8999,7 +8976,7 @@
       "label": "events/src/index.ts",
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "events/src/index.ts",
       "source_file": "packages/events/src/index.ts",
@@ -9010,10 +8987,21 @@
       "label": "eventTypes",
       "_origin": "ast",
       "community": 58,
-      "community_name": "EventBus",
+      "community_name": "developer-agent/src/index.ts",
       "file_type": "code",
       "norm_label": "eventtypes",
       "source_file": "packages/events/src/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "runtime_developer_agent_src_index",
+      "label": "developer-agent/src/index.ts",
+      "_origin": "ast",
+      "community": 58,
+      "community_name": "developer-agent/src/index.ts",
+      "file_type": "code",
+      "norm_label": "developer-agent/src/index.ts",
+      "source_file": "runtime/developer-agent/src/index.ts",
       "source_location": "L1"
     },
     {
@@ -9050,7 +9038,7 @@
       "node_kind": "heading",
       "norm_label": "conclusion",
       "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
-      "source_location": "L59"
+      "source_location": "L66"
     },
     {
       "id": "planning_phases_05_enterprise_conversational_control_plane_verification_doctor",
@@ -9062,7 +9050,7 @@
       "node_kind": "heading",
       "norm_label": "doctor",
       "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
-      "source_location": "L35"
+      "source_location": "L42"
     },
     {
       "id": "planning_phases_05_enterprise_conversational_control_plane_verification_graphify",
@@ -9074,7 +9062,7 @@
       "node_kind": "heading",
       "norm_label": "graphify",
       "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
-      "source_location": "L26"
+      "source_location": "L33"
     },
     {
       "id": "planning_phases_05_enterprise_conversational_control_plane_verification_phase_5_verification_enterprise_conversational_control_plane",
@@ -9098,7 +9086,7 @@
       "node_kind": "heading",
       "norm_label": "real acceptance",
       "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
-      "source_location": "L48"
+      "source_location": "L55"
     },
     {
       "id": "packages_tools_src_index",
@@ -9134,14 +9122,14 @@
       "source_location": "L6"
     },
     {
-      "id": "runtime_developer_agent_src_index",
-      "label": "developer-agent/src/index.ts",
+      "id": "packages_control_plane_src_index",
+      "label": "control-plane/src/index.ts",
       "_origin": "ast",
       "community": 60,
-      "community_name": "developer-agent/src/index.ts",
+      "community_name": "control-plane/src/index.ts",
       "file_type": "code",
-      "norm_label": "developer-agent/src/index.ts",
-      "source_file": "runtime/developer-agent/src/index.ts",
+      "norm_label": "control-plane/src/index.ts",
+      "source_file": "packages/control-plane/src/index.ts",
       "source_location": "L1"
     },
     {
@@ -9827,6 +9815,18 @@
     },
     {
       "source": "apps_gateway_src_application_createapplication",
+      "target": "apps_gateway_src_application_resolvewhatsappidentity",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "apps/gateway/src/application.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "apps_gateway_src_application_createapplication",
       "target": "apps_gateway_src_application_resolvewhatsapprole",
       "relation": "calls",
       "_origin": "ast",
@@ -10002,7 +10002,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "apps/gateway/src/application.ts",
-      "source_location": "L262",
+      "source_location": "L269",
       "weight": 1.0
     },
     {
@@ -10014,7 +10014,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "apps/gateway/src/application.ts",
-      "source_location": "L263",
+      "source_location": "L270",
+      "weight": 1.0
+    },
+    {
+      "source": "apps_gateway_src_application_resolvewhatsappidentity",
+      "target": "apps_gateway_src_application_parselist",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "apps/gateway/src/application.ts",
+      "source_location": "L262",
       "weight": 1.0
     },
     {
@@ -10338,7 +10350,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L211",
+      "source_location": "L200",
       "weight": 1.0
     },
     {
@@ -10350,7 +10362,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L217",
+      "source_location": "L206",
       "weight": 1.0
     },
     {
@@ -10362,7 +10374,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L220",
+      "source_location": "L209",
       "weight": 1.0
     },
     {
@@ -10374,7 +10386,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L221",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -10386,19 +10398,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L226",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle_whatsappchannel_getinboundmessage",
-      "target": "channels_whatsapp_src_lifecycle_whatsappchannel_pruneinboundmessages",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L336",
+      "source_location": "L215",
       "weight": 1.0
     },
     {
@@ -10410,7 +10410,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L248",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
@@ -10422,7 +10422,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L263",
+      "source_location": "L252",
       "weight": 1.0
     },
     {
@@ -10434,7 +10434,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L266",
+      "source_location": "L255",
       "weight": 1.0
     },
     {
@@ -10446,7 +10446,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L278",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -10458,7 +10458,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L234",
+      "source_location": "L223",
       "weight": 1.0
     },
     {
@@ -10470,7 +10470,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L236",
+      "source_location": "L225",
       "weight": 1.0
     },
     {
@@ -10482,7 +10482,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L239",
+      "source_location": "L228",
       "weight": 1.0
     },
     {
@@ -10494,7 +10494,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L312",
+      "source_location": "L301",
       "weight": 1.0
     },
     {
@@ -10506,7 +10506,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L314",
+      "source_location": "L303",
       "weight": 1.0
     },
     {
@@ -10518,7 +10518,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L177",
+      "source_location": "L174",
       "weight": 1.0
     },
     {
@@ -10530,7 +10530,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L179",
+      "source_location": "L176",
       "weight": 1.0
     },
     {
@@ -10542,7 +10542,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L180",
+      "source_location": "L177",
       "weight": 1.0
     },
     {
@@ -10554,7 +10554,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L182",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -10566,7 +10566,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L182",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -10578,7 +10578,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L185",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -10590,43 +10590,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L186",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle_whatsappchannel_receive",
-      "target": "channels_whatsapp_src_lifecycle_messageidfrompayload",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L189",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle_whatsappchannel_receive",
-      "target": "channels_whatsapp_src_lifecycle_whatsappchannel_rememberinboundmessage",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L190",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle_whatsappchannel_rememberinboundmessage",
-      "target": "channels_whatsapp_src_lifecycle_whatsappchannel_pruneinboundmessages",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L326",
+      "source_location": "L183",
       "weight": 1.0
     },
     {
@@ -10638,7 +10602,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L302",
+      "source_location": "L291",
       "weight": 1.0
     },
     {
@@ -10650,7 +10614,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L358",
+      "source_location": "L325",
       "weight": 1.0
     },
     {
@@ -10662,7 +10626,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L288",
+      "source_location": "L277",
       "weight": 1.0
     },
     {
@@ -10674,7 +10638,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L197",
+      "source_location": "L190",
       "weight": 1.0
     },
     {
@@ -10686,19 +10650,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L198",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle_whatsappchannel_send",
-      "target": "channels_whatsapp_src_lifecycle_whatsappchannel_getinboundmessage",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L200",
+      "source_location": "L191",
       "weight": 1.0
     },
     {
@@ -10710,7 +10662,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L204",
+      "source_location": "L193",
       "weight": 1.0
     },
     {
@@ -10722,7 +10674,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L205",
+      "source_location": "L194",
       "weight": 1.0
     },
     {
@@ -10734,7 +10686,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L144",
+      "source_location": "L142",
       "weight": 1.0
     },
     {
@@ -10746,7 +10698,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L162",
+      "source_location": "L159",
       "weight": 1.0
     },
     {
@@ -10758,7 +10710,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L164",
+      "source_location": "L161",
       "weight": 1.0
     },
     {
@@ -10930,6 +10882,30 @@
       "weight": 1.0
     },
     {
+      "source": "packages_control_plane_src_index_controlplane_autoinitialize",
+      "target": "packages_control_plane_src_index_controlplane_resolveworkspace",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L280",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_autoinitialize",
+      "target": "packages_control_plane_src_index_controlplane_publish",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L295",
+      "weight": 1.0
+    },
+    {
       "source": "packages_control_plane_src_index_controlplane_cancel",
       "target": "packages_control_plane_src_index_controlplane_queue",
       "relation": "calls",
@@ -10938,7 +10914,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L380",
+      "source_location": "L404",
       "weight": 1.0
     },
     {
@@ -10950,7 +10926,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L383",
+      "source_location": "L407",
       "weight": 1.0
     },
     {
@@ -10962,7 +10938,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L384",
+      "source_location": "L408",
       "weight": 1.0
     },
     {
@@ -10974,7 +10950,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L385",
+      "source_location": "L409",
       "weight": 1.0
     },
     {
@@ -10986,7 +10962,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L300",
+      "source_location": "L324",
       "weight": 1.0
     },
     {
@@ -10998,7 +10974,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L303",
+      "source_location": "L327",
       "weight": 1.0
     },
     {
@@ -11010,7 +10986,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L305",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
@@ -11022,7 +10998,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L146",
+      "source_location": "L147",
       "weight": 1.0
     },
     {
@@ -11034,7 +11010,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L147",
+      "source_location": "L148",
       "weight": 1.0
     },
     {
@@ -11046,7 +11022,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L148",
+      "source_location": "L149",
       "weight": 1.0
     },
     {
@@ -11058,7 +11034,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L149",
+      "source_location": "L150",
       "weight": 1.0
     },
     {
@@ -11070,7 +11046,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L159",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -11082,7 +11058,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L508",
+      "source_location": "L531",
       "weight": 1.0
     },
     {
@@ -11094,84 +11070,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L403",
+      "source_location": "L427",
       "weight": 1.0
     },
     {
       "source": "packages_control_plane_src_index_controlplane_executeprompt",
       "target": "packages_control_plane_src_index_controlplane_queue",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L405",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_executeprompt",
-      "target": "packages_control_plane_src_index_controlplane_claim",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L407",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_executeprompt",
-      "target": "packages_control_plane_src_index_controlplane_duplicate",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L407",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_executeprompt",
-      "target": "packages_control_plane_src_index_controlplane_touch",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L415",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_executeprompt",
-      "target": "packages_control_plane_src_index_controlplane_publish",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L416",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_executeprompt",
-      "target": "packages_control_plane_src_index_commanddefinition_execute",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L425",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_executeprompt",
-      "target": "packages_control_plane_src_index_controlplane_finalizeexecution",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11183,6 +11087,78 @@
     },
     {
       "source": "packages_control_plane_src_index_controlplane_executeprompt",
+      "target": "packages_control_plane_src_index_controlplane_claim",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L431",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_executeprompt",
+      "target": "packages_control_plane_src_index_controlplane_duplicate",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L431",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_executeprompt",
+      "target": "packages_control_plane_src_index_controlplane_touch",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L439",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_executeprompt",
+      "target": "packages_control_plane_src_index_controlplane_publish",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L440",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_executeprompt",
+      "target": "packages_control_plane_src_index_commanddefinition_execute",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L449",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_executeprompt",
+      "target": "packages_control_plane_src_index_controlplane_finalizeexecution",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L453",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_executeprompt",
       "target": "packages_control_plane_src_index_executionqueue_enqueue",
       "relation": "calls",
       "_origin": "ast",
@@ -11190,7 +11166,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L436",
+      "source_location": "L459",
       "weight": 1.0
     },
     {
@@ -11202,7 +11178,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L463",
+      "source_location": "L486",
       "weight": 1.0
     },
     {
@@ -11214,7 +11190,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L464",
+      "source_location": "L487",
       "weight": 1.0
     },
     {
@@ -11226,7 +11202,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L165",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -11238,7 +11214,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L165",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -11250,7 +11226,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L168",
+      "source_location": "L169",
       "weight": 1.0
     },
     {
@@ -11262,7 +11238,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L168",
+      "source_location": "L169",
       "weight": 1.0
     },
     {
@@ -11274,19 +11250,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L173",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_handle",
-      "target": "packages_control_plane_src_index_controlplane_publish",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L175",
+      "source_location": "L174",
       "weight": 1.0
     },
     {
@@ -11298,7 +11262,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L189",
+      "source_location": "L175",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_handle",
+      "target": "packages_control_plane_src_index_controlplane_autoinitialize",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L176",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_handle",
+      "target": "packages_control_plane_src_index_controlplane_publish",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -11310,7 +11298,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L194",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
@@ -11322,7 +11310,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L223",
+      "source_location": "L227",
       "weight": 1.0
     },
     {
@@ -11334,7 +11322,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L254",
+      "source_location": "L258",
       "weight": 1.0
     },
     {
@@ -11346,7 +11334,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L271",
+      "source_location": "L275",
       "weight": 1.0
     },
     {
@@ -11358,7 +11346,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L334",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -11370,7 +11358,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L337",
+      "source_location": "L361",
       "weight": 1.0
     },
     {
@@ -11382,7 +11370,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L340",
+      "source_location": "L364",
       "weight": 1.0
     },
     {
@@ -11394,7 +11382,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L341",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
@@ -11406,7 +11394,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L491",
+      "source_location": "L514",
       "weight": 1.0
     },
     {
@@ -11418,7 +11406,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L229",
+      "source_location": "L233",
       "weight": 1.0
     },
     {
@@ -11430,7 +11418,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L230",
+      "source_location": "L234",
       "weight": 1.0
     },
     {
@@ -11442,7 +11430,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L231",
+      "source_location": "L235",
       "weight": 1.0
     },
     {
@@ -11454,7 +11442,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L232",
+      "source_location": "L236",
       "weight": 1.0
     },
     {
@@ -11466,7 +11454,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L233",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
@@ -11478,7 +11466,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L234",
+      "source_location": "L238",
       "weight": 1.0
     },
     {
@@ -11490,7 +11478,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L235",
+      "source_location": "L239",
       "weight": 1.0
     },
     {
@@ -11502,7 +11490,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L237",
+      "source_location": "L241",
       "weight": 1.0
     },
     {
@@ -11514,7 +11502,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L238",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -11526,7 +11514,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L239",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -11538,7 +11526,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L240",
+      "source_location": "L244",
       "weight": 1.0
     },
     {
@@ -11550,7 +11538,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L241",
+      "source_location": "L245",
       "weight": 1.0
     },
     {
@@ -11562,7 +11550,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L242",
+      "source_location": "L246",
       "weight": 1.0
     },
     {
@@ -11574,7 +11562,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L243",
+      "source_location": "L247",
       "weight": 1.0
     },
     {
@@ -11586,7 +11574,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L244",
+      "source_location": "L248",
       "weight": 1.0
     },
     {
@@ -11598,7 +11586,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L498",
+      "source_location": "L521",
       "weight": 1.0
     },
     {
@@ -11610,7 +11598,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L293",
+      "source_location": "L317",
       "weight": 1.0
     },
     {
@@ -11622,7 +11610,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L294",
+      "source_location": "L318",
       "weight": 1.0
     },
     {
@@ -11634,7 +11622,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L316",
+      "source_location": "L340",
       "weight": 1.0
     },
     {
@@ -11646,7 +11634,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L392",
+      "source_location": "L416",
       "weight": 1.0
     },
     {
@@ -11658,7 +11646,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L374",
+      "source_location": "L398",
       "weight": 1.0
     },
     {
@@ -11670,7 +11658,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L326",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
@@ -11682,7 +11670,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L327",
+      "source_location": "L351",
       "weight": 1.0
     },
     {
@@ -11694,7 +11682,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L328",
+      "source_location": "L352",
       "weight": 1.0
     },
     {
@@ -11706,7 +11694,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L353",
+      "source_location": "L377",
       "weight": 1.0
     },
     {
@@ -11718,7 +11706,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L356",
+      "source_location": "L380",
       "weight": 1.0
     },
     {
@@ -11730,7 +11718,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L357",
+      "source_location": "L381",
       "weight": 1.0
     },
     {
@@ -11742,7 +11730,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L546",
+      "source_location": "L569",
       "weight": 1.0
     },
     {
@@ -12690,7 +12678,7 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L590",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
@@ -12894,7 +12882,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L97",
+      "source_location": "L96",
       "weight": 1.0
     },
     {
@@ -12906,7 +12894,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L39",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -12954,7 +12942,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L137",
+      "source_location": "L138",
       "weight": 1.0
     },
     {
@@ -12966,7 +12954,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L138",
+      "source_location": "L139",
       "weight": 1.0
     },
     {
@@ -13170,7 +13158,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L347",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -13182,7 +13170,19 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L176",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_autoinitialize",
+      "target": "packages_control_plane_src_persistence_managedconversation",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L279",
       "weight": 1.0
     },
     {
@@ -13194,7 +13194,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L512",
+      "source_location": "L535",
       "weight": 1.0
     },
     {
@@ -13206,7 +13206,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L467",
+      "source_location": "L490",
       "weight": 1.0
     },
     {
@@ -13242,7 +13242,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L533",
+      "source_location": "L556",
       "weight": 1.0
     },
     {
@@ -13254,7 +13254,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L543",
+      "source_location": "L566",
       "weight": 1.0
     },
     {
@@ -13266,7 +13266,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L568",
+      "source_location": "L591",
       "weight": 1.0
     },
     {
@@ -14099,18 +14099,6 @@
     },
     {
       "source": "channels_whatsapp_src_lifecycle",
-      "target": "channels_whatsapp_src_translate_translatewhatsappmessage",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L10",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle",
       "target": "packages_core_src_index_agentresponse",
       "relation": "imports",
       "_origin": "ast",
@@ -14118,7 +14106,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L8",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -14130,7 +14118,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L8",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -14142,7 +14130,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L8",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -14154,7 +14142,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -14166,12 +14154,24 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
       "source": "channels_whatsapp_src_lifecycle",
       "target": "channels_whatsapp_src_config_whatsappconfig",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "channels/whatsapp/src/lifecycle.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "channels_whatsapp_src_lifecycle",
+      "target": "channels_whatsapp_src_translate_translatewhatsappmessage",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -15245,18 +15245,6 @@
     },
     {
       "source": "channels_whatsapp_src_lifecycle",
-      "target": "channels_whatsapp_src_translate",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L10",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle",
       "target": "packages_core_src_index",
       "relation": "imports_from",
       "_origin": "ast",
@@ -15264,13 +15252,25 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L8",
+      "source_location": "L7",
       "type_only": true,
       "weight": 1.0
     },
     {
       "source": "channels_whatsapp_src_lifecycle",
       "target": "channels_whatsapp_src_config",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "channels/whatsapp/src/lifecycle.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "channels_whatsapp_src_lifecycle",
+      "target": "channels_whatsapp_src_translate",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -15633,7 +15633,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L347",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -15645,7 +15645,19 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L195",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_autoinitialize",
+      "target": "packages_core_src_index_message",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L279",
       "weight": 1.0
     },
     {
@@ -15657,7 +15669,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L502",
+      "source_location": "L525",
       "weight": 1.0
     },
     {
@@ -15669,7 +15681,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L400",
+      "source_location": "L424",
       "weight": 1.0
     },
     {
@@ -15681,7 +15693,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L400",
+      "source_location": "L424",
       "weight": 1.0
     },
     {
@@ -15693,7 +15705,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L454",
+      "source_location": "L477",
       "weight": 1.0
     },
     {
@@ -15705,7 +15717,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L454",
+      "source_location": "L477",
       "weight": 1.0
     },
     {
@@ -15717,7 +15729,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L162",
+      "source_location": "L163",
       "weight": 1.0
     },
     {
@@ -15729,7 +15741,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L467",
+      "source_location": "L490",
       "weight": 1.0
     },
     {
@@ -15741,7 +15753,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L481",
+      "source_location": "L504",
       "weight": 1.0
     },
     {
@@ -16113,7 +16125,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L590",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
@@ -16125,7 +16137,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L590",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
@@ -16137,7 +16149,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L590",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
@@ -16149,7 +16161,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L590",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
@@ -16161,7 +16173,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L590",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
@@ -16173,7 +16185,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L590",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
@@ -16209,7 +16221,7 @@
       "confidence_score": 1.0,
       "context": "type",
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L94",
+      "source_location": "L93",
       "weight": 1.0
     },
     {
@@ -16583,7 +16595,7 @@
     },
     {
       "source": "apps_gateway_src_application",
-      "target": "apps_gateway_src_application_messagefrompayload",
+      "target": "apps_gateway_src_application_resolvewhatsappidentity",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -16594,13 +16606,24 @@
     },
     {
       "source": "apps_gateway_src_application",
+      "target": "apps_gateway_src_application_messagefrompayload",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "apps/gateway/src/application.ts",
+      "source_location": "L268",
+      "weight": 1.0
+    },
+    {
+      "source": "apps_gateway_src_application",
       "target": "apps_gateway_src_application_ismessage",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "apps/gateway/src/application.ts",
-      "source_location": "L266",
+      "source_location": "L273",
       "weight": 1.0
     },
     {
@@ -16985,7 +17008,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -16996,7 +17019,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L14",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -17007,7 +17030,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L21",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -17018,7 +17041,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L27",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -17029,7 +17052,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L33",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -17040,29 +17063,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L34",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle",
-      "target": "channels_whatsapp_src_lifecycle_whatsappauthloader",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L35",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle",
-      "target": "channels_whatsapp_src_lifecycle_whatsappsocketfactory",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L36",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -17073,7 +17074,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L364",
+      "source_location": "L331",
       "weight": 1.0
     },
     {
@@ -17084,18 +17085,29 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L372",
+      "source_location": "L339",
       "weight": 1.0
     },
     {
       "source": "channels_whatsapp_src_lifecycle",
-      "target": "channels_whatsapp_src_lifecycle_whatsappchanneloptions",
+      "target": "channels_whatsapp_src_lifecycle_whatsappauthloader",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L38",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "channels_whatsapp_src_lifecycle",
+      "target": "channels_whatsapp_src_lifecycle_whatsappsocketfactory",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "channels/whatsapp/src/lifecycle.ts",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -17106,7 +17118,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L383",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
@@ -17117,7 +17129,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L391",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -17128,7 +17140,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L397",
+      "source_location": "L364",
+      "weight": 1.0
+    },
+    {
+      "source": "channels_whatsapp_src_lifecycle",
+      "target": "channels_whatsapp_src_lifecycle_whatsappchanneloptions",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "channels/whatsapp/src/lifecycle.ts",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -17139,7 +17162,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L47",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -17150,7 +17173,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L54",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -17161,7 +17184,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L61",
+      "source_location": "L60",
       "weight": 1.0
     },
     {
@@ -17172,7 +17195,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L78",
+      "source_location": "L77",
       "weight": 1.0
     },
     {
@@ -17183,7 +17206,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L88",
+      "source_location": "L87",
       "weight": 1.0
     },
     {
@@ -17194,7 +17217,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L94",
+      "source_location": "L93",
       "weight": 1.0
     },
     {
@@ -18668,7 +18691,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L135",
+      "source_location": "L136",
       "weight": 1.0
     },
     {
@@ -18789,7 +18812,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L532",
+      "source_location": "L555",
       "weight": 1.0
     },
     {
@@ -18800,7 +18823,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L585",
+      "source_location": "L608",
       "weight": 1.0
     },
     {
@@ -20076,7 +20099,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
-      "source_location": "L26",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -20087,18 +20110,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
-      "source_location": "L35",
-      "weight": 1.0
-    },
-    {
-      "source": "planning_phases_05_enterprise_conversational_control_plane_verification_phase_5_verification_enterprise_conversational_control_plane",
-      "target": "planning_phases_05_enterprise_conversational_control_plane_verification_real_acceptance",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
-      "source_location": "L48",
+      "source_location": "L42",
       "weight": 1.0
     },
     {
@@ -20114,13 +20126,24 @@
     },
     {
       "source": "planning_phases_05_enterprise_conversational_control_plane_verification_phase_5_verification_enterprise_conversational_control_plane",
+      "target": "planning_phases_05_enterprise_conversational_control_plane_verification_real_acceptance",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "planning_phases_05_enterprise_conversational_control_plane_verification_phase_5_verification_enterprise_conversational_control_plane",
       "target": "planning_phases_05_enterprise_conversational_control_plane_verification_conclusion",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md",
-      "source_location": "L59",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -20461,7 +20484,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L48",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -20483,7 +20506,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L57",
+      "source_location": "L58",
       "weight": 1.0
     },
     {
@@ -20494,7 +20517,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L68",
+      "source_location": "L69",
       "weight": 1.0
     },
     {
@@ -20505,7 +20528,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
-      "source_location": "L80",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -21033,7 +21056,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L211",
+      "source_location": "L221",
       "weight": 1.0
     },
     {
@@ -21044,7 +21067,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L212",
+      "source_location": "L222",
       "weight": 1.0
     },
     {
@@ -21055,7 +21078,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L49",
+      "source_location": "L59",
       "weight": 1.0
     },
     {
@@ -21462,7 +21485,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/whatsapp-channel.test.ts",
-      "source_location": "L208",
+      "source_location": "L209",
       "weight": 1.0
     },
     {
@@ -21473,7 +21496,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/whatsapp-channel.test.ts",
-      "source_location": "L208",
+      "source_location": "L209",
       "weight": 1.0
     },
     {
@@ -21484,7 +21507,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/whatsapp-channel.test.ts",
-      "source_location": "L212",
+      "source_location": "L213",
       "weight": 1.0
     },
     {
@@ -21495,7 +21518,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/whatsapp-channel.test.ts",
-      "source_location": "L212",
+      "source_location": "L213",
       "weight": 1.0
     },
     {
@@ -21506,7 +21529,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/whatsapp-channel.test.ts",
-      "source_location": "L212",
+      "source_location": "L213",
       "weight": 1.0
     },
     {
@@ -21918,7 +21941,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L48",
+      "source_location": "L47",
       "weight": 1.0
     },
     {
@@ -21929,7 +21952,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L70",
+      "source_location": "L69",
       "weight": 1.0
     },
     {
@@ -21940,7 +21963,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L71",
+      "source_location": "L70",
       "weight": 1.0
     },
     {
@@ -21951,7 +21974,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L72",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -21962,7 +21985,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L73",
+      "source_location": "L72",
       "weight": 1.0
     },
     {
@@ -21973,7 +21996,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L74",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -21984,7 +22007,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L75",
+      "source_location": "L74",
       "weight": 1.0
     },
     {
@@ -21995,7 +22018,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L55",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -22006,7 +22029,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L115",
+      "source_location": "L113",
       "weight": 1.0
     },
     {
@@ -22017,7 +22040,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L141",
+      "source_location": "L139",
       "weight": 1.0
     },
     {
@@ -22028,7 +22051,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L152",
+      "source_location": "L150",
       "weight": 1.0
     },
     {
@@ -22039,7 +22062,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L167",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -22050,7 +22073,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L176",
+      "source_location": "L173",
       "weight": 1.0
     },
     {
@@ -22061,7 +22084,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L195",
+      "source_location": "L188",
       "weight": 1.0
     },
     {
@@ -22072,7 +22095,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L209",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
@@ -22083,7 +22106,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L230",
+      "source_location": "L219",
       "weight": 1.0
     },
     {
@@ -22094,7 +22117,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L245",
+      "source_location": "L234",
       "weight": 1.0
     },
     {
@@ -22105,7 +22128,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L281",
+      "source_location": "L270",
       "weight": 1.0
     },
     {
@@ -22116,7 +22139,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L296",
+      "source_location": "L285",
       "weight": 1.0
     },
     {
@@ -22127,7 +22150,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L301",
+      "source_location": "L290",
       "weight": 1.0
     },
     {
@@ -22138,7 +22161,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L311",
+      "source_location": "L300",
       "weight": 1.0
     },
     {
@@ -22149,40 +22172,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L318",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle_whatsappchannel",
-      "target": "channels_whatsapp_src_lifecycle_whatsappchannel_rememberinboundmessage",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L325",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle_whatsappchannel",
-      "target": "channels_whatsapp_src_lifecycle_whatsappchannel_getinboundmessage",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L335",
-      "weight": 1.0
-    },
-    {
-      "source": "channels_whatsapp_src_lifecycle_whatsappchannel",
-      "target": "channels_whatsapp_src_lifecycle_whatsappchannel_pruneinboundmessages",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L340",
+      "source_location": "L307",
       "weight": 1.0
     },
     {
@@ -22193,7 +22183,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L347",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -22204,7 +22194,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L356",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -22215,7 +22205,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L28",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -22226,7 +22216,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L29",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -22237,7 +22227,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L30",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -22248,7 +22238,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L22",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -22259,7 +22249,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L23",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -22270,7 +22260,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L24",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -22281,7 +22271,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "channels/whatsapp/src/lifecycle.ts",
-      "source_location": "L62",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -22402,7 +22392,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L144",
+      "source_location": "L145",
       "weight": 1.0
     },
     {
@@ -22413,7 +22403,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L152",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -22424,7 +22414,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L154",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -22435,7 +22425,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L156",
+      "source_location": "L157",
       "weight": 1.0
     },
     {
@@ -22446,7 +22436,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L162",
+      "source_location": "L163",
       "weight": 1.0
     },
     {
@@ -22457,7 +22447,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L226",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -22468,7 +22458,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L251",
+      "source_location": "L255",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane",
+      "target": "packages_control_plane_src_index_controlplane_autoinitialize",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L279",
       "weight": 1.0
     },
     {
@@ -22479,7 +22480,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L275",
+      "source_location": "L299",
       "weight": 1.0
     },
     {
@@ -22490,7 +22491,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L281",
+      "source_location": "L305",
       "weight": 1.0
     },
     {
@@ -22501,7 +22502,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L290",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -22512,7 +22513,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L298",
+      "source_location": "L322",
       "weight": 1.0
     },
     {
@@ -22523,7 +22524,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L309",
+      "source_location": "L333",
       "weight": 1.0
     },
     {
@@ -22534,7 +22535,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L320",
+      "source_location": "L344",
       "weight": 1.0
     },
     {
@@ -22545,7 +22546,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L331",
+      "source_location": "L355",
       "weight": 1.0
     },
     {
@@ -22556,7 +22557,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L348",
+      "source_location": "L372",
       "weight": 1.0
     },
     {
@@ -22567,7 +22568,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L361",
+      "source_location": "L385",
       "weight": 1.0
     },
     {
@@ -22578,7 +22579,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L367",
+      "source_location": "L391",
       "weight": 1.0
     },
     {
@@ -22589,7 +22590,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L372",
+      "source_location": "L396",
       "weight": 1.0
     },
     {
@@ -22600,7 +22601,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L378",
+      "source_location": "L402",
       "weight": 1.0
     },
     {
@@ -22611,7 +22612,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L389",
+      "source_location": "L413",
       "weight": 1.0
     },
     {
@@ -22622,7 +22623,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L395",
+      "source_location": "L419",
       "weight": 1.0
     },
     {
@@ -22633,7 +22634,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L400",
+      "source_location": "L424",
       "weight": 1.0
     },
     {
@@ -22644,7 +22645,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L454",
+      "source_location": "L477",
       "weight": 1.0
     },
     {
@@ -22655,7 +22656,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L467",
+      "source_location": "L490",
       "weight": 1.0
     },
     {
@@ -22666,7 +22667,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L476",
+      "source_location": "L499",
       "weight": 1.0
     },
     {
@@ -22677,7 +22678,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L481",
+      "source_location": "L504",
       "weight": 1.0
     },
     {
@@ -22688,7 +22689,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L488",
+      "source_location": "L511",
       "weight": 1.0
     },
     {
@@ -22699,7 +22700,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L497",
+      "source_location": "L520",
       "weight": 1.0
     },
     {
@@ -22710,7 +22711,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L502",
+      "source_location": "L525",
       "weight": 1.0
     },
     {
@@ -22721,7 +22722,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L507",
+      "source_location": "L530",
       "weight": 1.0
     },
     {
@@ -22732,7 +22733,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L512",
+      "source_location": "L535",
       "weight": 1.0
     },
     {
@@ -22743,7 +22744,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L516",
+      "source_location": "L539",
       "weight": 1.0
     },
     {
@@ -22754,7 +22755,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L537",
+      "source_location": "L560",
       "weight": 1.0
     },
     {
@@ -22765,7 +22766,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L539",
+      "source_location": "L562",
       "weight": 1.0
     },
     {
@@ -22776,7 +22777,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L540",
+      "source_location": "L563",
       "weight": 1.0
     },
     {
@@ -22787,7 +22788,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L541",
+      "source_location": "L564",
       "weight": 1.0
     },
     {
@@ -22798,7 +22799,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L543",
+      "source_location": "L566",
       "weight": 1.0
     },
     {
@@ -22809,7 +22810,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L558",
+      "source_location": "L581",
       "weight": 1.0
     },
     {
@@ -22820,7 +22821,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L568",
+      "source_location": "L591",
       "weight": 1.0
     },
     {
@@ -24470,5 +24471,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fa92f42ceb775fe1278be0fa62addcc95a9b95c2"
+  "built_at_commit": "30a1497ff935bae10127df18e5f50cf9aa4af5fc"
 }

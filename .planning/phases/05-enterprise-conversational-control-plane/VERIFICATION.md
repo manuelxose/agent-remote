@@ -5,7 +5,7 @@ Date: 2026-09-11
 ## Automated verification
 
 - `npm run build`: PASS.
-- `npm test`: PASS — 124 tests, 122 passed, 0 failed, 2 skipped.
+- `npm test`: PASS — 126 tests, 124 passed, 0 failed, 2 skipped.
 - Focused control-plane tests: PASS — atomic JSON persistence, corruption failure,
   registry help, initialization restrictions, multiple chats, idempotency,
   cancellation, queue bounds, and concurrent logical chats.
@@ -19,8 +19,12 @@ Date: 2026-09-11
 - WhatsApp tests: PASS — transport boundary, authorization, restart lifecycle,
   self-message handling, response chunking, and native reply quoting.
 - Model and latency UX tests: PASS — configured `/model` aliases resolve to
-  provider IDs, and accepted prompts emit an immediate acknowledgement before
-  provider execution.
+  provider IDs, real provider IDs are displayed, and accepted prompts emit an
+  immediate acknowledgement before provider execution.
+- Conversation UX tests: PASS — authorized ordinary messages automatically
+  initialize chats, and one-number self identities use one stable allowlisted
+  owner identity across Baileys LIDs; outbound responses use normal messages
+  without WhatsApp quote metadata.
 - Boundary scan: PASS — no `oneNumberCommandAction`/`parseOneNumberCommand`
   remains in the application; control-plane packages contain no WhatsApp/Baileys
   imports; chatbot boundary tests pass.
@@ -29,7 +33,7 @@ Date: 2026-09-11
 ## Graphify
 
 - `graphify update .`: PASS.
-- Refreshed graph: 799 nodes, 1294 edges, 68 communities.
+- Refreshed graph: 798 nodes, 1295 edges, 70 communities.
 - Focused query identifies `ControlPlane`, `CommandRegistry`,
   `JsonControlPlaneStore`, `application.ts`, and `WhatsAppChannel` as separate
   modules. A directed control-plane-to-channel path is absent because the

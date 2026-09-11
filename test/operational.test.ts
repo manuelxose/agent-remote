@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createApplication, formatWorkspaceCommand, loadApplicationConfig, loadRoutes, resolveWhatsAppRole } from "../dist/apps/gateway/src/application.js";
+import { createApplication, formatWorkspaceCommand, loadApplicationConfig, loadRoutes, resolveWhatsAppIdentity, resolveWhatsAppRole } from "../dist/apps/gateway/src/application.js";
 import { formatOperationalError, runDoctor } from "../dist/apps/gateway/src/doctor.js";
 import { RouteNotFoundError } from "../dist/packages/routing/src/index.js";
 import { acquireProcessLock } from "../dist/apps/gateway/src/lock.js";
@@ -68,6 +68,10 @@ test("requires approved workspace roots before composing the gateway", () => {
 
 test("one-number self identities receive owner role when self-messages are enabled", () => {
   assert.equal(resolveWhatsAppRole({ WHATSAPP_ALLOW_SELF_MESSAGES: "true", WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net" }, "owner@lid"), "owner");
+});
+
+test("one-number self identities use the stable allowlisted identity", () => {
+  assert.equal(resolveWhatsAppIdentity({ WHATSAPP_ALLOW_SELF_MESSAGES: "true", WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net" }, "owner@lid"), "owner@s.whatsapp.net");
 });
 
 test("rejects a default workspace outside approved roots", () => {

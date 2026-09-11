@@ -144,7 +144,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     rateLimitPerMinute: config.rateLimitPerMinute,
     resetProviderSession: (session, agent) => runtime.resetSession(session.channel, session.logicalSessionId, agent, session.workspace),
     onExecutionResponse: async (session, response) => { await whatsapp.channel.send(session.externalConversationId, response); },
-    onExecutionAccepted: async (session, message) => { await whatsapp.channel.send(session.externalConversationId, { text: "⏳ Recibido. Procesando…", metadata: { replyToMessageId: message.id } }); },
+    onExecutionAccepted: async (session) => { await whatsapp.channel.send(session.externalConversationId, { text: "⏳ Recibido. Procesando…" }); },
     version: "phase-5",
     diagnostics: () => "Run the gateway doctor command for provider and persistence diagnostics."
   });
@@ -159,8 +159,8 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     env: config.env,
     onQr: printQr,
     onMessage: async (message, channel) => {
-      const result = await controlPlane.handle(message, { id: message.senderId, role: resolveWhatsAppRole(config.env, message.senderId) });
-      await channel.send(message.conversationId, { ...result, metadata: { ...result.metadata, replyToMessageId: message.id } });
+      const result = await controlPlane.handle(message, { id: resolveWhatsAppIdentity(config.env, message.senderId), role: resolveWhatsAppRole(config.env, message.senderId) });
+      await channel.send(message.conversationId, result);
     },
     onError: async (error, payload, channel) => {
       const message = messageFromPayload(payload);
@@ -256,6 +256,13 @@ export function resolveWhatsAppRole(env: Readonly<Record<string, string | undefi
   if (env.WHATSAPP_ALLOW_SELF_MESSAGES?.trim().toLowerCase() === "true") return "owner";
   if (parseList(env.WHATSAPP_ALLOWED_USERS).includes(senderId)) return "owner";
   return "viewer";
+}
+
+export function resolveWhatsAppIdentity(env: Readonly<Record<string, string | undefined>>, senderId: string): string {
+  const allowlistedUsers = parseList(env.WHATSAPP_ALLOWED_USERS);
+  return env.WHATSAPP_ALLOW_SELF_MESSAGES?.trim().toLowerCase() === "true" && allowlistedUsers.length === 1
+    ? allowlistedUsers[0]
+    : senderId;
 }
 
 function messageFromPayload(payload: unknown): Message | undefined {

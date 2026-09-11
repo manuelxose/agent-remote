@@ -59,7 +59,7 @@ test("long responses are split at the configured WhatsApp size limit", async () 
   await channel.stop();
 });
 
-test("responses quote the received message when a reply target is provided", async () => {
+test("responses are sent as normal messages without quoted context", async () => {
   const events = new FakeEvents();
   const sent: unknown[] = [];
   const socket = { ev: events, async sendMessage(...args: unknown[]) { sent.push(args); return undefined; }, async end() {} };
@@ -70,8 +70,9 @@ test("responses quote the received message when a reply target is provided", asy
   await channel.start();
   events.emit("connection.update", { connection: "open" });
   await channel.receive({ key: { id: "incoming-1", remoteJid: "u@s.whatsapp.net" }, message: { conversation: "hello" } });
-  await channel.send("u@s.whatsapp.net", { text: "reply", metadata: { replyToMessageId: "incoming-1" } });
-  assert.equal((sent[0] as any[])[2].quoted.key.id, "incoming-1");
+  await channel.send("u@s.whatsapp.net", { text: "reply" });
+  assert.equal((sent[0] as any[]).length, 2);
+  assert.equal((sent[0] as any[])[1].text, "reply");
   await channel.stop();
 });
 

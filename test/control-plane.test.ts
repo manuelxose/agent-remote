@@ -35,15 +35,25 @@ test("provider model policy falls back to the CLI default when no model is confi
   assert.equal(policy.describe("codex"), "provider default");
 });
 
-test("model command lists configured aliases and selects one", async () => {
+test("model command lists real provider IDs and selects one", async () => {
   const { control, calls } = setupWithModelAliases();
   const identity = { id: "owner", role: "owner" as const };
   await control.handle(messages("model-init", "/init"), identity);
   await control.handle(messages("model-agent", "/codex"), identity);
-  assert.match((await control.handle(messages("model-list", "/model"), identity)).text, /fast.*quality|quality.*fast/);
-  assert.match((await control.handle(messages("model-select", "/model fast"), identity)).text, /fast/);
+  const available = (await control.handle(messages("model-list", "/model"), identity)).text;
+  assert.match(available, /codex-mini-latest/);
+  assert.match(available, /gpt-5\.6-luna/);
+  assert.doesNotMatch(available, /Available: .*\bfast\b/);
+  assert.match((await control.handle(messages("model-select", "/model codex-mini-latest"), identity)).text, /codex-mini-latest/);
   await control.handle(messages("model-prompt", "hello"), identity);
   assert.equal(calls.at(-1)?.model, "codex-mini-latest");
+});
+
+test("ordinary prompts auto-initialize authorized conversations", async () => {
+  const { control, calls } = setup();
+  const response = await control.handle(messages("auto-init", "hello", "new-chat"), { id: "owner", role: "owner" });
+  assert.equal(response.text, "done:hello");
+  assert.equal(calls.length, 1);
 });
 
 function setupWithModelAliases() {
@@ -76,7 +86,7 @@ test("accepted prompts send an immediate acknowledgement before execution", asyn
 
 test("pre-init restrictions and active-agent selection are enforced", async () => {
   const { control, calls } = setup();
-  assert.match((await control.handle(messages("before", "inspect this"), { id: "owner", role: "owner" })).text, /\/init/);
+  assert.match((await control.handle(messages("before", "/agent"), { id: "owner", role: "owner" })).text, /\/init/);
   await control.handle(messages("init", "/init backend-api"), { id: "owner", role: "owner" });
   assert.match((await control.handle(messages("no-agent", "inspect this"), { id: "owner", role: "owner" })).text, /Select an agent/);
   assert.match((await control.handle(messages("select", "/claude"), { id: "owner", role: "owner" })).text, /Claude activated/);

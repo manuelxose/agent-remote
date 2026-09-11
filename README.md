@@ -64,13 +64,13 @@ npm start
 
 Baileys persists credentials under `WHATSAPP_AUTH_PATH`; later restarts reuse them and should not require pairing again. The account must be in `WHATSAPP_ALLOWED_USERS` and the chat must have a route. An authorized but unmapped chat receives its conversation ID and the required route key in the response.
 
-After pairing, an authorized chat is initialized with `/init [name]`. Managed chats, agents, workspaces, provider sessions, queues, and state are controlled by the central command registry.
+After pairing, the first ordinary message in an authorized chat initializes it automatically with Codex. `/init [name]` remains available when an explicit chat name is wanted. Managed chats, agents, workspaces, provider sessions, queues, and state are controlled by the central command registry.
 
 ## Provider behavior
 
 The application checks the installed provider executables at runtime and invokes them through their existing adapters with direct argv, bounded output, timeouts, approved workspaces, and persisted native sessions. It does not install missing CLIs.
 
-Normal messages are forwarded as prompts after `/init` and explicit agent selection. Accepted prompts receive an immediate WhatsApp acknowledgement, and final responses are sent as replies to the original message. Provider failures return a short WhatsApp-safe message; detailed stderr and lifecycle diagnostics remain in logs.
+Normal messages from authorized chats are automatically initialized and forwarded as prompts; `/claude` and `/codex` can still explicitly select the agent. Accepted prompts receive an immediate WhatsApp acknowledgement, and responses are sent as normal messages from the configured WhatsApp account. Because Baileys sends through that account, WhatsApp will display them as sent by that account; making them appear from another person requires a separate WhatsApp account/auth session. Provider failures return a short WhatsApp-safe message; detailed stderr and lifecycle diagnostics remain in logs.
 
 Send `/workspace` from an authorized WhatsApp chat to see the effective workspace path. It is the same local project directory used by this gateway and the provider CLI; the command does not expose file contents.
 
