@@ -38,7 +38,10 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
     }
 
     const maxOutputBytes = spec.maxOutputBytes ?? Number.POSITIVE_INFINITY;
-    const child = spawn(spec.executable, spec.argv, { cwd: workingDirectory });
+    const child = spawn(spec.executable, spec.argv, {
+      cwd: workingDirectory,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     let stdout = Buffer.alloc(0);
     let stderr = Buffer.alloc(0);
     let stdoutTruncated = false;

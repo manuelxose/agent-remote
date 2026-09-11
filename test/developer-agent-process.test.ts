@@ -34,6 +34,25 @@ test("runs a process with separate executable and arguments", async () => {
   }
 });
 
+test("closes child stdin for argument-based prompts", async () => {
+  const root = await mkdtemp(join(tmpdir(), "developer-process-stdin-"));
+  try {
+    const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([root])).run({
+      executable: process.execPath,
+      argv: script("process.stdin.resume(); process.stdin.on('end', () => process.stdout.write('closed'))"),
+      workingDirectory: root,
+      timeoutMs: 500,
+      maxOutputBytes: 100,
+    });
+
+    assert.equal(result.exitCode, 0);
+    assert.equal(result.stdout, "closed");
+    assert.equal(result.terminationReason, undefined);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
 test("captures stderr and non-zero exit codes", async () => {
   const result = await new NodeDeveloperProcessRunner(new WorkspacePolicy([process.cwd()])).run({
     executable: process.execPath,
