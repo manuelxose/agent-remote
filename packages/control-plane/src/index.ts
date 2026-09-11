@@ -350,16 +350,19 @@ export class ControlPlane {
       if (!chats.length) return { text: "No imported chats are available.", status: "warning" };
       return { text: `Imported chats\n\n${chats.map(chat => `${chat.displayName} (${chat.conversationId})`).join("\n")}` };
     }
-    const request = historyChatRequest(context.args);
-    if (request) return this.historyChat(context, request.source, request.question);
     const sessions = await this.repositories.listByOwner(context.identity.id);
     const selected = sessions.find(item => item.channel === context.message.channel && (item.logicalSessionId === context.args || item.displayName.toLowerCase() === context.args.toLowerCase()));
-    if (!selected) return { text: `Chat not found: ${context.args}`, status: "error" };
-    await this.repositories.setSelection(context.identity.id, context.message.channel, selected.logicalSessionId);
-    return { text: `Active chat: ${selected.displayName}\nAgent: ${selected.activeAgent ?? "none"}\nWorkspace: ${selected.workspace}` };
+    if (selected) {
+      await this.repositories.setSelection(context.identity.id, context.message.channel, selected.logicalSessionId);
+      return { text: `Active chat: ${selected.displayName}\nAgent: ${selected.activeAgent ?? "none"}\nWorkspace: ${selected.workspace}` };
+    }
+    const request = historyChatRequest(context.args);
+    if (request) return this.historyChat(context, request.source, request.question);
+    return { text: `Chat not found: ${context.args}`, status: "error" };
   }
 
   private async historyChat(context: CommandContext, source: string, question: string): Promise<CommandResult> {
+    if (context.session?.status === "CLOSED") return this.rejected(context.message.id, "This chat is closed. Use /init first.");
     if (!this.options.history) return { text: "Imported chat history is not configured.", status: "error" };
     const matches = await this.options.history.listChats(context.message.channel, source, 30);
     if (!matches.length) return { text: `Imported chat not found: ${source}`, status: "warning" };

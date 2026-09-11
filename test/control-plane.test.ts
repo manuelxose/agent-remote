@@ -118,6 +118,33 @@ test("chat with one managed-session name still selects that managed session", as
   assert.match(result.text, /Active chat: backend/);
 });
 
+test("an exact multiword managed-session name wins over history-question parsing", async () => {
+  const { control, calls } = setup({ history: historyProvider([{ conversationId: "history-project", displayName: "Project" }]) });
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("project-init", "/init Project Alpha", "project-chat"), identity);
+  await control.handle(messages("current-init", "/init Current", "current-chat"), identity);
+  await control.handle(messages("current-agent", "/codex", "current-chat"), identity);
+
+  const result = await control.handle(messages("project-select", "/chat Project Alpha", "current-chat"), identity);
+
+  assert.match(result.text, /Active chat: Project Alpha/);
+  assert.equal(calls.length, 0);
+});
+
+test("history questions reject closed managed sessions before runtime execution", async () => {
+  const { control, calls } = setup({ history: historyProvider([{ conversationId: "history-viaje", displayName: "Viaje" }]) });
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("closed-init", "/init", "closed-chat"), identity);
+  await control.handle(messages("closed-agent", "/codex", "closed-chat"), identity);
+  await control.handle(messages("closed-close", "/close", "closed-chat"), identity);
+
+  const result = await control.handle(messages("closed-history", "/chat viaje planifica", "closed-chat"), identity);
+
+  assert.equal(result.text, "This chat is closed. Use /init first.");
+  assert.equal(result.status, "warning");
+  assert.equal(calls.length, 0);
+});
+
 test("help is generated from the command registry and unknown commands do not execute", async () => {
   const { control, calls } = setup();
   const help = await control.handle(messages("help", "/help"), { id: "owner", role: "owner" });
