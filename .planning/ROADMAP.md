@@ -113,7 +113,7 @@ Plans:
 
 Verification: `.planning/phases/06-real-time-conversational-runtime/VERIFICATION.md`.
 
-## Phase 7: Single-Number Presentation Runtime — Complete (live acceptance recorded separately)
+## Phase 7: Single-Number Presentation Runtime — In progress (Tasks 1–5 complete; Task 6 final verification pending)
 Requirements: IDENTITY-01, IDENTITY-02, DELIVERY-01, PRESENTATION-01, PRESENTATION-02, SECURITY-05, OPS-02, TEST-03, DOC-03.
-- [x] 07-01-PLAN.md — structured message origins, bounded registry, final-only WhatsApp delivery, opt-in Web/Desktop companion, documentation, and live verification
-Verification: `.planning/phases/07-single-number-presentation-runtime/VERIFICATION.md` records automated PASS (169 tests: 167 passed, 0 failed, 2 skipped) and live WhatsApp UNVERIFIED; mobile agent-left rendering remains not controllable.
+- [ ] 07-01-PLAN.md — Tasks 1–5: structured message origins, bounded registry, final-only WhatsApp delivery, opt-in Web/Desktop companion, and documentation; Task 6: final automated and live verification pending
+Verification: recorded automated checks are PASS (169 tests: 167 passed, 0 failed, 2 skipped); Task 6 must perform final measured verification. Live WhatsApp remains UNVERIFIED, and mobile agent-left rendering remains not controllable.

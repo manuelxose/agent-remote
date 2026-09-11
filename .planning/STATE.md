@@ -2,7 +2,7 @@
 
 ## Current Position
 
-Phase 7 — Single-Number Presentation Runtime (planned)
+Phase 7 — Single-Number Presentation Runtime (Tasks 1–5 complete; Task 6 final verification pending)
 
 ## Status
 
@@ -10,7 +10,7 @@ The Phase 5 control plane is implemented: central command registry, explicit sta
 
 Phase 6 design is approved and recorded in `docs/superpowers/specs/2026-09-11-real-time-conversational-runtime-design.md`; implementation follows the executable plan in `docs/superpowers/plans/2026-09-11-real-time-conversational-runtime.md`. The phase is complete locally with streaming contracts, managed sessions, correlated bounded WhatsApp delivery, telemetry, diagnostics, documentation, tests, and a refreshed Graphify graph. Codex smoke passed; Claude/Copilot Phase 6 provider execution and live WhatsApp streaming remain explicitly unverified.
 
-Phase 7 design is approved and recorded in `docs/superpowers/specs/2026-09-11-single-number-presentation-runtime-design.md`; implementation followed `docs/superpowers/plans/2026-09-11-single-number-presentation-runtime.md`. The phase is complete for deterministic verification: structured logical origins, bounded exact-ID WhatsApp correlation, final-only delivery, and the opt-in local Web/Desktop presentation companion are implemented. Live WhatsApp and Web/Desktop acceptance are explicitly UNVERIFIED in this worktree; official mobile agent-left rendering remains not controllable under one account.
+Phase 7 design is approved and recorded in `docs/superpowers/specs/2026-09-11-single-number-presentation-runtime-design.md`; implementation followed `docs/superpowers/plans/2026-09-11-single-number-presentation-runtime.md`. Tasks 1–5 implemented structured logical origins, bounded exact-ID WhatsApp correlation, final-only delivery, and the opt-in local Web/Desktop presentation companion. Task 6 final verification remains pending. Live WhatsApp and Web/Desktop acceptance are explicitly UNVERIFIED in this worktree; official mobile agent-left rendering remains not controllable under one account.
 
 ## Decisions
 
@@ -41,8 +41,8 @@ Phase 7 design is approved and recorded in `docs/superpowers/specs/2026-09-11-si
 - Phase 5 verification: `npm run build` passes; `npm test` reports 127 tests, 125 passed, 0 failed, 2 skipped; authorized chats and initialization-required commands auto-initialize, one-number identities are stable across Baileys LIDs, provider model IDs are shown directly, normal WhatsApp sends are used, and immediate execution acknowledgements remain enabled; the deep review's 17 findings were remediated; provider-default model fallback was hardened; `graphify update .` refreshed 798 nodes, 1295 edges, and 70 communities.
 - Local doctor with explicit configuration reports truthful PASS/WARN/FAIL results; Codex smoke is available, while Claude, Copilot, and live WhatsApp acceptance are UNVERIFIED because the required local executables/auth state are unavailable in this worktree.
 - Phase 6 verification: `npm test` reports 144 tests, 142 passed, 0 failed, 2 skipped; Codex smoke completed; the doctor reports streaming/reply-cache policy and a truthful Copilot executable failure; Graphify refreshed to 950 nodes, 1559 edges, and 79 communities. Synthetic cold/warm benchmark output and live-verification limitations are recorded in `.planning/phases/06-real-time-conversational-runtime/VERIFICATION.md`.
-- Phase 7 deterministic verification: `npm run build` passed; `npm test` reports 169 tests, 167 passed, 0 failed, 2 skipped. The measured deterministic benchmark is cold 5 ms and warm 1 ms; Phase 7 makes no comparative live latency claim because provider/transport measurements were not run. The existing Graphify snapshot contains 1081 nodes; Task 5 changed documentation only, so `graphify update .` was intentionally not rerun. Live WhatsApp and Web/Desktop companion acceptance are UNVERIFIED because no configured gateway/auth session was exercised; mobile protocol-native agent-left rendering is impossible with one WhatsApp account.
+- Phase 7 deterministic verification recorded to date: `npm run build` passed; `npm test` reports 169 tests, 167 passed, 0 failed, 2 skipped. Full-suite durations are run-specific; `VERIFICATION.md` is the authoritative record for its command run. The measured deterministic benchmark is cold 5 ms and warm 1 ms; Phase 7 makes no comparative live latency claim because provider/transport measurements were not run. The existing Graphify snapshot contains 1081 nodes; Task 5 changed documentation only, so `graphify update .` was intentionally not rerun. Live WhatsApp and Web/Desktop companion acceptance are UNVERIFIED because no configured gateway/auth session was exercised; mobile protocol-native agent-left rendering is impossible with one WhatsApp account.
 
 ## Next Action
 
-Use `.planning/phases/07-single-number-presentation-runtime/VERIFICATION.md` for the still-required manual live WhatsApp/provider and Web/Desktop companion acceptance before treating those client layers as accepted.
+Complete Task 6 in `.planning/phases/07-single-number-presentation-runtime/07-01-PLAN.md`: run final measured automated verification and the manual live WhatsApp/provider and Web/Desktop companion acceptance before treating Phase 7 or those client layers as accepted.

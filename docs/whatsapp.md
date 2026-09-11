@@ -40,7 +40,7 @@ Health snapshots contain only lifecycle status, transition time, reconnect attem
 
 Incoming messages are translated to the channel-neutral core `Message` model. The adapter supplies sender ID, conversation ID, optional group ID, text/caption, timestamp, and basic attachment descriptors. It ignores self-sent messages, broadcast/status traffic, unsupported textless payloads, and Baileys request-ID replay traffic. The application callback passes the translated message to the channel-neutral control plane and sends its `CommandResult` or agent result through WhatsApp. Future Telegram/Web adapters can invoke the same control-plane entry point with their own core `Message` values.
 
-Accepted prompts set composing presence and receive a correlated acknowledgement. Claude/Codex deltas are aggregated using `AGENT_REMOTE_STREAM_MIN_CHARS`, `AGENT_REMOTE_STREAM_MAX_INTERVAL_MS`, and `AGENT_REMOTE_STREAM_MAX_MESSAGES`; each emitted chunk and the final remainder retain the original quoted reference. Presence returns to paused when execution terminates.
+Accepted prompts set composing presence; they do not receive an immediate processing acknowledgement. Provider deltas stay internal and WhatsApp normally receives one final correlated reply. Set `AGENT_REMOTE_PROGRESS_AFTER_MS` to a positive delay to allow one optional progress reply with `AGENT_REMOTE_PROGRESS_TEXT`; the default `0` sends final-only delivery. Progress and final delivery remain bounded by `AGENT_REMOTE_STREAM_MAX_MESSAGES`, retain the original quoted reference, and presence returns to paused when execution terminates.
 
 ## Control-plane commands
 
@@ -50,7 +50,7 @@ Use `/help` for the registry-generated list. Authorized ordinary messages automa
 
 The gateway uses one WhatsApp account. Agent Remote replies are transport messages from that account (`fromMe`), even when their logical `MessageOrigin` says that Claude, Codex, or another configured agent produced them. The logical origin is runtime metadata, not an attempt to spoof a sender or manufacture an inbound participant.
 
-Each final or delayed-progress reply retains the exact incoming-message `reply` reference when its bounded quoted context remains available. Successful outbound sends are correlated by their exact WhatsApp message ID in a TTL- and capacity-bounded registry; text is never used as a key. The normal visible lifecycle is composing presence followed by one final reply and paused presence. `AGENT_REMOTE_PROGRESS_AFTER_MS=0` disables progress; a positive threshold allows at most the configured bounded progress/final messages. `/cancel` cancels the execution and pauses presence without sending a partial/final delivery through the streaming helper.
+Each final or delayed-progress reply retains the exact incoming-message `reply` reference when its bounded quoted context remains available. Successful outbound sends are correlated by their exact WhatsApp message ID in a TTL- and capacity-bounded registry; text is never used as a key. The normal visible lifecycle is composing presence followed by one final reply and paused presence. `AGENT_REMOTE_PROGRESS_AFTER_MS=0` disables progress; a positive threshold allows at most one delayed progress reply before the final reply, within the configured message cap. `/cancel` reaches the provider abort signal, cancels the execution, pauses presence, and suppresses partial/final streaming delivery.
 
 ## Optional Web/Desktop presentation companion
 
