@@ -6,7 +6,7 @@ import { WorkspacePolicy } from "../dist/packages/security/src/index.js";
 const root = process.cwd();
 const messages = (id: string, text: string, conversationId = "chat-1") => ({ id, channel: "test", conversationId, senderId: "owner", text, receivedAt: new Date() });
 
-function setup() {
+function setup(options: { history?: any; historyLimits?: { maxMessages: number; maxCharacters: number } } = {}) {
   const calls: Array<{ conversationId: string; prompt: string; model?: string }> = [];
   const agent = (id: string) => ({ id, type: "developer-agent" as const, async handleMessage() { throw new Error("runtime owns execution"); } });
   const runtime = { type: "developer-agent" as const, async execute(context: any) { calls.push({ conversationId: context.conversation.id, prompt: context.message.text, model: context.execution.metadata?.model }); return { text: `done:${context.message.text}`, metadata: { sessionId: `${context.route.agent}-session` } }; } };
@@ -14,10 +14,109 @@ function setup() {
     repositories: new InMemoryControlPlaneStore(), agents: { claude: agent("claude"), codex: agent("codex") }, runtimes: { "developer-agent": runtime },
     workspacePolicy: new WorkspacePolicy([root]), defaultWorkspace: root,
     modelPolicy: new ConfiguredModelPolicy({ claude: { sonnet: "claude-sonnet-configured" }, codex: { luna: "codex-luna-configured" } }),
-    maxQueueDepth: 1
+    maxQueueDepth: 1,
+    ...options
   });
   return { control, calls };
 }
+
+function historyProvider(chats: Array<{ conversationId: string; displayName: string }>, text = "Hotel el viernes") {
+  const queryLimits: Array<{ maxMessages: number; maxCharacters: number }> = [];
+  return {
+    queryLimits,
+    async listChats(_channel: string, query?: string, _limit?: number) {
+      const needle = query?.toLowerCase() ?? "";
+      return chats.filter(chat => chat.displayName.toLowerCase().includes(needle)).map(chat => ({ ...chat, channel: "test", kind: "private" as const, updatedAt: "2026-09-11T00:00:00.000Z" }));
+    },
+    async query(channel: string, conversationId: string, _question: string, limits: { maxMessages: number; maxCharacters: number }) {
+      queryLimits.push(limits);
+      const chat = chats.find(item => item.conversationId === conversationId);
+      if (!chat) return undefined;
+      return {
+        chat: { ...chat, channel, kind: "private" as const, updatedAt: "2026-09-11T00:00:00.000Z" },
+        messages: [{ id: "history-1", channel, conversationId, senderId: "friend", text, receivedAt: new Date("2026-09-10T12:00:00.000Z") }],
+        importedMessageCount: 4,
+        oldestAvailableAt: new Date("2026-09-01T00:00:00.000Z"),
+        newestAvailableAt: new Date("2026-09-10T12:00:00.000Z"),
+        truncated: true
+      };
+    }
+  };
+}
+
+test("chat questions run the bounded imported transcript through the managed runtime", async () => {
+  const history = historyProvider([{ conversationId: "history-viaje", displayName: "Viaje" }]);
+  const { control, calls } = setup({ history, historyLimits: { maxMessages: 2, maxCharacters: 120 } });
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("history-init", "/init"), identity);
+  await control.handle(messages("history-agent", "/codex"), identity);
+
+  const result = await control.handle(messages("history-question", "/chat viaje planifica el viaje"), identity);
+
+  assert.equal(result.status, undefined);
+  assert.match(calls[0]?.prompt ?? "", /Referenced WhatsApp chat: Viaje \(history-viaje\)/);
+  assert.match(calls[0]?.prompt ?? "", /Transcript\n[\s\S]*untrusted reference data/i);
+  assert.match(calls[0]?.prompt ?? "", /Hotel el viernes/);
+  assert.match(calls[0]?.prompt ?? "", /Coverage[\s\S]*4 imported messages[\s\S]*bounded excerpt/i);
+  assert.match(calls[0]?.prompt ?? "", /User question\nplanifica el viaje/);
+  assert.deepEqual(history.queryLimits, [{ maxMessages: 2, maxCharacters: 120 }]);
+  assert.equal(result.replyTo?.messageId, "history-question");
+  assert.equal(result.origin?.type, "agent");
+});
+
+test("ambiguous imported chat sources do not invoke the runtime", async () => {
+  const { control, calls } = setup({ history: historyProvider([
+    { conversationId: "viaje-ana", displayName: "Viaje Ana" },
+    { conversationId: "viaje-trabajo", displayName: "Viaje Trabajo" }
+  ]) });
+
+  const result = await control.handle(messages("history-ambiguous", "/chat viaje planifica"), { id: "owner", role: "owner" });
+
+  assert.equal(result.status, "warning");
+  assert.match(result.text, /multiple imported chats/i);
+  assert.equal(calls.length, 0);
+});
+
+test("unknown imported chat sources do not invoke the runtime", async () => {
+  const { control, calls } = setup({ history: historyProvider([{ conversationId: "viaje", displayName: "Viaje" }]) });
+
+  const result = await control.handle(messages("history-unknown", "/chat missing planifica"), { id: "owner", role: "owner" });
+
+  assert.equal(result.status, "warning");
+  assert.match(result.text, /imported chat not found/i);
+  assert.equal(calls.length, 0);
+});
+
+test("chat questions require a configured history provider before runtime execution", async () => {
+  const { control, calls } = setup();
+
+  const result = await control.handle(messages("history-disabled", "/chat viaje planifica"), { id: "owner", role: "owner" });
+
+  assert.equal(result.status, "error");
+  assert.match(result.text, /imported chat history is not configured/i);
+  assert.equal(calls.length, 0);
+});
+
+test("chat without arguments lists imported chats when history is configured", async () => {
+  const { control } = setup({ history: historyProvider([{ conversationId: "history-viaje", displayName: "Viaje" }]) });
+
+  const result = await control.handle(messages("history-list", "/chat"), { id: "owner", role: "owner" });
+
+  assert.equal(result.status, undefined);
+  assert.match(result.text, /Imported chats/);
+  assert.match(result.text, /Viaje \(history-viaje\)/);
+});
+
+test("chat with one managed-session name still selects that managed session", async () => {
+  const { control } = setup({ history: historyProvider([{ conversationId: "history-viaje", displayName: "Viaje" }]) });
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("managed-first", "/init backend", "managed-1"), identity);
+  await control.handle(messages("managed-second", "/init frontend", "managed-2"), identity);
+
+  const result = await control.handle(messages("managed-select", "/chat backend", "managed-2"), identity);
+
+  assert.match(result.text, /Active chat: backend/);
+});
 
 test("help is generated from the command registry and unknown commands do not execute", async () => {
   const { control, calls } = setup();
