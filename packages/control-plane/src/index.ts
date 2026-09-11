@@ -558,9 +558,6 @@ export class ControlPlane {
   private async resolveSession(message: Message, identity: ControlPlaneIdentity): Promise<ManagedConversation | undefined> {
     const external = await this.repositories.findByExternal(message.channel, message.conversationId);
     if (external && external.ownerId === identity.id) return external;
-    const selected = await this.repositories.getSelection(identity.id, message.channel);
-    const chosen = selected ? await this.repositories.get(selected) : undefined;
-    if (chosen && chosen.ownerId === identity.id && chosen.channel === message.channel) return chosen;
     return undefined;
   }
 

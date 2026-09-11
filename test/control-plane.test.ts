@@ -56,6 +56,17 @@ test("ordinary prompts auto-initialize authorized conversations", async () => {
   assert.equal(calls.length, 1);
 });
 
+test("an ordinary prompt from another external chat cannot use the selected chat session", async () => {
+  const { control, calls } = setup();
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("chat-1-init", "/init backend", "chat-1"), identity);
+  await control.handle(messages("chat-1-agent", "/codex", "chat-1"), identity);
+  await control.handle(messages("chat-1-prompt", "from-first", "chat-1"), identity);
+  await control.handle(messages("chat-2-prompt", "from-second", "chat-2"), identity);
+  assert.equal(calls.length, 2);
+  assert.notEqual(calls[1].conversationId, calls[0].conversationId);
+});
+
 test("initialization-required commands auto-initialize authorized conversations", async () => {
   const { control } = setupWithModelAliases();
   const identity = { id: "owner", role: "owner" as const };
