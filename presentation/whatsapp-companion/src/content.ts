@@ -10,7 +10,7 @@ let entries: PresentationRegistryEntry[] = [];
 async function refresh(): Promise<void> {
   if (!bridge.token) { entries = []; return; }
   try {
-    const response = await fetch(`http://127.0.0.1:${bridge.port}/registry`, {
+    const response = await fetch(`http://127.0.0.1:${bridge.port}/registry?preflightToken=${encodeURIComponent(bridge.token)}`, {
       headers: { "x-agent-remote-token": bridge.token }
     });
     if (!response.ok) throw new Error(`Presentation bridge returned ${response.status}`);
