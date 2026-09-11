@@ -29,6 +29,12 @@ test("help is generated from the command registry and unknown commands do not ex
   assert.equal(calls.length, 0);
 });
 
+test("provider model policy falls back to the CLI default when no model is configured", () => {
+  const policy = new ConfiguredModelPolicy({});
+  assert.equal(policy.resolve("codex"), undefined);
+  assert.equal(policy.describe("codex"), "provider default");
+});
+
 test("pre-init restrictions and active-agent selection are enforced", async () => {
   const { control, calls } = setup();
   assert.match((await control.handle(messages("before", "inspect this"), { id: "owner", role: "owner" })).text, /\/init/);

@@ -28,7 +28,7 @@ Use an absolute or repository-relative path for `AGENT_REMOTE_WORKSPACE_ROOTS`. 
 - `AGENT_REMOTE_CONTROL_PLANE_PATH`: versioned managed-chat, binding, selection, and idempotency state (default `data/control-plane.json`).
 - `AGENT_REMOTE_TIMEOUT_MS` and `AGENT_REMOTE_MAX_OUTPUT_BYTES`: execution limits.
 - `AGENT_REMOTE_MAX_QUEUE_DEPTH`: bounded pending executions per logical chat.
-- `AGENT_REMOTE_CLAUDE_MODEL` and `AGENT_REMOTE_CODEX_MODEL`: underlying provider model identifiers for the `sonnet` and `luna` aliases.
+- `AGENT_REMOTE_CLAUDE_MODEL` and `AGENT_REMOTE_CODEX_MODEL`: optional underlying provider model identifiers for the `sonnet` and `luna` aliases; when absent, the CLI default model is used.
 - `AGENT_REMOTE_OWNER_IDS`, `AGENT_REMOTE_OPERATOR_IDS`, and `AGENT_REMOTE_VIEWER_IDS`: optional role mappings; allowlisted users default to owners.
 - `AGENT_REMOTE_<CLAUDE|CODEX|COPILOT>_EXECUTABLE`: optional absolute executable override, including a `/mnt/c/.../*.exe` path when the gateway runs in WSL.
 

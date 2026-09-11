@@ -47,7 +47,7 @@ export async function runDoctor(config: ApplicationConfig, dependencies: DoctorD
     }
     if (executable === "claude" || executable === "codex") {
       const model = config.env[`AGENT_REMOTE_${executable.toUpperCase()}_MODEL`]?.trim();
-      checks.push({ name: `${label.replace(" CLI", "")} configured model`, status: model ? "PASS" : "FAIL", message: model ? `${executable} model is configured` : `AGENT_REMOTE_${executable.toUpperCase()}_MODEL is required` });
+      checks.push({ name: `${label.replace(" CLI", "")} configured model`, status: model ? "PASS" : "WARN", message: model ? `${executable} model is configured` : `${executable} CLI default model will be used` });
     }
   }
   return checks;

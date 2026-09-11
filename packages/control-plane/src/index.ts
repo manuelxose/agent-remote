@@ -46,6 +46,7 @@ export class ConfiguredModelPolicy implements ModelPolicy {
     const selected = alias ?? (agent === "claude" ? "sonnet" : agent === "codex" ? "luna" : undefined);
     if (!selected) return undefined;
     const providerModel = this.aliases[agent]?.[selected];
+    if (!providerModel && alias === undefined && this.defaults[agent] === undefined && !this.aliases[agent]?.[selected]) return undefined;
     if (!providerModel) throw new ModelUnavailableError(agent, selected);
     return { alias: selected, providerModel };
   }
@@ -53,7 +54,7 @@ export class ConfiguredModelPolicy implements ModelPolicy {
   describe(agent: string): string {
     const alias = this.defaults[agent] ?? (agent === "claude" ? "sonnet" : agent === "codex" ? "luna" : "default");
     const providerModel = this.aliases[agent]?.[alias];
-    return providerModel ? `${alias} (${providerModel})` : `${alias} (unavailable)`;
+    return providerModel ? `${alias} (${providerModel})` : "provider default";
   }
 }
 
