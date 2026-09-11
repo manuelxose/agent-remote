@@ -19,7 +19,10 @@ export class AgentMessageRegistry {
   private readonly now: () => number;
 
   constructor(private readonly options: AgentMessageRegistryOptions) {
-    if (options.maxEntries <= 0 || options.ttlMs <= 0) throw new RangeError("Registry capacity and TTL must be positive");
+    if (!Number.isFinite(options.maxEntries) || options.maxEntries <= 0
+      || !Number.isFinite(options.ttlMs) || options.ttlMs <= 0) {
+      throw new RangeError("Registry capacity and TTL must be finite and positive");
+    }
     this.now = options.now ?? Date.now;
   }
 

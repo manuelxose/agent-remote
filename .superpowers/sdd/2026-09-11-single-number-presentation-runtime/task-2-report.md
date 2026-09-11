@@ -55,3 +55,23 @@ Also ran `graphify update .`; the code graph refreshed successfully.
 ## Commit scope
 
 Committed source and test changes only. Graphify-generated files remain as worktree changes from the required refresh and were not included in the task commit.
+
+## Round 1 Fix
+
+Addressed the review finding by requiring finite positive `maxEntries` and `ttlMs` values. Added focused tests covering `NaN`, positive infinity, zero, and negative bounds, plus defensive metadata cloning.
+
+Focused verification:
+
+```text
+npm run build && node --test --experimental-strip-types test/whatsapp-agent-registry.test.ts test/realtime-whatsapp.test.ts test/whatsapp-channel.test.ts test/whatsapp-translation.test.ts
+```
+
+Result: build passed; 23 tests passed, 0 failed.
+
+Full verification:
+
+```text
+npm test
+```
+
+Result: 154 tests, 152 passed, 0 failed, 2 skipped.

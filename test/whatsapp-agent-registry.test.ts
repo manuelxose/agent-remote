@@ -31,3 +31,23 @@ test("registry evicts the oldest entry at fixed capacity", () => {
   assert.equal(registry.has("wa-a"), false);
   assert.equal(registry.snapshot().length, 2);
 });
+
+test("registry rejects non-finite, zero, and negative bounds", () => {
+  for (const maxEntries of [Number.NaN, Number.POSITIVE_INFINITY, 0, -1]) {
+    assert.throws(() => new AgentMessageRegistry({ maxEntries, ttlMs: 100 }), RangeError);
+  }
+  for (const ttlMs of [Number.NaN, Number.POSITIVE_INFINITY, 0, -1]) {
+    assert.throws(() => new AgentMessageRegistry({ maxEntries: 1, ttlMs }), RangeError);
+  }
+});
+
+test("registry clones metadata on write and read", () => {
+  const origin = { type: "agent" as const, agentId: "claude" };
+  const registry = new AgentMessageRegistry({ maxEntries: 1, ttlMs: 100 });
+  registry.remember({ whatsappMessageId: "wa-a", conversationId: "chat-a", origin, createdAt: Date.now() });
+  origin.agentId = "mutated";
+  const result = registry.get("wa-a");
+  assert.equal(result?.origin.agentId, "claude");
+  if (result) result.origin.agentId = "mutated-again";
+  assert.equal(registry.get("wa-a")?.origin.agentId, "claude");
+});
