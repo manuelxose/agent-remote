@@ -112,6 +112,7 @@ test("one-number mode accepts manual self-messages and ignores gateway echoes", 
     config: parseWhatsAppConfig({
       WHATSAPP_AUTH_PATH: "/tmp/auth",
       WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net",
+      WHATSAPP_ALLOWED_CHATS: "278386962370655@lid",
       WHATSAPP_ALLOW_SELF_MESSAGES: "true"
     }),
     onMessage: async payload => received.push(payload),

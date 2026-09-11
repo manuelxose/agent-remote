@@ -72,14 +72,17 @@ export function authorizeWhatsAppMessage(
   if (config.allowedUsers.length === 0 && config.allowedChats.length === 0) {
     return { allowed: false, reason: "no_allowlist_configured" };
   }
-  if (selfSent && config.allowSelfMessages) return { allowed: true };
-  if (config.allowedUsers.length > 0 && !config.allowedUsers.includes(message.senderId)) {
-    return { allowed: false, reason: "sender_not_allowlisted" };
+  if (selfSent && config.allowSelfMessages && config.allowedChats.length === 0) {
+    return { allowed: false, reason: "chat_not_allowlisted" };
   }
   if (config.allowedChats.length > 0) {
     const chatAllowed = config.allowedChats.includes(message.conversationId)
       || (message.groupId !== undefined && config.allowedChats.includes(message.groupId));
     if (!chatAllowed) return { allowed: false, reason: "chat_not_allowlisted" };
+  }
+  if (selfSent && config.allowSelfMessages) return { allowed: true };
+  if (config.allowedUsers.length > 0 && !config.allowedUsers.includes(message.senderId)) {
+    return { allowed: false, reason: "sender_not_allowlisted" };
   }
   return { allowed: true };
 }

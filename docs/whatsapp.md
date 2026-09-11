@@ -16,7 +16,7 @@ Optional reconnect tuning variables are `WHATSAPP_RECONNECT_BASE_DELAY_MS` and `
 
 `WHATSAPP_REPLY_CONTEXT_TTL_MS` and `WHATSAPP_REPLY_CONTEXT_MAX_ENTRIES` bound the minimal message-key cache used for native quoted replies. Missing, expired, or mismatched references safely fall back to an ordinary send.
 
-The adapter fails closed when both allowlists are empty. A configured user list filters senders; a configured chat list matches either the conversation ID or group ID. If both are configured, both must match. Rejections happen before the gateway callback and are logged as structured events without message text, attachments, QR values, or authentication data.
+The adapter fails closed when both allowlists are empty. A configured user list filters senders; a configured chat list matches either the conversation ID or group ID. If both are configured, both must match. Self-messages are accepted only when `WHATSAPP_ALLOW_SELF_MESSAGES=true` and an explicit chat allowlist matches; this prevents the one-number mode from answering in every chat. Rejections happen before the gateway callback and are logged as structured events without message text, attachments, QR values, or authentication data.
 
 ## Startup and shutdown
 
@@ -38,7 +38,7 @@ Health snapshots contain only lifecycle status, transition time, reconnect attem
 
 ## Message boundary
 
-Incoming messages are translated to the channel-neutral core `Message` model. The adapter supplies sender ID, conversation ID, optional group ID, text/caption, timestamp, and basic attachment descriptors. It ignores self-sent messages, broadcast/status traffic, unsupported textless payloads, and Baileys request-ID replay traffic. The application callback passes the translated message to the channel-neutral control plane and sends its `CommandResult` or agent result through WhatsApp. Future Telegram/Web adapters can invoke the same control-plane entry point with their own core `Message` values.
+Incoming messages are translated to the channel-neutral core `Message` model. The adapter supplies sender ID, conversation ID, optional group ID, text/caption, timestamp, and basic attachment descriptors. It ignores self-sent messages unless the explicit one-number opt-in and chat allowlist both match; it also ignores broadcast/status traffic, unsupported textless payloads, and Baileys request-ID replay traffic. The application callback passes the translated message to the channel-neutral control plane and sends its `CommandResult` or agent result through WhatsApp. Future Telegram/Web adapters can invoke the same control-plane entry point with their own core `Message` values.
 
 Accepted prompts set composing presence; they do not receive an immediate processing acknowledgement. Provider deltas stay internal and WhatsApp normally receives one final correlated reply. Set `AGENT_REMOTE_PROGRESS_AFTER_MS` to a positive delay to allow one optional progress reply with `AGENT_REMOTE_PROGRESS_TEXT`; the default `0` sends final-only delivery. Progress and final delivery remain bounded by `AGENT_REMOTE_STREAM_MAX_MESSAGES`, retain the original quoted reference, and presence returns to paused when execution terminates.
 

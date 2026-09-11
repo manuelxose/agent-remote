@@ -95,7 +95,7 @@ test("authorization requires every configured filter and matches group IDs", () 
     WHATSAPP_AUTH_PATH: "/tmp/auth",
     WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net",
     WHATSAPP_ALLOW_SELF_MESSAGES: "true"
-  }), true), { allowed: true });
+  }), true), { allowed: false, reason: "chat_not_allowlisted" });
   assert.deepEqual(authorizeWhatsAppMessage({ ...message, senderId: "other@s.whatsapp.net" }, config), {
     allowed: false,
     reason: "sender_not_allowlisted"
@@ -104,6 +104,29 @@ test("authorization requires every configured filter and matches group IDs", () 
     allowed: false,
     reason: "chat_not_allowlisted"
   });
+});
+
+test("self-sent prompts require an allowlisted chat", () => {
+  const config = parseWhatsAppConfig({
+    WHATSAPP_AUTH_PATH: "/tmp/auth",
+    WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net",
+    WHATSAPP_ALLOW_SELF_MESSAGES: "true"
+  });
+  const message = translateWhatsAppMessage({
+    key: { id: "m-self", remoteJid: "other@s.whatsapp.net", fromMe: true },
+    message: { conversation: "hello" }
+  }, { allowSelfMessages: true });
+
+  assert.ok(message);
+  assert.deepEqual(authorizeWhatsAppMessage(message, config, true), {
+    allowed: false,
+    reason: "chat_not_allowlisted"
+  });
+  assert.deepEqual(authorizeWhatsAppMessage({ ...message, conversationId: "u@s.whatsapp.net" }, parseWhatsAppConfig({
+    WHATSAPP_AUTH_PATH: "/tmp/auth",
+    WHATSAPP_ALLOWED_CHATS: "u@s.whatsapp.net",
+    WHATSAPP_ALLOW_SELF_MESSAGES: "true"
+  }), true), { allowed: true });
 });
 
 test("empty allowlists deny an otherwise valid message", () => {
