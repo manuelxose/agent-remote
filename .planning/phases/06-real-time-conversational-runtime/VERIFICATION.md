@@ -5,8 +5,8 @@ Date: 2026-09-11
 ## Automated verification
 
 - `npm run build`: PASS.
-- `npm test`: PASS — 143 tests, 141 passed, 0 failed, 2 skipped.
-- The installed Codex smoke completed successfully (`codex: completed`, 16.37s in the final full run).
+- `npm test`: PASS — 144 tests, 142 passed, 0 failed, 2 skipped.
+- The installed Codex smoke completed successfully (`codex: completed`, 13.55s in the final full run).
 - Claude and Copilot provider smoke cases were skipped/reported unavailable by the test environment. The doctor can resolve the configured Claude executable path, but Phase 6 Claude streaming was not run against a live provider account.
 - Focused streaming, control-plane, WhatsApp, operational, and benchmark tests: PASS.
 - Boundary inspection: PASS — no Baileys/channel imports in `packages/core`, `packages/control-plane`, or `runtime/developer-agent`.
@@ -17,8 +17,8 @@ Date: 2026-09-11
 `test/realtime-benchmark.test.ts` records actual Node event-loop timings using the telemetry implementation; it does not assert an invented performance threshold. The final full-suite run printed:
 
 ```text
-cold: routing 0ms, queue 0ms, provider startup 3ms, first output 3ms,
-      execution 3ms, delivery 0ms, total 3ms
+cold: routing 0ms, queue 0ms, provider startup 4ms, first output 4ms,
+      execution 4ms, delivery 0ms, total 4ms
 warm: routing 0ms, queue 0ms, provider startup 0ms, first output 0ms,
       execution 0ms, delivery 0ms, total 0ms
 ```
