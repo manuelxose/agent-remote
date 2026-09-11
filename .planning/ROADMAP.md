@@ -30,3 +30,19 @@ Success criteria:
 4. Gateway execution sends a mock response to the originating WhatsApp conversation.
 5. QR, reconnect, shutdown, and health behavior are exposed without logging authentication secrets.
 6. Every WhatsApp source file remains free of agent/product-specific imports.
+
+## Phase 3: Developer-agent runtime — Complete
+
+Implement the trusted local Claude, Codex, and Copilot adapter runtime with direct argv-only process execution, approved workspace enforcement, bounded output and lifecycle diagnostics, isolated persistent sessions, gateway integration, and truthful availability reporting.
+
+Requirements: SEC-01, SEC-02, ADAPTER-02, DOC-01, TEST-01.
+
+Success criteria:
+
+1. Each installed developer CLI is invoked through its real adapter; unavailable CLIs are skipped with structured executable diagnostics and no installation attempt.
+2. Conversation and workspace session mappings remain isolated and survive runtime restart.
+3. Workspace roots reject outside paths before process spawn, and WhatsApp input cannot supply arbitrary commands or executables.
+4. Timeout, cancellation, output caps, stderr, exit code, and lifecycle events remain observable through safe runtime failures.
+5. Successful adapter output reaches the existing gateway/channel response pipeline while chatbot remains unable to import developer adapters.
+
+Verification: `npm run build` passes; `npm test` reports 85 tests, 83 passed, 0 failed, and 2 skipped (Claude/Copilot unavailable); `graphify update .` refreshed 474 nodes and 677 edges. The installed Codex smoke invocation reached the real CLI and completed successfully within the configured 60-second bound.

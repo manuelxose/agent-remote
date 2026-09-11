@@ -35,7 +35,8 @@ export class Gateway {
     if (!agent) throw new GatewayConfigurationError(route.id, "agent", route.agent);
     const response = await runtime.execute(createConversationContext(message, conversation, route, {
       correlationId: message.id,
-      conversationId: conversation.id
+      conversationId: conversation.id,
+      workspaceRoot: route.workspaceRoot
     }), agent);
     await channel.send(message.conversationId, response);
     await events.publish({ type: "MessageSent", occurredAt: new Date(), correlationId: message.id, payload: response });

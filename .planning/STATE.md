@@ -2,11 +2,11 @@
 
 ## Current Position
 
-Phase 2 — Local WhatsApp channel adapter (implemented)
+Phase 3 — Developer-agent runtime (implemented)
 
 ## Status
 
-Implementation complete; verification is recorded in the Phase 2 handoff.
+Implementation and documentation complete; full verification passed with 85 tests (83 passed, 0 failed, 2 skipped).
 
 ## Decisions
 
@@ -17,13 +17,14 @@ Implementation complete; verification is recorded in the Phase 2 handoff.
 
 ## Verification
 
-- `npm test`: 20 passing, 0 failing.
-- `npm run build`: passes as part of `npm test`.
-- `graphify update .`: completed successfully.
+- `npm run build`: passes.
+- `npm test`: 85 tests, 83 passed, 0 failed, 2 skipped; Claude and Copilot skipped as unavailable, and installed Codex smoke completed successfully with the bounded 60-second limit.
+- `graphify update .`: completed successfully; graph refreshed to 474 nodes and 677 edges.
 - Static tests confirm core and WhatsApp dependency boundaries.
-- Runtime tests confirm chatbot allowlisting and developer workspace restrictions.
+- Runtime tests confirm chatbot allowlisting, developer workspace restrictions, collision-free tuple keys, and canonical equivalent-path queue serialization.
 - Baileys channel tests cover translation, attachment metadata, allowlists, QR handling, auth persistence, reconnect, logout, shutdown, health, and gateway response delivery.
+- Full verification confirms session isolation/restart persistence, approved workspace rejection before spawn, typed argv boundaries, observable process failure states, gateway response delivery, and chatbot/WhatsApp/core boundaries.
 
 ## Next Action
 
-Operate the local WhatsApp gateway with a configured auth path and allowlist; production-grade auth storage and distributed event delivery remain future concerns.
+Operate the local WhatsApp gateway with a configured auth path and allowlist; developer CLIs remain trusted local prerequisites, and production-grade credential storage, distributed event delivery, and long-lived interactive CLI processes remain future concerns.
