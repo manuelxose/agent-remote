@@ -1,4 +1,4 @@
-import { appendFile, chmod, mkdir, readFile } from "node:fs/promises";
+import { chmod, mkdir, open, readFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import type { Message } from "../../core/src/index.js";
 
@@ -66,6 +66,8 @@ export class InMemoryHistoryStore implements HistoryStore {
   }
 
   async query(channel: string, conversationId: string, question: string, limits: HistoryQueryLimits): Promise<HistoryQueryResult | undefined> {
+    const maxMessages = finiteLimit(limits.maxMessages, "maxMessages");
+    const maxCharacters = finiteLimit(limits.maxCharacters, "maxCharacters");
     const chat = this.chats.get(chatKey(channel, conversationId));
     if (!chat) return undefined;
 
@@ -80,8 +82,6 @@ export class InMemoryHistoryStore implements HistoryStore {
     const recent = [...messages].sort((left, right) => compareMessages(right, left));
     const candidates = [...matching, ...recent];
     const selected: Message[] = [];
-    const maxMessages = Math.max(0, Math.floor(limits.maxMessages));
-    const maxCharacters = Math.max(0, Math.floor(limits.maxCharacters));
     let characters = 0;
 
     for (const message of candidates) {
@@ -115,8 +115,17 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
     const key = chatKey(chat.channel, chat.conversationId);
     const next = cloneChat(chat);
     if (JSON.stringify(this.chats.get(key)) === JSON.stringify(next)) return;
+    const previous = this.chats.get(key);
     this.chats.set(key, next);
-    await this.enqueue({ type: "chat", chat: next });
+    try {
+      await this.enqueue({ type: "chat", chat: next });
+    } catch (error) {
+      if (this.chats.get(key) === next) {
+        if (previous) this.chats.set(key, previous);
+        else this.chats.delete(key);
+      }
+      throw error;
+    }
   }
 
   override async upsertMessage(message: Message): Promise<void> {
@@ -126,12 +135,21 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
     const next = cloneMessage(message);
     const chatKeyValue = chatKey(next.channel, next.conversationId);
     const hadChat = this.chats.has(chatKeyValue);
+    const previousChat = this.chats.get(chatKeyValue);
     await super.upsertMessage(next);
-    if (!hadChat) {
-      const chat = this.chats.get(chatKeyValue);
-      if (chat) await this.enqueue({ type: "chat", chat });
+    const stagedMessage = this.messages.get(key);
+    const createdChat = this.chats.get(chatKeyValue);
+    try {
+      if (!hadChat && createdChat) await this.enqueue({ type: "chat", chat: createdChat });
+      await this.enqueue({ type: "message", message: next });
+    } catch (error) {
+      if (this.messages.get(key) === stagedMessage) this.messages.delete(key);
+      if (!hadChat && this.chats.get(chatKeyValue) === createdChat) {
+        if (previousChat) this.chats.set(chatKeyValue, previousChat);
+        else this.chats.delete(chatKeyValue);
+      }
+      throw error;
     }
-    await this.enqueue({ type: "message", message: next });
   }
 
   override async listChats(channel: string, query?: string, limit?: number): Promise<HistoryChat[]> {
@@ -178,7 +196,12 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
   private enqueue(record: object): Promise<void> {
     const write = this.writeQueue.then(async () => {
       await mkdir(dirname(this.path), { recursive: true });
-      await appendFile(this.path, `${JSON.stringify(record)}\n`, "utf8");
+      const file = await open(this.path, "a", 0o600);
+      try {
+        await file.writeFile(`${JSON.stringify(record)}\n`, "utf8");
+      } finally {
+        await file.close();
+      }
       await chmod(this.path, 0o600);
     });
     this.writeQueue = write.then(() => undefined, () => undefined);
@@ -196,6 +219,11 @@ function messageKey(message: Message): string {
 
 function compareMessages(left: Message, right: Message): number {
   return left.receivedAt.getTime() - right.receivedAt.getTime() || left.id.localeCompare(right.id);
+}
+
+function finiteLimit(value: number, name: string): number {
+  if (!Number.isFinite(value)) throw new RangeError(`${name} must be finite`);
+  return Math.max(0, Math.floor(value));
 }
 
 function cloneChat(chat: HistoryChat): HistoryChat {
