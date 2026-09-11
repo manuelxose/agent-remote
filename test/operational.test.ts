@@ -89,6 +89,16 @@ test("loads workspace aliases only when they are approved", () => {
   assert.equal(config.workspaceAliases.repo, process.cwd());
 });
 
+test("loads configurable provider model aliases", () => {
+  const config = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_CODEX_MODELS: JSON.stringify({ fast: "codex-mini-latest", quality: "gpt-5.6-luna" }),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd());
+  assert.deepEqual(config.codexModels, { fast: "codex-mini-latest", quality: "gpt-5.6-luna" });
+});
+
 test("doctor reports unavailable providers instead of passing them", async () => {
   const directory = await mkdtemp(join(tmpdir(), "agent-remote-doctor-"));
   const routesPath = join(directory, "routes.json");

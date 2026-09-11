@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "channels/whatsapp/src/lifecycle.ts": {
-    "mtime": 1789134706.4352891,
-    "seen": 1789135430.044856,
-    "ast_hash": "3278116cbc9c4ea9ce0edb6814afbb8f",
+    "mtime": 1789136707.7030132,
+    "seen": 1789136765.7907119,
+    "ast_hash": "49a983b3f7383385a2422e424236a869",
     "semantic_hash": ""
   },
   "channels/whatsapp/src/translate.ts": {
@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "test/whatsapp-channel.test.ts": {
-    "mtime": 1789134706.444786,
-    "seen": 1789135430.0448809,
-    "ast_hash": "a42d250ac6c4163bcae2f36b76e57b31",
+    "mtime": 1789136529.763992,
+    "seen": 1789136765.79074,
+    "ast_hash": "b7b2ce4aaf4c8895bc1f120f1f631ae3",
     "semantic_hash": ""
   },
   "test/whatsapp-gateway.test.ts": {
@@ -240,9 +240,9 @@
     "semantic_hash": ""
   },
   ".planning/STATE.md": {
-    "mtime": 1789135442.7307549,
-    "seen": 1789135753.9753203,
-    "ast_hash": "c3bf80a5438b004358458ca9e122cb21",
+    "mtime": 1789135761.1195648,
+    "seen": 1789136765.7907465,
+    "ast_hash": "26ed414ba1c7798f703c3f6f0ccf2f40",
     "semantic_hash": ""
   },
   ".planning/phases/01-architectural-foundation/01-01-PLAN.md": {
@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "apps/gateway/src/application.ts": {
-    "mtime": 1789135399.2621017,
-    "seen": 1789135430.0448484,
-    "ast_hash": "604521911a7f0c5369c80109d34bbfad",
+    "mtime": 1789136597.9710221,
+    "seen": 1789136765.7907028,
+    "ast_hash": "4746abd9b8c82976f8b3760048254406",
     "semantic_hash": ""
   },
   "apps/gateway/src/doctor.ts": {
@@ -372,9 +372,9 @@
     "semantic_hash": ""
   },
   "test/operational.test.ts": {
-    "mtime": 1789135362.3257432,
-    "seen": 1789135430.0448775,
-    "ast_hash": "bd6ae7779939f7d5dc48a8e31f4fcf28",
+    "mtime": 1789136529.763992,
+    "seen": 1789136765.7907367,
+    "ast_hash": "0c48a18e6cc117cb332d8d994b6fbf1a",
     "semantic_hash": ""
   },
   "types/qrcode-terminal.d.ts": {
@@ -426,9 +426,9 @@
     "semantic_hash": ""
   },
   "packages/control-plane/src/index.ts": {
-    "mtime": 1789135712.3216941,
-    "seen": 1789135753.9752932,
-    "ast_hash": "859fadb62c3b62dacf7e0d5edf15d6f3",
+    "mtime": 1789136568.712882,
+    "seen": 1789136765.790719,
+    "ast_hash": "98b3e096cb99b611080c9831e36d23f8",
     "semantic_hash": ""
   },
   "packages/control-plane/src/persistence.ts": {
@@ -444,9 +444,9 @@
     "semantic_hash": ""
   },
   "test/control-plane.test.ts": {
-    "mtime": 1789135664.1039135,
-    "seen": 1789135753.9753046,
-    "ast_hash": "95d2ed3f0eedf559d06edc21a5915ac1",
+    "mtime": 1789136529.763992,
+    "seen": 1789136765.7907312,
+    "ast_hash": "d08c1ffffa996adafd2db667c2be7d2c",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-11-enterprise-conversational-control-plane-design.md": {
@@ -456,9 +456,9 @@
     "semantic_hash": ""
   },
   ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md": {
-    "mtime": 1789135442.7307549,
-    "seen": 1789135753.975329,
-    "ast_hash": "d00a2bdc2c84eb2df9febfe6006df421",
+    "mtime": 1789135761.1195648,
+    "seen": 1789136765.7907534,
+    "ast_hash": "37342833ed9096a3c022390cc674eef1",
     "semantic_hash": ""
   },
   ".planning/phases/05-enterprise-conversational-control-plane/05-REVIEW.md": {

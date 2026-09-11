@@ -36,6 +36,8 @@ export interface ApplicationConfig {
   controlPlanePath: string;
   maxQueueDepth: number;
   rateLimitPerMinute: number;
+  claudeModels: Readonly<Record<string, string>>;
+  codexModels: Readonly<Record<string, string>>;
   claudeModel?: string;
   codexModel?: string;
 }
@@ -84,6 +86,10 @@ export function loadApplicationConfig(
   const configuredRoots = parseList(env.AGENT_REMOTE_WORKSPACE_ROOTS);
   const routeRoots = Object.values(routes).flatMap(route => route.workspaceRoot ? [route.workspaceRoot] : []);
   const workspaceAliases = parseObject(env.AGENT_REMOTE_WORKSPACE_ALIASES);
+  const claudeModel = optionalValue(env.AGENT_REMOTE_CLAUDE_MODEL);
+  const codexModel = optionalValue(env.AGENT_REMOTE_CODEX_MODEL);
+  const claudeModels = { ...parseObject(env.AGENT_REMOTE_CLAUDE_MODELS, "Claude model aliases"), ...(claudeModel ? { sonnet: claudeModel } : {}) };
+  const codexModels = { ...parseObject(env.AGENT_REMOTE_CODEX_MODELS, "Codex model aliases"), ...(codexModel ? { luna: codexModel } : {}) };
   const workspaceRoots = unique([...configuredRoots, ...routeRoots].map(root => resolveFrom(cwd, root)));
   if (workspaceRoots.length === 0) throw new Error("AGENT_REMOTE_WORKSPACE_ROOTS is required when routes have no workspaceRoot");
   const workspacePolicy = new WorkspacePolicy(workspaceRoots);
@@ -103,8 +109,10 @@ export function loadApplicationConfig(
     controlPlanePath: resolveFrom(cwd, env.AGENT_REMOTE_CONTROL_PLANE_PATH ?? "data/control-plane.json"),
     maxQueueDepth: positiveInteger(env.AGENT_REMOTE_MAX_QUEUE_DEPTH, 8),
     rateLimitPerMinute: positiveInteger(env.AGENT_REMOTE_RATE_LIMIT_PER_MINUTE, 60),
-    claudeModel: optionalValue(env.AGENT_REMOTE_CLAUDE_MODEL),
-    codexModel: optionalValue(env.AGENT_REMOTE_CODEX_MODEL)
+    claudeModels,
+    codexModels,
+    claudeModel,
+    codexModel
   };
 }
 
@@ -131,11 +139,12 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     workspacePolicy: capabilities.policy,
     workspaceAliases: config.workspaceAliases,
     defaultWorkspace: config.defaultWorkspaceRoot,
-    modelPolicy: new ConfiguredModelPolicy({ claude: config.claudeModel ? { sonnet: config.claudeModel } : {}, codex: config.codexModel ? { luna: config.codexModel } : {} }),
+    modelPolicy: new ConfiguredModelPolicy({ claude: config.claudeModels, codex: config.codexModels }),
     maxQueueDepth: config.maxQueueDepth,
     rateLimitPerMinute: config.rateLimitPerMinute,
     resetProviderSession: (session, agent) => runtime.resetSession(session.channel, session.logicalSessionId, agent, session.workspace),
     onExecutionResponse: async (session, response) => { await whatsapp.channel.send(session.externalConversationId, response); },
+    onExecutionAccepted: async (session, message) => { await whatsapp.channel.send(session.externalConversationId, { text: "⏳ Recibido. Procesando…", metadata: { replyToMessageId: message.id } }); },
     version: "phase-5",
     diagnostics: () => "Run the gateway doctor command for provider and persistence diagnostics."
   });
@@ -151,7 +160,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     onQr: printQr,
     onMessage: async (message, channel) => {
       const result = await controlPlane.handle(message, { id: message.senderId, role: resolveWhatsAppRole(config.env, message.senderId) });
-      await channel.send(message.conversationId, result);
+      await channel.send(message.conversationId, { ...result, metadata: { ...result.metadata, replyToMessageId: message.id } });
     },
     onError: async (error, payload, channel) => {
       const message = messageFromPayload(payload);
@@ -204,11 +213,11 @@ function parseList(value: string | undefined): string[] {
   return value?.split(",").map(item => item.trim()).filter(Boolean) ?? [];
 }
 
-function parseObject(value: string | undefined): Record<string, string> {
+function parseObject(value: string | undefined, label = "Object configuration"): Record<string, string> {
   if (!value?.trim()) return {};
   let data: unknown;
   try { data = JSON.parse(value); } catch (error) { throw new Error(`Invalid JSON object configuration: ${value}`, { cause: error }); }
-  if (!data || typeof data !== "object" || Array.isArray(data) || Object.entries(data).some(([key, item]) => !key || typeof item !== "string" || !item.trim())) throw new Error("Workspace aliases must be a JSON object of non-empty strings");
+  if (!data || typeof data !== "object" || Array.isArray(data) || Object.entries(data).some(([key, item]) => !key || typeof item !== "string" || !item.trim())) throw new Error(`${label} must be a JSON object of non-empty strings`);
   return data as Record<string, string>;
 }
 

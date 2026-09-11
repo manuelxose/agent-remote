@@ -35,6 +35,45 @@ test("provider model policy falls back to the CLI default when no model is confi
   assert.equal(policy.describe("codex"), "provider default");
 });
 
+test("model command lists configured aliases and selects one", async () => {
+  const { control, calls } = setupWithModelAliases();
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("model-init", "/init"), identity);
+  await control.handle(messages("model-agent", "/codex"), identity);
+  assert.match((await control.handle(messages("model-list", "/model"), identity)).text, /fast.*quality|quality.*fast/);
+  assert.match((await control.handle(messages("model-select", "/model fast"), identity)).text, /fast/);
+  await control.handle(messages("model-prompt", "hello"), identity);
+  assert.equal(calls.at(-1)?.model, "codex-mini-latest");
+});
+
+function setupWithModelAliases() {
+  const calls: Array<{ model?: string }> = [];
+  const agent = (id: string) => ({ id, type: "developer-agent" as const, async handleMessage() { throw new Error("runtime owns execution"); } });
+  const runtime = { type: "developer-agent" as const, async execute(context: any) { calls.push({ model: context.execution.metadata?.model }); return { text: "done", metadata: { sessionId: "session" } }; } };
+  const control = new ControlPlane({
+    repositories: new InMemoryControlPlaneStore(), agents: { codex: agent("codex") }, runtimes: { "developer-agent": runtime },
+    workspacePolicy: new WorkspacePolicy([root]), defaultWorkspace: root,
+    modelPolicy: new ConfiguredModelPolicy({ codex: { fast: "codex-mini-latest", quality: "gpt-5.6-luna" } }),
+  });
+  return { control, calls };
+}
+
+test("accepted prompts send an immediate acknowledgement before execution", async () => {
+  const order: string[] = [];
+  const agent = { id: "codex", type: "developer-agent" as const, async handleMessage() { throw new Error("runtime owns execution"); } };
+  const runtime = { type: "developer-agent" as const, async execute() { order.push("execute"); return { text: "done" }; } };
+  const control = new ControlPlane({
+    repositories: new InMemoryControlPlaneStore(), agents: { codex: agent }, runtimes: { "developer-agent": runtime },
+    workspacePolicy: new WorkspacePolicy([root]), defaultWorkspace: root,
+    onExecutionAccepted: async () => { order.push("ack"); }
+  });
+  const identity = { id: "owner", role: "owner" as const };
+  await control.handle(messages("ack-init", "/init"), identity);
+  await control.handle(messages("ack-agent", "/codex"), identity);
+  await control.handle(messages("ack-prompt", "hello"), identity);
+  assert.deepEqual(order, ["ack", "execute"]);
+});
+
 test("pre-init restrictions and active-agent selection are enforced", async () => {
   const { control, calls } = setup();
   assert.match((await control.handle(messages("before", "inspect this"), { id: "owner", role: "owner" })).text, /\/init/);

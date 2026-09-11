@@ -59,6 +59,22 @@ test("long responses are split at the configured WhatsApp size limit", async () 
   await channel.stop();
 });
 
+test("responses quote the received message when a reply target is provided", async () => {
+  const events = new FakeEvents();
+  const sent: unknown[] = [];
+  const socket = { ev: events, async sendMessage(...args: unknown[]) { sent.push(args); return undefined; }, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net" }),
+    onMessage: async () => {}, loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }), createSocket: () => socket
+  });
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  await channel.receive({ key: { id: "incoming-1", remoteJid: "u@s.whatsapp.net" }, message: { conversation: "hello" } });
+  await channel.send("u@s.whatsapp.net", { text: "reply", metadata: { replyToMessageId: "incoming-1" } });
+  assert.equal((sent[0] as any[])[2].quoted.key.id, "incoming-1");
+  await channel.stop();
+});
+
 test("unauthorized messages are logged and do not reach the gateway handler", async () => {
   const events = new FakeEvents();
   const received: unknown[] = [];

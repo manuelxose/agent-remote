@@ -27,6 +27,7 @@ export interface ModelResolution { alias: string; providerModel: string; }
 export interface ModelPolicy {
   resolve(agent: string, alias?: string): ModelResolution | undefined;
   describe(agent: string): string;
+  list?(agent: string): readonly string[];
 }
 
 export class ModelUnavailableError extends Error {
@@ -56,6 +57,8 @@ export class ConfiguredModelPolicy implements ModelPolicy {
     const providerModel = this.aliases[agent]?.[alias];
     return providerModel ? `${alias} (${providerModel})` : "provider default";
   }
+
+  list(agent: string): readonly string[] { return Object.keys(this.aliases[agent] ?? {}).sort(); }
 }
 
 export interface CommandContext {
@@ -125,6 +128,7 @@ export interface ControlPlaneOptions {
   diagnostics?: () => string;
   resetProviderSession?: (session: ManagedConversation, agent: string) => Promise<void>;
   onExecutionResponse?: (session: ManagedConversation, response: AgentResponse) => Promise<void>;
+  onExecutionAccepted?: (session: ManagedConversation, message: Message) => Promise<void>;
   rateLimitPerMinute?: number;
 }
 
@@ -328,7 +332,10 @@ export class ControlPlane {
     if (!context.session?.activeAgent) return { text: "No active agent. Select one first." };
     try {
       const resolution = this.options.modelPolicy?.resolve(context.session.activeAgent, context.args || context.session.modelAlias);
-      if (!resolution) return { text: `Model: ${this.options.modelPolicy?.describe(context.session.activeAgent) ?? "provider default"}` };
+      if (!resolution) {
+        const available = this.options.modelPolicy?.list?.(context.session.activeAgent) ?? [];
+        return { text: [`Model: ${this.options.modelPolicy?.describe(context.session.activeAgent) ?? "provider default"}`, ...(available.length ? [`Available: ${available.join(", ")}`] : [])].join("\n") };
+      }
       if (context.args) context.session.modelAlias = resolution.alias;
       await this.touch(context.session);
       await this.publish("model.resolved", context.message.id, { logicalSessionId: context.session.logicalSessionId, agent: context.session.activeAgent, alias: resolution.alias });
@@ -398,6 +405,7 @@ export class ControlPlane {
     const queue = this.queue(session.logicalSessionId);
     if (!queue.hasCapacity) return { text: "Execution queue is full. Try again later.", status: "warning" };
     if (!(await this.claim(message, identity, session.logicalSessionId))) return this.duplicate(message.id, identity.id);
+    try { await this.options.onExecutionAccepted?.(session, message); } catch {}
     let deferred = false;
     const task = async (signal: AbortSignal): Promise<AgentResponse> => {
       const current = await this.repositories.get(session.logicalSessionId) ?? session;
@@ -419,10 +427,11 @@ export class ControlPlane {
         response = { text: "Unable to complete the developer-agent request.", metadata: { agent: agentId, reason: "execution-failed" } };
       }
       await this.finalizeExecution(current, message.id, agentId, response);
+      const channelResponse = { ...response, metadata: { ...response.metadata, replyToMessageId: message.id } };
       if (deferred) {
-        try { await this.options.onExecutionResponse?.(current, response); } catch {}
+        try { await this.options.onExecutionResponse?.(current, channelResponse); } catch {}
       }
-      return response;
+      return channelResponse;
     };
     const result = queue.enqueue(task);
     if (!result.started && result.position < 0) {

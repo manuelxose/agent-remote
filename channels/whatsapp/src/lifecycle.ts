@@ -2,6 +2,7 @@ import makeWASocket, {
   DisconnectReason,
   type AuthenticationState,
   type BaileysEventMap,
+  type WAMessage,
   type WASocket
 } from "@whiskeysockets/baileys";
 import type { AgentResponse, Channel, Message } from "../../../packages/core/src/index.js";
@@ -109,6 +110,7 @@ export class WhatsAppChannel implements Channel {
   private status: WhatsAppStatus = "stopped";
   private changedAt = new Date();
   private readonly outboundMessageIds = new Map<string, number>();
+  private readonly inboundMessages = new Map<string, { message: WAMessage; receivedAt: number }>();
 
   constructor(options: WhatsAppChannelOptions | ((conversationId: string, text: string) => Promise<void>)) {
     if (typeof options === "function") {
@@ -156,6 +158,7 @@ export class WhatsAppChannel implements Channel {
     const socket = this.socket;
     this.socket = undefined;
     this.outboundMessageIds.clear();
+    this.inboundMessages.clear();
     this.removeListeners(socket);
     if (socket) await socket.end(undefined);
     this.setStatus("stopped");
@@ -182,6 +185,10 @@ export class WhatsAppChannel implements Channel {
       this.logRejection(message, authorization);
       throw new UnauthorizedWhatsAppMessageError(authorization.reason);
     }
+    if (!isCoreMessage(payload)) {
+      const messageId = messageIdFromPayload(payload);
+      if (messageId) this.rememberInboundMessage(messageId, payload as WAMessage);
+    }
     return message;
   }
 
@@ -189,7 +196,11 @@ export class WhatsAppChannel implements Channel {
     if (this.legacyDeliver) return this.legacyDeliver(conversationId, response.text);
     if (!this.socket || this.status !== "connected") throw new WhatsAppNotConnectedError();
     for (const chunk of chunkText(response.text, this.config?.maxResponseChars ?? 4000)) {
-      const sent = await this.socket.sendMessage(conversationId, { text: chunk });
+      const replyToMessageId = response.metadata?.replyToMessageId;
+      const quoted = replyToMessageId ? this.getInboundMessage(replyToMessageId) : undefined;
+      const sent = quoted
+        ? await this.socket.sendMessage(conversationId, { text: chunk }, { quoted: quoted.message })
+        : await this.socket.sendMessage(conversationId, { text: chunk });
       const messageId = messageIdFromPayload(sent);
       if (messageId) this.rememberOutboundMessage(messageId);
     }
@@ -308,6 +319,28 @@ export class WhatsAppChannel implements Channel {
     const cutoff = Date.now() - 120_000;
     for (const [messageId, createdAt] of this.outboundMessageIds) {
       if (createdAt < cutoff) this.outboundMessageIds.delete(messageId);
+    }
+  }
+
+  private rememberInboundMessage(messageId: string, message: WAMessage): void {
+    this.pruneInboundMessages();
+    // ponytail: a 256-entry/2-minute ceiling covers the reply window without retaining chat history; use durable message lookup if replies need to outlive the process.
+    if (this.inboundMessages.size >= 256) {
+      const oldest = this.inboundMessages.keys().next().value;
+      if (typeof oldest === "string") this.inboundMessages.delete(oldest);
+    }
+    this.inboundMessages.set(messageId, { message, receivedAt: Date.now() });
+  }
+
+  private getInboundMessage(messageId: string): { message: WAMessage; receivedAt: number } | undefined {
+    this.pruneInboundMessages();
+    return this.inboundMessages.get(messageId);
+  }
+
+  private pruneInboundMessages(): void {
+    const cutoff = Date.now() - 120_000;
+    for (const [messageId, entry] of this.inboundMessages) {
+      if (entry.receivedAt < cutoff) this.inboundMessages.delete(messageId);
     }
   }
 
