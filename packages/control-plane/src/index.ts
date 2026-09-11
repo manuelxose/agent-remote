@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, Message, MessageReference, Route } from "../../core/src/index.js";
+import type { AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, Message, MessageOrigin, MessageReference, Route } from "../../core/src/index.js";
 import type { EventBus } from "../../events/src/index.js";
 import { InMemoryEventBus } from "../../events/src/index.js";
 import type { WorkspacePolicy } from "../../security/src/index.js";
@@ -511,10 +511,12 @@ export class ControlPlane {
         };
         const context: ConversationContext = { message, conversation, route, execution: { correlationId: message.id, executionId: message.id, logicalSessionId: current.logicalSessionId, conversationId: current.logicalSessionId, workspaceRoot: current.workspace, signal, metadata: model ? { model: model.providerModel, modelAlias: model.alias } : undefined, observer } };
         response = runtime.executeStreaming ? await runtime.executeStreaming(context, agent, observer) : await runtime.execute(context, agent);
-        response = { ...response, replyTo: reference, metadata: { ...(response.metadata ?? {}), executionId: message.id } };
       } catch {
         response = { text: "Unable to complete the developer-agent request.", metadata: { agent: agentId, reason: "execution-failed" } };
       }
+      const reference = message.replyReference ?? { channel: message.channel, conversationId: message.conversationId, messageId: message.id, senderId: message.senderId };
+      const origin: MessageOrigin = { type: "agent", agentId: current.activeAgent ?? agentId, executionId: message.id, logicalSessionId: current.logicalSessionId };
+      response = { ...response, origin, replyTo: reference, metadata: { ...(response.metadata ?? {}), executionId: message.id } };
       telemetry.mark("executionCompletedAt");
       await this.finalizeExecution(current, message.id, agentId, response, telemetry);
       if (deferred) {
