@@ -47,7 +47,7 @@ Success criteria:
 
 Verification: `npm run build` passes; `npm test` reports 85 tests, 83 passed, 0 failed, and 2 skipped (Claude/Copilot unavailable); `graphify update .` refreshed 474 nodes and 677 edges. The installed Codex smoke invocation reached the real CLI and completed successfully within the configured 60-second bound.
 
-## Phase 4: Operational Integration & Real WhatsApp Acceptance — In progress
+## Phase 4: Operational Integration & Real WhatsApp Acceptance — Complete
 
 Connect the existing runtime and Baileys channel through one executable composition root, configuration-backed route loading, operational doctor/start commands, safe unknown-route diagnostics, and real provider/WhatsApp acceptance.
 
@@ -64,4 +64,27 @@ Success criteria:
 
 Plans:
 
-- [ ] 04-01-PLAN.md — composition root, operational CLI, configuration, tests, and acceptance procedure
+- [x] 04-01-PLAN.md — composition root, operational CLI, configuration, tests, and acceptance procedure
+
+## Phase 5: Enterprise Conversational Control Plane — Complete
+
+Build a durable, channel-neutral command and session control plane for managed
+Claude, Codex, and future agent conversations. Preserve the WhatsApp transport
+boundary, developer/chatbot trust zones, approved workspace policy, native
+provider sessions, and local database-free operation.
+
+Requirements: CTRL-01, CTRL-02, CTRL-03, SESSION-01, SESSION-02, EXEC-01, EXEC-02, MODEL-01, SECURITY-04, OPS-01, TEST-02, DOC-02.
+
+Success criteria:
+
+1. Registry-generated help, pre-init restrictions, deterministic unknown-command handling, and explicit state transitions work through a channel-neutral dispatcher.
+2. Multiple owner-scoped managed chats, active agents, workspaces, provider bindings, and idempotency state survive restart through atomic versioned JSON.
+3. Per-chat queues, real AbortSignal cancellation, bounded overflow, agent switching, and Claude/Codex session continuity are tested with fake runtimes.
+4. Configured model aliases pass explicit provider model options; workspace and role policy reject unsafe requests before provider spawn.
+5. Application composition, doctor, docs, Graphify, full tests, and available real WhatsApp/provider acceptance are recorded.
+
+Plans:
+
+- [x] 05-01-PLAN.md — control-plane implementation, integration, documentation, and verification
+
+Verification: `.planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md`.

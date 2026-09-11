@@ -33,3 +33,18 @@
 - WHATSAPP-04: Reject and log unauthorized senders/chats before routing using validated allowlist configuration.
 - WHATSAPP-05: Route inbound messages through the gateway and deliver `AgentResponse` to the originating conversation.
 - WHATSAPP-06: Expose reconnect, graceful shutdown, structured logging, and sanitized health state without agent-specific code in the WhatsApp package.
+
+## Enterprise conversational control plane
+
+- CTRL-01: Commands are defined in a central channel-neutral registry and return channel-neutral results.
+- CTRL-02: Initialization, authorization, state transitions, unknown-command rejection, and help generation occur before provider execution.
+- CTRL-03: Control-plane packages do not import WhatsApp/Baileys and preserve the chatbot/developer capability boundary.
+- SESSION-01: Multiple owner-scoped logical chats support init, list, select, rename, close, reset, and restart persistence.
+- SESSION-02: Provider bindings remain isolated by logical chat, agent, and approved workspace; closing a chat does not delete unrelated sessions.
+- EXEC-01: Each logical chat has a bounded sequential queue, while different chats may execute concurrently.
+- EXEC-02: Cancellation uses the existing AbortSignal/process termination path; duplicate message IDs are idempotently ignored.
+- MODEL-01: Claude Sonnet and Codex Luna aliases resolve only to explicitly configured and validated provider model identifiers.
+- SECURITY-04: Owner/operator/viewer policies, configured workspace aliases, approved-root enforcement, and no arbitrary shell/model arguments are applied.
+- OPS-01: Atomic persistence, corruption diagnostics, structured lifecycle events, safe output, graceful shutdown, and doctor/health checks are exposed.
+- TEST-02: Fake-provider unit/integration tests cover state, persistence, queues, cancellation, idempotency, authorization, model/workspace policy, and cross-channel boundaries.
+- DOC-02: Commands, configuration, restart behavior, security boundaries, future channel reuse, and Phase 5 verification are documented.

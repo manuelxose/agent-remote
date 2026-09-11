@@ -2,11 +2,11 @@
 
 ## Current Position
 
-Phase 4 — Operational Integration & Real WhatsApp Acceptance (implementation, automatic one-number commands, automated verification, and paired gateway)
+Phase 5 — Enterprise Conversational Control Plane (complete; environmental acceptance gaps recorded)
 
 ## Status
 
-Composition root, configuration loader, doctor command, operational scripts, examples, one-number self-chat mode, automatic `/init`/`/claude`/`/codex` commands, and tests are implemented. WhatsApp is paired and reconnects after restart; real routed provider messages remain the final environment-dependent gate.
+The Phase 5 control plane is implemented: central command registry, explicit state, owner-scoped managed chats, atomic versioned JSON state, bounded per-chat queues, cancellation, idempotency, explicit model policy, application composition, docs, and tests. Deterministic verification is complete; unavailable Claude/Copilot CLIs and live WhatsApp credentials are recorded as UNVERIFIED in the phase verification artifact.
 
 ## Decisions
 
@@ -32,7 +32,11 @@ Composition root, configuration loader, doctor command, operational scripts, exa
 - Conversation scoping: only conversations initialized with `/init` can dispatch `/claude`, `/codex`, or `/workspace`; other chats are ignored before the gateway is called.
 - Single-instance protection: a local lock rejects a second gateway process before it can compete for the WhatsApp auth session; bare `/claude` and `/codex` return usage instead of being silently ignored.
 - WhatsApp stability fix: duplicate gateway processes were stopped; `fromMe` self-messages are now allowlisted in explicit one-number mode even when Baileys supplies only an `@lid` identity. Status `440` was traced to concurrent sessions, not authentication loss.
+- Phase 5 design approved and committed as `a66d1ff`; implementation plan is recorded in `docs/superpowers/plans/2026-09-11-enterprise-conversational-control-plane.md`.
+- Managed control-plane state uses `data/control-plane.json`; native provider sessions remain independently stored in `data/developer-agent-sessions.json`.
+- Phase 5 verification: `npm run build` passes; `npm test` reports 109 tests, 107 passed, 0 failed, 2 skipped; `graphify update .` refreshed 728 nodes and 1186 edges.
+- Local doctor with explicit configuration reports truthful PASS/WARN/FAIL results; Codex smoke is available, while Claude, Copilot, and live WhatsApp acceptance are UNVERIFIED because the required local executables/auth state are unavailable in this worktree.
 
 ## Next Action
 
-Send `/init` from the paired allowlisted account, then perform one Claude and one Codex command in that same self-chat. Confirm a message in a different chat is ignored. Production-grade credential storage, distributed event delivery, and long-lived interactive CLI processes remain future concerns.
+Final verification is recorded in `.planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md`; production-grade credential storage, distributed event delivery, and long-lived interactive CLI processes remain future concerns.
