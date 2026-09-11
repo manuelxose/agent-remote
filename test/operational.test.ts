@@ -232,6 +232,36 @@ test("loads final-only WhatsApp delivery settings", () => {
   }, process.cwd()), /non-negative integer/);
 });
 
+test("loads opt-in presentation bridge configuration without exposing its token", async () => {
+  const disabled = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, process.cwd());
+  const enabled = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net",
+    AGENT_REMOTE_PRESENTATION_ENABLED: "true",
+    AGENT_REMOTE_PRESENTATION_PORT: "9876",
+    AGENT_REMOTE_PRESENTATION_TOKEN: "secret-presentation-token"
+  }, process.cwd());
+  const invalid = loadApplicationConfig({
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: "/tmp/agent-remote-auth",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net",
+    AGENT_REMOTE_PRESENTATION_ENABLED: "true"
+  }, process.cwd());
+
+  assert.deepEqual(disabled.presentation, { enabled: false, port: 8765 });
+  assert.deepEqual(enabled.presentation, { enabled: true, port: 9876, token: "secret-presentation-token" });
+  assert.match(invalid.presentation.error ?? "", /token/i);
+  const report = await runDoctor(invalid, { resolveExecutable: async () => undefined, readVersion: async () => "" });
+  const bridge = report.find(check => check.name === "Presentation bridge");
+  assert.equal(bridge?.status, "FAIL");
+  assert.doesNotMatch(bridge?.message ?? "", /secret-presentation-token/);
+});
+
 test("application control-plane state survives restart without reinitialization", async () => {
   const directory = await mkdtemp(join(tmpdir(), "agent-remote-restart-"));
   const routesPath = join(directory, "routes.json");

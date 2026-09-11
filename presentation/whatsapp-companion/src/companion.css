@@ -1,0 +1,4 @@
+.agent-remote-message[data-agent-remote-origin="agent"] {
+  outline: 2px solid #25d366;
+  outline-offset: 2px;
+}

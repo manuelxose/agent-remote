@@ -10,5 +10,5 @@
     "sourceMap": true,
     "skipLibCheck": true
   },
-  "include": ["apps/**/*.ts", "channels/**/*.ts", "config/**/*.ts", "developer-agents/**/*.ts", "integrations/**/*.ts", "packages/**/*.ts", "runtime/**/*.ts", "types/**/*.d.ts"]
+  "include": ["apps/**/*.ts", "channels/**/*.ts", "config/**/*.ts", "developer-agents/**/*.ts", "integrations/**/*.ts", "packages/**/*.ts", "presentation/**/*.ts", "runtime/**/*.ts", "types/**/*.d.ts"]
 }

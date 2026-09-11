@@ -20,6 +20,7 @@ import { formatOperationalError } from "./doctor.js";
 import { translateWhatsAppMessage } from "../../../channels/whatsapp/src/index.js";
 import { resolveDeveloperExecutable } from "../../../runtime/developer-agent/src/process.js";
 import { StreamDelivery, type StreamingDeliveryPolicy } from "../../../packages/control-plane/src/delivery.js";
+import { createPresentationBridge, type PresentationBridge } from "./presentation-bridge.js";
 
 const execFile = promisify(nodeExecFile);
 
@@ -42,12 +43,21 @@ export interface ApplicationConfig {
   claudeModel?: string;
   codexModel?: string;
   streamingDelivery: StreamingDeliveryPolicy;
+  presentation: PresentationConfig;
+}
+
+export interface PresentationConfig {
+  enabled: boolean;
+  port: number;
+  token?: string;
+  error?: string;
 }
 
 export interface AgentRemoteApplication extends WhatsAppGatewayApplication {
   readonly routes: Readonly<Record<string, Route>>;
   readonly runtime: DeveloperAgentRuntime;
   readonly controlPlane: ControlPlane;
+  readonly presentationBridge?: PresentationBridge;
   start(): Promise<void>;
   stop(): Promise<void>;
 }
@@ -97,6 +107,7 @@ export function loadApplicationConfig(
   const codexModel = optionalValue(env.AGENT_REMOTE_CODEX_MODEL);
   const claudeModels = { ...parseObject(env.AGENT_REMOTE_CLAUDE_MODELS, "Claude model aliases"), ...(claudeModel ? { sonnet: claudeModel } : {}) };
   const codexModels = { ...parseObject(env.AGENT_REMOTE_CODEX_MODELS, "Codex model aliases"), ...(codexModel ? { luna: codexModel } : {}) };
+  const presentation = parsePresentationConfig(env);
   const workspaceRoots = unique([...configuredRoots, ...routeRoots].map(root => resolveFrom(cwd, root)));
   if (workspaceRoots.length === 0) throw new Error("AGENT_REMOTE_WORKSPACE_ROOTS is required when routes have no workspaceRoot");
   const workspacePolicy = new WorkspacePolicy(workspaceRoots);
@@ -124,7 +135,8 @@ export function loadApplicationConfig(
       progressAfterMs: nonNegativeInteger(env.AGENT_REMOTE_PROGRESS_AFTER_MS, 0),
       progressText: optionalValue(env.AGENT_REMOTE_PROGRESS_TEXT) ?? "Sigo trabajando…",
       maxMessagesPerExecution: positiveInteger(env.AGENT_REMOTE_STREAM_MAX_MESSAGES, 2)
-    }
+    },
+    presentation
   };
 }
 
@@ -220,13 +232,24 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
       if (message) await channel.send(message.conversationId, { text: formatOperationalError(error, message.conversationId) });
     }
   });
+  if (config.presentation.error) throw new Error(config.presentation.error);
+  const presentationBridge = config.presentation.enabled
+    ? createPresentationBridge({
+      host: "127.0.0.1",
+      port: config.presentation.port,
+      token: config.presentation.token!,
+      readRegistry: () => whatsapp.channel.agentMessageRegistry(),
+      allowedOrigin: "https://web.whatsapp.com"
+    })
+    : undefined;
   return {
     ...whatsapp,
     routes: config.routes,
     runtime,
     controlPlane,
-    start: async () => { await controlPlane.load(); await whatsapp.channel.start(); },
-    stop: async () => { controlPlane.stopAccepting(); await controlPlane.drain(config.timeoutMs); await runtime.close(); await whatsapp.channel.stop(); }
+    presentationBridge,
+    start: async () => { await controlPlane.load(); await whatsapp.channel.start(); await presentationBridge?.start(); },
+    stop: async () => { await presentationBridge?.stop(); controlPlane.stopAccepting(); await controlPlane.drain(config.timeoutMs); await runtime.close(); await whatsapp.channel.stop(); }
   };
 }
 
@@ -304,6 +327,22 @@ function printQr(qr: string): void {
 function optionalValue(value: string | undefined): string | undefined {
   const trimmed = value?.trim();
   return trimmed || undefined;
+}
+
+function parsePresentationConfig(env: Readonly<Record<string, string | undefined>>): PresentationConfig {
+  const rawEnabled = env.AGENT_REMOTE_PRESENTATION_ENABLED?.trim().toLowerCase();
+  if (rawEnabled !== undefined && rawEnabled !== "" && rawEnabled !== "true" && rawEnabled !== "false") {
+    return { enabled: false, port: 8765, error: "AGENT_REMOTE_PRESENTATION_ENABLED must be true or false" };
+  }
+  const enabled = rawEnabled === "true";
+  const rawPort = env.AGENT_REMOTE_PRESENTATION_PORT?.trim();
+  const port = rawPort ? Number(rawPort) : 8765;
+  if (!Number.isInteger(port) || port <= 0 || port > 65535) {
+    return { enabled, port: 8765, error: "AGENT_REMOTE_PRESENTATION_PORT must be an integer from 1 to 65535" };
+  }
+  const token = optionalValue(env.AGENT_REMOTE_PRESENTATION_TOKEN);
+  if (enabled && !token) return { enabled, port, error: "AGENT_REMOTE_PRESENTATION_TOKEN is required when presentation is enabled" };
+  return { enabled, port, ...(token ? { token } : {}) };
 }
 
 export function resolveWhatsAppRole(env: Readonly<Record<string, string | undefined>>, senderId: string): Role {

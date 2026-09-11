@@ -27,6 +27,11 @@ export async function runDoctor(config: ApplicationConfig, dependencies: DoctorD
   }
   catch (error) { checks.push({ name: "Configuration", status: "FAIL", message: messageOf(error) }); }
   checks.push({ name: "Streaming delivery", status: "PASS", message: `${config.streamingDelivery.progressAfterMs} ms progress / ${config.streamingDelivery.maxMessagesPerExecution} messages` });
+  checks.push(config.presentation.error
+    ? { name: "Presentation bridge", status: "FAIL", message: config.presentation.error }
+    : config.presentation.enabled
+      ? { name: "Presentation bridge", status: "PASS", message: `enabled on 127.0.0.1:${config.presentation.port} when the gateway is running` }
+      : { name: "Presentation bridge", status: "WARN", message: "disabled" });
   checks.push({ name: "WhatsApp", status: config.env.WHATSAPP_AUTH_PATH ? "PASS" : "FAIL", message: config.env.WHATSAPP_AUTH_PATH ? "configuration is present" : "WHATSAPP_AUTH_PATH is required" });
   const routeCount = Object.keys(config.routes).length;
   checks.push({ name: "Routes", status: routeCount > 0 ? "PASS" : "FAIL", message: `${routeCount} route${routeCount === 1 ? "" : "s"} loaded from ${config.routesPath}` });

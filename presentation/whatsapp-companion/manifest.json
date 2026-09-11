@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Agent Remote WhatsApp Presentation",
+  "version": "0.1.0",
+  "content_scripts": [{
+    "matches": ["https://web.whatsapp.com/*"],
+    "js": ["src/content.js"],
+    "css": ["src/companion.css"],
+    "run_at": "document_idle"
+  }]
+}
