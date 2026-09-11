@@ -15,7 +15,7 @@ import { createCodexAdapter } from "../../../developer-agents/codex/src/index.js
 import { createCopilotAdapter } from "../../../developer-agents/copilot/src/index.js";
 import { DeveloperAgentRuntime } from "../../../runtime/developer-agent/src/index.js";
 import { JsonDeveloperSessionStore } from "../../../runtime/developer-agent/src/sessions.js";
-import { createWhatsAppGateway, type WhatsAppGatewayApplication } from "./whatsapp.js";
+import { createWhatsAppGateway, type WhatsAppGatewayApplication, type WhatsAppGatewayOptions } from "./whatsapp.js";
 import { formatOperationalError } from "./doctor.js";
 import { translateWhatsAppMessage } from "../../../channels/whatsapp/src/index.js";
 import { resolveDeveloperExecutable } from "../../../runtime/developer-agent/src/process.js";
@@ -50,6 +50,11 @@ export interface AgentRemoteApplication extends WhatsAppGatewayApplication {
   readonly controlPlane: ControlPlane;
   start(): Promise<void>;
   stop(): Promise<void>;
+}
+
+export interface ApplicationDependencies {
+  runtime?: DeveloperAgentRuntime;
+  whatsapp?: Pick<WhatsAppGatewayOptions, "onQr" | "logger" | "loadAuthState" | "createSocket">;
 }
 
 export function loadRoutes(path: string): Record<string, Route> {
@@ -123,10 +128,10 @@ export function loadApplicationConfig(
   };
 }
 
-export function createApplication(config: ApplicationConfig): AgentRemoteApplication {
+export function createApplication(config: ApplicationConfig, dependencies: ApplicationDependencies = {}): AgentRemoteApplication {
   const events = new InMemoryEventBus();
   const capabilities = createRestrictedDeveloperCapabilities(config.workspaceRoots, localOperations());
-  const runtime = new DeveloperAgentRuntime(capabilities, {
+  const runtime = dependencies.runtime ?? new DeveloperAgentRuntime(capabilities, {
     adapters: {
       claude: createClaudeAdapter(() => resolveDeveloperExecutable("claude", config.env.AGENT_REMOTE_CLAUDE_EXECUTABLE)),
       codex: createCodexAdapter(() => resolveDeveloperExecutable("codex", config.env.AGENT_REMOTE_CODEX_EXECUTABLE)),
@@ -199,7 +204,8 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     events
   }, {
     env: config.env,
-    onQr: printQr,
+    ...dependencies.whatsapp,
+    onQr: dependencies.whatsapp?.onQr ?? printQr,
     onMessage: async (message, channel) => {
       const result = await controlPlane.handle(message, { id: resolveWhatsAppIdentity(config.env, message.senderId), role: resolveWhatsAppRole(config.env, message.senderId) });
       const delivery = result.metadata?.executionId ? deliveries.get(result.metadata.executionId) : undefined;
