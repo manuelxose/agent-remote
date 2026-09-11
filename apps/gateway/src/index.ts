@@ -1,4 +1,4 @@
-import type { AgentRuntime, Channel, ConversationAgent } from "../../../packages/core/src/index.js";
+import type { AgentRuntime, Channel, ConversationAgent, Route } from "../../../packages/core/src/index.js";
 import type { EventBus } from "../../../packages/events/src/index.js";
 import { createConversationContext, type ConversationStore } from "../../../packages/conversations/src/index.js";
 import type { RouteResolver } from "../../../packages/routing/src/index.js";
@@ -22,12 +22,12 @@ export class GatewayConfigurationError extends Error {
 export class Gateway {
   constructor(private readonly dependencies: GatewayDependencies) {}
 
-  async handle(payload: unknown): Promise<void> {
+  async handle(payload: unknown, routeOverride?: Route): Promise<void> {
     const { channel, conversations, router, runtimes, agents, events } = this.dependencies;
     const message = await channel.receive(payload);
     await events.publish({ type: "MessageReceived", occurredAt: new Date(), correlationId: message.id, payload: message });
     const conversation = await conversations.getOrCreate(message);
-    const route = router.resolve(message.channel, message.conversationId);
+    const route = routeOverride ?? router.resolve(message.channel, message.conversationId);
     await events.publish({ type: "RouteResolved", occurredAt: new Date(), correlationId: message.id, payload: route });
     const runtime = runtimes[route.runtime];
     const agent = agents[route.agent];

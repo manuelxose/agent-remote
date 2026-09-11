@@ -24,7 +24,7 @@ for (const adapter of adapters) {
         prompt: "Reply with the single word OK.",
         conversationId: `smoke-${adapter.id}`,
         timeoutMs: 60_000,
-        maxOutputBytes: 8 * 1024
+        maxOutputBytes: 64 * 1024
       }, {
         correlationId: `smoke-${adapter.id}`,
         conversationId: `smoke-${adapter.id}`,

@@ -14,6 +14,10 @@ interface RawWhatsAppMessage {
   message?: Record<string, unknown>;
 }
 
+export interface WhatsAppTranslationOptions {
+  allowSelfMessages?: boolean;
+}
+
 const attachmentKinds = {
   imageMessage: "image",
   videoMessage: "video",
@@ -22,7 +26,7 @@ const attachmentKinds = {
   stickerMessage: "sticker"
 } as const;
 
-export function translateWhatsAppMessage(payload: unknown): Message | undefined {
+export function translateWhatsAppMessage(payload: unknown, options: WhatsAppTranslationOptions = {}): Message | undefined {
   if (!payload || typeof payload !== "object") return undefined;
   const legacy = payload as Record<string, unknown>;
   if (["messageId", "conversationId", "senderId", "text"].every(key => typeof legacy[key] === "string")) {
@@ -39,7 +43,7 @@ export function translateWhatsAppMessage(payload: unknown): Message | undefined 
   const key = raw.key;
   const id = stringValue(key?.id);
   const conversationId = stringValue(key?.remoteJid);
-  if (!id || !conversationId || key?.fromMe === true || isNonConversation(conversationId)) return undefined;
+  if (!id || !conversationId || (key?.fromMe === true && !options.allowSelfMessages) || isNonConversation(conversationId)) return undefined;
 
   const message = unwrapMessage(raw.message);
   if (!message) return undefined;
@@ -47,7 +51,11 @@ export function translateWhatsAppMessage(payload: unknown): Message | undefined 
   const attachments = extractAttachments(message);
   if (text === undefined && attachments.length === 0) return undefined;
 
-  const senderId = stringValue(key?.participant) ?? stringValue(key?.participantAlt) ?? conversationId;
+  const participant = stringValue(key?.participant);
+  const participantAlt = stringValue(key?.participantAlt);
+  const senderId = participant?.endsWith("@lid")
+    ? participantAlt ?? participant
+    : participant ?? participantAlt ?? conversationId;
   const groupId = conversationId.endsWith("@g.us") ? conversationId : undefined;
   return {
     id,

@@ -108,6 +108,7 @@ export class WhatsAppChannel implements Channel {
   private lastErrorCode?: number;
   private status: WhatsAppStatus = "stopped";
   private changedAt = new Date();
+  private readonly outboundMessageIds = new Map<string, number>();
 
   constructor(options: WhatsAppChannelOptions | ((conversationId: string, text: string) => Promise<void>)) {
     if (typeof options === "function") {
@@ -154,6 +155,7 @@ export class WhatsAppChannel implements Channel {
     }
     const socket = this.socket;
     this.socket = undefined;
+    this.outboundMessageIds.clear();
     this.removeListeners(socket);
     if (socket) await socket.end(undefined);
     this.setStatus("stopped");
@@ -169,10 +171,12 @@ export class WhatsAppChannel implements Channel {
   }
 
   async receive(payload: unknown): Promise<Message> {
-    const message = isCoreMessage(payload) ? payload : translateWhatsAppMessage(payload);
+    const message = isCoreMessage(payload)
+      ? payload
+      : translateWhatsAppMessage(payload, { allowSelfMessages: this.config?.allowSelfMessages });
     if (!message) throw new InvalidWhatsAppPayloadError();
     const authorization: WhatsAppAuthorization = this.config
-      ? authorizeWhatsAppMessage(message, this.config)
+      ? authorizeWhatsAppMessage(message, this.config, isSelfSentPayload(payload))
       : { allowed: true };
     if (!authorization.allowed) {
       this.logRejection(message, authorization);
@@ -184,7 +188,9 @@ export class WhatsAppChannel implements Channel {
   async send(conversationId: string, response: AgentResponse): Promise<void> {
     if (this.legacyDeliver) return this.legacyDeliver(conversationId, response.text);
     if (!this.socket || this.status !== "connected") throw new WhatsAppNotConnectedError();
-    await this.socket.sendMessage(conversationId, { text: response.text });
+    const sent = await this.socket.sendMessage(conversationId, { text: response.text });
+    const messageId = messageIdFromPayload(sent);
+    if (messageId) this.rememberOutboundMessage(messageId);
   }
 
   private async connect(): Promise<void> {
@@ -211,6 +217,7 @@ export class WhatsAppChannel implements Channel {
   private async handleMessages(update: BaileysEventMap["messages.upsert"]): Promise<void> {
     if (update.requestId) return;
     for (const payload of update.messages) {
+      if (this.isTrackedOutbound(payload)) continue;
       try {
         await this.onMessage?.(await this.receive(payload));
       } catch (error) {
@@ -274,6 +281,30 @@ export class WhatsAppChannel implements Channel {
     this.changedAt = new Date();
   }
 
+  private rememberOutboundMessage(messageId: string): void {
+    this.pruneOutboundMessageIds();
+    // ponytail: a 256-entry/2-minute ceiling keeps echo suppression bounded; use a durable outbound-id store if Baileys ever delays echoes beyond it.
+    if (this.outboundMessageIds.size >= 256) {
+      const oldest = this.outboundMessageIds.keys().next().value;
+      if (typeof oldest === "string") this.outboundMessageIds.delete(oldest);
+    }
+    this.outboundMessageIds.set(messageId, Date.now());
+  }
+
+  private isTrackedOutbound(payload: unknown): boolean {
+    const messageId = messageIdFromPayload(payload);
+    if (!messageId) return false;
+    this.pruneOutboundMessageIds();
+    return this.outboundMessageIds.delete(messageId);
+  }
+
+  private pruneOutboundMessageIds(): void {
+    const cutoff = Date.now() - 120_000;
+    for (const [messageId, createdAt] of this.outboundMessageIds) {
+      if (createdAt < cutoff) this.outboundMessageIds.delete(messageId);
+    }
+  }
+
   private logRejection(message: Message, authorization: Exclude<WhatsAppAuthorization, { allowed: true }>): void {
     this.logger.warn("whatsapp_security_rejection", {
       senderId: message.senderId,
@@ -308,4 +339,18 @@ function isCoreMessage(value: unknown): value is Message {
     && typeof message.senderId === "string"
     && typeof message.text === "string"
     && message.receivedAt instanceof Date;
+}
+
+function messageIdFromPayload(value: unknown): string | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const key = (value as Record<string, unknown>).key;
+  if (!key || typeof key !== "object") return undefined;
+  const id = (key as Record<string, unknown>).id;
+  return typeof id === "string" && id.length > 0 ? id : undefined;
+}
+
+function isSelfSentPayload(value: unknown): boolean {
+  if (!value || typeof value !== "object") return false;
+  const key = (value as Record<string, unknown>).key;
+  return Boolean(key && typeof key === "object" && (key as Record<string, unknown>).fromMe === true);
 }

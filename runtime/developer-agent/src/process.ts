@@ -120,7 +120,13 @@ export class NodeDeveloperProcessRunner implements DeveloperProcessRunner {
   }
 }
 
-export async function resolveDeveloperExecutable(name: string): Promise<string | undefined> {
+export async function resolveDeveloperExecutable(name: string, configuredExecutable = process.env[`AGENT_REMOTE_${name.toUpperCase()}_EXECUTABLE`]): Promise<string | undefined> {
+  if (configuredExecutable?.trim()) {
+    try {
+      if ((await stat(configuredExecutable.trim())).isFile()) return configuredExecutable.trim();
+    } catch {}
+    return undefined;
+  }
   try {
     const command = process.platform === "win32" ? "where.exe" : "which";
     const { stdout } = await execFile(command, [name]);

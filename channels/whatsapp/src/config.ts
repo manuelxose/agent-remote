@@ -2,6 +2,7 @@ export interface WhatsAppConfig {
   authPath: string;
   allowedUsers: readonly string[];
   allowedChats: readonly string[];
+  allowSelfMessages: boolean;
   reconnectBaseDelayMs: number;
   reconnectMaxDelayMs: number;
 }
@@ -27,6 +28,7 @@ export function parseWhatsAppConfig(env: Readonly<Record<string, string | undefi
     authPath,
     allowedUsers: parseList(env.WHATSAPP_ALLOWED_USERS),
     allowedChats: parseList(env.WHATSAPP_ALLOWED_CHATS),
+    allowSelfMessages: parseBoolean(env.WHATSAPP_ALLOW_SELF_MESSAGES, false),
     reconnectBaseDelayMs,
     reconnectMaxDelayMs
   };
@@ -45,17 +47,26 @@ function parsePositiveInteger(value: string | undefined, fallback: number): numb
   return parsed;
 }
 
+function parseBoolean(value: string | undefined, fallback: boolean): boolean {
+  if (value === undefined || value.trim() === "") return fallback;
+  if (value.trim().toLowerCase() === "true") return true;
+  if (value.trim().toLowerCase() === "false") return false;
+  throw new WhatsAppConfigurationError(`Invalid boolean configuration value: ${value}`);
+}
+
 export type WhatsAppAuthorization =
   | { allowed: true }
   | { allowed: false; reason: "no_allowlist_configured" | "sender_not_allowlisted" | "chat_not_allowlisted" };
 
 export function authorizeWhatsAppMessage(
   message: { senderId: string; conversationId: string; groupId?: string },
-  config: WhatsAppConfig
+  config: WhatsAppConfig,
+  selfSent = false
 ): WhatsAppAuthorization {
   if (config.allowedUsers.length === 0 && config.allowedChats.length === 0) {
     return { allowed: false, reason: "no_allowlist_configured" };
   }
+  if (selfSent && config.allowSelfMessages) return { allowed: true };
   if (config.allowedUsers.length > 0 && !config.allowedUsers.includes(message.senderId)) {
     return { allowed: false, reason: "sender_not_allowlisted" };
   }

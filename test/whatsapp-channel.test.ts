@@ -68,6 +68,42 @@ test("unauthorized messages are logged and do not reach the gateway handler", as
   assert.equal(logs[0]?.reason, "sender_not_allowlisted");
 });
 
+test("one-number mode accepts manual self-messages and ignores gateway echoes", async () => {
+  const events = new FakeEvents();
+  const received: unknown[] = [];
+  const socket = {
+    ev: events,
+    async sendMessage() { return { key: { id: "gateway-reply-1" } }; },
+    async end() {}
+  };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({
+      WHATSAPP_AUTH_PATH: "/tmp/auth",
+      WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net",
+      WHATSAPP_ALLOW_SELF_MESSAGES: "true"
+    }),
+    onMessage: async payload => received.push(payload),
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket,
+    logger: { info() {}, warn() {}, error() {} }
+  });
+
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  events.emit("messages.upsert", {
+    messages: [{ key: { id: "manual-self-1", remoteJid: "278386962370655@lid", fromMe: true }, message: { conversation: "hello" } }]
+  });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(received.length, 1);
+
+  await channel.send("u@s.whatsapp.net", { text: "reply" });
+  events.emit("messages.upsert", {
+    messages: [{ key: { id: "gateway-reply-1", remoteJid: "u@s.whatsapp.net", fromMe: true }, message: { conversation: "reply" } }]
+  });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(received.length, 1);
+});
+
 test("QR is exposed without logging it and responses are sent through Baileys", async () => {
   const events = new FakeEvents();
   const qrs: string[] = [];

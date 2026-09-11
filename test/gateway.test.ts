@@ -80,6 +80,32 @@ test("gateway copies only the resolved route workspace into execution context", 
   assert.equal(workspaceRoot, process.cwd());
 });
 
+test("gateway accepts an explicit one-number route override", async () => {
+  const sent: string[] = [];
+  const gateway = new Gateway({
+    channel: {
+      id: "test",
+      async receive() { return { id: "m-override", conversationId: "one-number", channel: "whatsapp", senderId: "u1", text: "prompt", receivedAt: new Date(0) }; },
+      async send(conversationId, response) { sent.push(`${conversationId}:${response.text}`); }
+    },
+    conversations: new InMemoryConversationStore(),
+    router: new ConfigurationRouter({
+      "whatsapp-one-number": { id: "whatsapp-one-number", runtime: "developer-agent", agent: "codex", workspaceRoot: process.cwd() }
+    }),
+    runtimes: {
+      "developer-agent": { type: "developer-agent", async execute(_context, agent) { return { text: agent.id }; } }
+    },
+    agents: {
+      claude: { id: "claude", type: "developer-agent", async handleMessage() { return { text: "unused" }; } },
+      codex: { id: "codex", type: "developer-agent", async handleMessage() { return { text: "unused" }; } }
+    },
+    events: new InMemoryEventBus()
+  });
+
+  await gateway.handle({}, { id: "manual-claude", runtime: "developer-agent", agent: "claude", workspaceRoot: process.cwd() });
+  assert.deepEqual(sent, ["one-number:claude"]);
+});
+
 test("gateway sends a clean structured response when the configured CLI is unavailable", async () => {
   const sent: unknown[] = [];
   const events = new InMemoryEventBus();

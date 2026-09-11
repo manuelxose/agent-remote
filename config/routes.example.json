@@ -1,0 +1,20 @@
+{
+  "whatsapp-120363000000000000@g.us": {
+    "id": "whatsapp-claude",
+    "runtime": "developer-agent",
+    "agent": "claude",
+    "workspaceRoot": "../your-project"
+  },
+  "whatsapp-120363000000000001@g.us": {
+    "id": "whatsapp-codex",
+    "runtime": "developer-agent",
+    "agent": "codex",
+    "workspaceRoot": "../your-project"
+  },
+  "whatsapp-120363000000000002@g.us": {
+    "id": "whatsapp-copilot",
+    "runtime": "developer-agent",
+    "agent": "copilot",
+    "workspaceRoot": "../your-project"
+  }
+}

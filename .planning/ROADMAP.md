@@ -46,3 +46,22 @@ Success criteria:
 5. Successful adapter output reaches the existing gateway/channel response pipeline while chatbot remains unable to import developer adapters.
 
 Verification: `npm run build` passes; `npm test` reports 85 tests, 83 passed, 0 failed, and 2 skipped (Claude/Copilot unavailable); `graphify update .` refreshed 474 nodes and 677 edges. The installed Codex smoke invocation reached the real CLI and completed successfully within the configured 60-second bound.
+
+## Phase 4: Operational Integration & Real WhatsApp Acceptance — In progress
+
+Connect the existing runtime and Baileys channel through one executable composition root, configuration-backed route loading, operational doctor/start commands, safe unknown-route diagnostics, and real provider/WhatsApp acceptance.
+
+Requirements: WHATSAPP-01, WHATSAPP-02, WHATSAPP-03, WHATSAPP-04, WHATSAPP-05, WHATSAPP-06, SEC-01, ADAPTER-02, DOC-01, TEST-01.
+
+Success criteria:
+
+1. `npm start` constructs the existing router, runtimes, adapters, persistent sessions, workspace policy, and WhatsApp lifecycle.
+2. `npm run doctor` reports actionable PASS/WARN/FAIL checks and truthful CLI availability.
+3. Routes and approved workspaces are loaded from ignored/local configuration without recompilation or hardcoded real IDs.
+4. Unknown authorized conversations receive their ID and route-key guidance; runtime failures remain concise.
+5. Automated composition/configuration/doctor/startup tests pass without reducing existing coverage.
+6. Real WhatsApp pairing, provider E2E, and restart recovery are recorded with actual evidence; unavailable providers remain explicitly unavailable.
+
+Plans:
+
+- [ ] 04-01-PLAN.md — composition root, operational CLI, configuration, tests, and acceptance procedure

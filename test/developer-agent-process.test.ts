@@ -206,6 +206,10 @@ test("resolves an installed executable without shell interpolation", async () =>
   assert.ok(executable);
 });
 
+test("uses an explicitly configured executable path", async () => {
+  assert.equal(await resolveDeveloperExecutable("claude", process.execPath), process.execPath);
+});
+
 test("returns undefined for a missing executable", async () => {
   assert.equal(await resolveDeveloperExecutable("definitely-not-an-executable"), undefined);
 });

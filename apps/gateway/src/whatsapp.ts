@@ -13,6 +13,8 @@ export interface WhatsAppGatewayOptions {
   logger?: WhatsAppLogger;
   loadAuthState?: WhatsAppAuthLoader;
   createSocket?: WhatsAppSocketFactory;
+  onError?: (error: unknown, payload: unknown, channel: WhatsAppChannel) => Promise<void>;
+  onCommand?: (payload: unknown, channel: WhatsAppChannel, gateway: Gateway) => Promise<boolean>;
 }
 
 export interface WhatsAppGatewayApplication {
@@ -30,7 +32,15 @@ export function createWhatsAppGateway(
   let gateway!: Gateway;
   const channel = new WhatsAppChannel({
     config: parseWhatsAppConfig(env),
-    onMessage: payload => gateway.handle(payload),
+    onMessage: async payload => {
+      try {
+        if (options.onCommand && await options.onCommand(payload, channel, gateway)) return;
+        await gateway.handle(payload);
+      } catch (error) {
+        if (options.onError) await options.onError(error, payload, channel);
+        else throw error;
+      }
+    },
     onQr: options.onQr,
     logger: options.logger,
     loadAuthState: options.loadAuthState,
