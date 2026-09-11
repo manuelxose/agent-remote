@@ -234,15 +234,15 @@
     "semantic_hash": ""
   },
   ".planning/ROADMAP.md": {
-    "mtime": 1789132685.227824,
-    "seen": 1789132810.5650823,
-    "ast_hash": "c358eb1ce87c15c32efe3ebc67268815",
+    "mtime": 1789133029.6413033,
+    "seen": 1789133248.8704722,
+    "ast_hash": "e7eb27fa3410f462bf85d4420c2dba5e",
     "semantic_hash": ""
   },
   ".planning/STATE.md": {
-    "mtime": 1789132685.227824,
-    "seen": 1789132810.5650828,
-    "ast_hash": "5805a5d0dee9ee032f81d896b75b85ad",
+    "mtime": 1789133037.549204,
+    "seen": 1789133248.8704727,
+    "ast_hash": "9c367eaa618249eb6a1e5d9bad165394",
     "semantic_hash": ""
   },
   ".planning/phases/01-architectural-foundation/01-01-PLAN.md": {
@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "apps/gateway/src/application.ts": {
-    "mtime": 1789132894.7185662,
-    "seen": 1789132953.7405841,
-    "ast_hash": "abfad9dbee3a3611ce39faa5c4f6b41d",
+    "mtime": 1789133205.5920644,
+    "seen": 1789133248.8704305,
+    "ast_hash": "6713f2ff2b8b9bd33f64ac07e2b26fcb",
     "semantic_hash": ""
   },
   "apps/gateway/src/doctor.ts": {
@@ -390,9 +390,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1789132590.5085158,
-    "seen": 1789132810.5650887,
-    "ast_hash": "0f7800d90486c7e52cd42a24727f3a5f",
+    "mtime": 1789133205.5920644,
+    "seen": 1789133248.870481,
+    "ast_hash": "5aba84c8f2ebd845fcdf1604e33cd77f",
     "semantic_hash": ""
   },
   ".planning/phases/04-operational-integration-real-whatsapp-acceptance/04-01-SUMMARY.md": {
@@ -453,6 +453,12 @@
     "mtime": 1789131559.1747398,
     "seen": 1789132810.565094,
     "ast_hash": "8883d62ae7d26200f8ef081d673970a8",
+    "semantic_hash": ""
+  },
+  ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md": {
+    "mtime": 1789133012.7887092,
+    "seen": 1789133248.8704793,
+    "ast_hash": "70e4bf069b05f28c72c044cd626189c5",
     "semantic_hash": ""
   }
 }

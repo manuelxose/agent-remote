@@ -21,7 +21,7 @@ Date: 2026-09-11
 ## Graphify
 
 - `graphify update .`: PASS.
-- Refreshed graph: 728 nodes, 1186 edges, 56 communities.
+- Refreshed graph: 736 nodes, 1194 edges, 63 communities.
 - Focused query identifies `ControlPlane`, `CommandRegistry`,
   `JsonControlPlaneStore`, `application.ts`, and `WhatsAppChannel` as separate
   modules. A directed control-plane-to-channel path is absent because the
