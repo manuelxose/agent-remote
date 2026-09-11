@@ -20,6 +20,10 @@ class FakeEvents {
   emit(event: string, value: any): void {
     for (const listener of this.listeners.get(event) ?? []) listener(value);
   }
+
+  listenerCount(event: string): number {
+    return this.listeners.get(event)?.size ?? 0;
+  }
 }
 
 test("authorized incoming messages reach the supplied gateway handler", async () => {
@@ -313,6 +317,22 @@ test("history persistence failures do not block live routing", async () => {
   assert.equal(received.length, 1);
   assert.equal(logs[0]?.event, "whatsapp_history_persistence_failed");
   assert.deepEqual(Object.keys(logs[0] ?? {}), ["event"]);
+});
+
+test("stop removes history listeners from an off-only emitter", async () => {
+  const events = new FakeEvents();
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth" }),
+    onMessage: async () => {},
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  assert.equal(events.listenerCount("messaging-history.set"), 1);
+  await channel.stop();
+  assert.equal(events.listenerCount("messaging-history.set"), 0);
 });
 
 async function flush(): Promise<void> {

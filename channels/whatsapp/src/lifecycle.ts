@@ -51,6 +51,14 @@ export interface WhatsAppChannelOptions {
   historySink?: WhatsAppHistorySink;
 }
 
+interface WhatsAppListenerSet {
+  socket: WhatsAppSocket;
+  credsUpdate: (value: BaileysEventMap["creds.update"]) => void;
+  connectionUpdate: (value: BaileysEventMap["connection.update"]) => void;
+  messagesUpsert: (value: BaileysEventMap["messages.upsert"]) => void;
+  historySet: (value: BaileysEventMap["messaging-history.set"]) => void;
+}
+
 export class InvalidWhatsAppPayloadError extends Error {
   constructor() {
     super("Invalid WhatsApp payload");
@@ -108,6 +116,7 @@ export class WhatsAppChannel implements Channel {
   private readonly loadAuthState: WhatsAppAuthLoader;
   private readonly createSocket: WhatsAppSocketFactory;
   private readonly historySink?: WhatsAppHistorySink;
+  private listeners?: WhatsAppListenerSet;
   private readonly legacyDeliver?: (conversationId: string, text: string) => Promise<void>;
   private socket?: WhatsAppSocket;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
@@ -235,12 +244,20 @@ export class WhatsAppChannel implements Channel {
       if (this.stopping) return;
       const socket = this.createSocket(state);
       this.socket = socket;
-      socket.ev.on("creds.update", () => {
-        void saveCreds().catch(() => this.logger.error("whatsapp_auth_persistence_failed"));
-      });
-      socket.ev.on("connection.update", update => { void this.handleConnectionUpdate(update, socket); });
-      socket.ev.on("messages.upsert", update => { void this.handleMessages(update, socket); });
-      socket.ev.on("messaging-history.set", update => { void this.handleHistory(update, socket); });
+      const listeners: WhatsAppListenerSet = {
+        socket,
+        credsUpdate: () => {
+          void saveCreds().catch(() => this.logger.error("whatsapp_auth_persistence_failed"));
+        },
+        connectionUpdate: update => { void this.handleConnectionUpdate(update, socket); },
+        messagesUpsert: update => { void this.handleMessages(update, socket); },
+        historySet: update => { void this.handleHistory(update, socket); }
+      };
+      this.listeners = listeners;
+      socket.ev.on("creds.update", listeners.credsUpdate);
+      socket.ev.on("connection.update", listeners.connectionUpdate);
+      socket.ev.on("messages.upsert", listeners.messagesUpsert);
+      socket.ev.on("messaging-history.set", listeners.historySet);
     } catch {
       this.lastErrorCode = undefined;
       this.setStatus("failed");
@@ -405,10 +422,18 @@ export class WhatsAppChannel implements Channel {
 
   private removeListeners(socket: WhatsAppSocket | undefined): void {
     if (!socket?.ev.off && !socket?.ev.removeAllListeners) return;
+    const listeners = this.listeners;
+    if (socket.ev.off && listeners?.socket === socket) {
+      socket.ev.off("creds.update", listeners.credsUpdate);
+      socket.ev.off("connection.update", listeners.connectionUpdate);
+      socket.ev.off("messages.upsert", listeners.messagesUpsert);
+      socket.ev.off("messaging-history.set", listeners.historySet);
+    }
     socket.ev.removeAllListeners?.("creds.update");
     socket.ev.removeAllListeners?.("connection.update");
     socket.ev.removeAllListeners?.("messages.upsert");
     socket.ev.removeAllListeners?.("messaging-history.set");
+    if (listeners?.socket === socket) this.listeners = undefined;
   }
 }
 
