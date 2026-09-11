@@ -5,6 +5,7 @@ import makeWASocket, {
   type WASocket
 } from "@whiskeysockets/baileys";
 import type { Channel, Message, OutboundMessage } from "../../../packages/core/src/index.js";
+import type { HistoryChat } from "../../../packages/conversations/src/index.js";
 import { authorizeWhatsAppMessage, type WhatsAppAuthorization, type WhatsAppConfig } from "./config.js";
 import { AgentMessageRegistry } from "./agent-registry.js";
 import { translateWhatsAppMessage } from "./translate.js";
@@ -35,6 +36,11 @@ export type WhatsAppAuthState = { state: AuthenticationState; saveCreds: () => P
 export type WhatsAppAuthLoader = (path: string) => Promise<WhatsAppAuthState>;
 export type WhatsAppSocketFactory = (state: AuthenticationState) => WhatsAppSocket;
 
+export interface WhatsAppHistorySink {
+  upsertChat(chat: HistoryChat): Promise<void>;
+  upsertMessage(message: Message): Promise<void>;
+}
+
 export interface WhatsAppChannelOptions {
   config: WhatsAppConfig;
   onMessage: (payload: unknown) => Promise<void>;
@@ -42,6 +48,7 @@ export interface WhatsAppChannelOptions {
   logger?: WhatsAppLogger;
   loadAuthState?: WhatsAppAuthLoader;
   createSocket?: WhatsAppSocketFactory;
+  historySink?: WhatsAppHistorySink;
 }
 
 export class InvalidWhatsAppPayloadError extends Error {
@@ -100,6 +107,7 @@ export class WhatsAppChannel implements Channel {
   private readonly logger: WhatsAppLogger;
   private readonly loadAuthState: WhatsAppAuthLoader;
   private readonly createSocket: WhatsAppSocketFactory;
+  private readonly historySink?: WhatsAppHistorySink;
   private readonly legacyDeliver?: (conversationId: string, text: string) => Promise<void>;
   private socket?: WhatsAppSocket;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
@@ -135,6 +143,7 @@ export class WhatsAppChannel implements Channel {
       printQRInTerminal: false,
       markOnlineOnConnect: false
     }));
+    this.historySink = options.historySink;
     this.stopping = false;
   }
 
@@ -231,6 +240,7 @@ export class WhatsAppChannel implements Channel {
       });
       socket.ev.on("connection.update", update => { void this.handleConnectionUpdate(update, socket); });
       socket.ev.on("messages.upsert", update => { void this.handleMessages(update, socket); });
+      socket.ev.on("messaging-history.set", update => { void this.handleHistory(update, socket); });
     } catch {
       this.lastErrorCode = undefined;
       this.setStatus("failed");
@@ -245,12 +255,50 @@ export class WhatsAppChannel implements Channel {
     for (const payload of update.messages) {
       if (this.isTrackedOutbound(payload)) continue;
       try {
-        await this.onMessage?.(await this.receive(payload));
+        const message = await this.receive(payload);
+        await this.persistMessage(message);
+        await this.onMessage?.(message);
       } catch (error) {
         if (error instanceof InvalidWhatsAppPayloadError || error instanceof UnauthorizedWhatsAppMessageError) continue;
         const message = translateWhatsAppMessage(payload);
         this.logger.error("whatsapp_message_handler_failed", message ? { messageId: message.id } : undefined);
       }
+    }
+  }
+
+  private async handleHistory(update: BaileysEventMap["messaging-history.set"], socket: WhatsAppSocket): Promise<void> {
+    if (this.socket !== socket || !this.historySink) return;
+    for (const chat of update.chats) {
+      const conversationId = typeof chat.id === "string" ? chat.id : undefined;
+      if (!conversationId) continue;
+      const fields = chat as unknown as Record<string, unknown>;
+      await this.persistChat({
+        channel: this.id,
+        conversationId,
+        displayName: typeof fields.name === "string" && fields.name ? fields.name : typeof fields.subject === "string" && fields.subject ? fields.subject : conversationId,
+        kind: historyChatKind(conversationId),
+        updatedAt: new Date().toISOString()
+      });
+    }
+    for (const payload of update.messages) {
+      const message = translateWhatsAppMessage(payload, { allowSelfMessages: true });
+      if (message) await this.persistMessage(message);
+    }
+  }
+
+  private async persistChat(chat: HistoryChat): Promise<void> {
+    try {
+      await this.historySink?.upsertChat(chat);
+    } catch {
+      this.logger.error("whatsapp_history_persistence_failed");
+    }
+  }
+
+  private async persistMessage(message: Message): Promise<void> {
+    try {
+      await this.historySink?.upsertMessage(message);
+    } catch {
+      this.logger.error("whatsapp_history_persistence_failed");
     }
   }
 
@@ -360,6 +408,7 @@ export class WhatsAppChannel implements Channel {
     socket.ev.removeAllListeners?.("creds.update");
     socket.ev.removeAllListeners?.("connection.update");
     socket.ev.removeAllListeners?.("messages.upsert");
+    socket.ev.removeAllListeners?.("messaging-history.set");
   }
 }
 
@@ -394,6 +443,12 @@ function isSelfSentPayload(value: unknown): boolean {
   if (!value || typeof value !== "object") return false;
   const key = (value as Record<string, unknown>).key;
   return Boolean(key && typeof key === "object" && (key as Record<string, unknown>).fromMe === true);
+}
+
+function historyChatKind(conversationId: string): HistoryChat["kind"] {
+  if (conversationId.endsWith("@g.us")) return "group";
+  if (conversationId.endsWith("@s.whatsapp.net") || conversationId.endsWith("@lid")) return "private";
+  return "unknown";
 }
 
 function chunkText(text: string, maxChars: number): string[] {
