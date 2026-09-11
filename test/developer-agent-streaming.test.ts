@@ -100,6 +100,7 @@ test("Claude uses stream JSON and forwards a text delta before completion", asyn
   const runner = {
     async run(spec: any, observer: any) {
       assert.equal(spec.argv.includes("stream-json"), true);
+      assert.equal(spec.argv.includes("--verbose"), true);
       await observer.onStdout(Buffer.from(JSON.stringify({ type: "content_block_delta", delta: { type: "text_delta", text: "first" } }) + "\n"));
       await observer.onStdout(Buffer.from(JSON.stringify({ type: "result", session_id: "session-1", result: "first" }) + "\n"));
       return { stdout: "", stderr: "", exitCode: 0, signal: null, durationMs: 2 };

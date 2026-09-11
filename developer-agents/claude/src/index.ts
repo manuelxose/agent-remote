@@ -20,7 +20,7 @@ export function createClaudeAdapter(resolve: Resolver = () => resolveDeveloperEx
       const availability = await getAvailability();
       if (!availability.available) return { status: "failed", reason: "unavailable" };
       try { context.workspacePolicy.assertPath(context.workingDirectory); } catch { return { status: "failed", reason: "workspace-rejected" }; }
-      const argv = ["-p", "--output-format", "stream-json", "--add-dir", context.workingDirectory, ...(request.model ? ["--model", request.model] : []), ...(request.sessionId ? ["--resume", request.sessionId] : []), "--", request.prompt];
+      const argv = ["-p", "--output-format", "stream-json", "--verbose", "--add-dir", context.workingDirectory, ...(request.model ? ["--model", request.model] : []), ...(request.sessionId ? ["--resume", request.sessionId] : []), "--", request.prompt];
       const executionId = request.executionId ?? request.correlationId ?? request.conversationId;
       const logicalSessionId = request.logicalSessionId ?? request.conversationId;
       let sessionId: string | undefined;
