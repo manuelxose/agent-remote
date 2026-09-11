@@ -23,6 +23,7 @@ Use an absolute or repository-relative path for `AGENT_REMOTE_WORKSPACE_ROOTS`. 
 - `AGENT_REMOTE_ROUTES_PATH`: JSON route file, default `config/routes.json`.
 - `AGENT_REMOTE_WORKSPACE_ROOTS`: comma-separated approved workspace roots.
 - `AGENT_REMOTE_DEFAULT_WORKSPACE`: fallback workspace for routes without `workspaceRoot`.
+- `AGENT_REMOTE_WORKSPACE_ALIASES`: optional JSON object mapping safe names to approved workspace roots.
 - `AGENT_REMOTE_SESSION_PATH`: persistent provider session map.
 - `AGENT_REMOTE_CONTROL_PLANE_PATH`: versioned managed-chat, binding, selection, and idempotency state (default `data/control-plane.json`).
 - `AGENT_REMOTE_TIMEOUT_MS` and `AGENT_REMOTE_MAX_OUTPUT_BYTES`: execution limits.

@@ -29,6 +29,7 @@ export interface ApplicationConfig {
   routes: Readonly<Record<string, Route>>;
   workspaceRoots: readonly string[];
   defaultWorkspaceRoot: string;
+  workspaceAliases: Readonly<Record<string, string>>;
   sessionPath: string;
   timeoutMs: number;
   maxOutputBytes: number;
@@ -82,7 +83,8 @@ export function loadApplicationConfig(
   const routes = loadRoutes(routesPath);
   const configuredRoots = parseList(env.AGENT_REMOTE_WORKSPACE_ROOTS);
   const routeRoots = Object.values(routes).flatMap(route => route.workspaceRoot ? [route.workspaceRoot] : []);
-  const workspaceRoots = unique([...configuredRoots, ...routeRoots].map(root => resolveFrom(cwd, root)));
+  const workspaceAliases = parseObject(env.AGENT_REMOTE_WORKSPACE_ALIASES);
+  const workspaceRoots = unique([...configuredRoots, ...routeRoots, ...Object.values(workspaceAliases)].map(root => resolveFrom(cwd, root)));
   if (workspaceRoots.length === 0) throw new Error("AGENT_REMOTE_WORKSPACE_ROOTS is required when routes have no workspaceRoot");
   const defaultWorkspaceRoot = resolveFrom(cwd, env.AGENT_REMOTE_DEFAULT_WORKSPACE ?? workspaceRoots[0]);
   return {
@@ -92,6 +94,7 @@ export function loadApplicationConfig(
     routes,
     workspaceRoots,
     defaultWorkspaceRoot,
+    workspaceAliases: Object.fromEntries(Object.entries(workspaceAliases).map(([alias, root]) => [alias, resolveFrom(cwd, root)])),
     sessionPath: resolveFrom(cwd, env.AGENT_REMOTE_SESSION_PATH ?? "data/developer-agent-sessions.json"),
     timeoutMs: positiveInteger(env.AGENT_REMOTE_TIMEOUT_MS, 120_000),
     maxOutputBytes: positiveInteger(env.AGENT_REMOTE_MAX_OUTPUT_BYTES, 64 * 1024),
@@ -124,6 +127,7 @@ export function createApplication(config: ApplicationConfig): AgentRemoteApplica
     agents,
     runtimes: { "developer-agent": runtime },
     workspacePolicy: capabilities.policy,
+    workspaceAliases: config.workspaceAliases,
     defaultWorkspace: config.defaultWorkspaceRoot,
     modelPolicy: new ConfiguredModelPolicy({ claude: config.claudeModel ? { sonnet: config.claudeModel } : {}, codex: config.codexModel ? { luna: config.codexModel } : {} }),
     maxQueueDepth: config.maxQueueDepth,
@@ -196,6 +200,14 @@ function createAgent(id: string): ConversationAgent {
 
 function parseList(value: string | undefined): string[] {
   return value?.split(",").map(item => item.trim()).filter(Boolean) ?? [];
+}
+
+function parseObject(value: string | undefined): Record<string, string> {
+  if (!value?.trim()) return {};
+  let data: unknown;
+  try { data = JSON.parse(value); } catch (error) { throw new Error(`Invalid JSON object configuration: ${value}`, { cause: error }); }
+  if (!data || typeof data !== "object" || Array.isArray(data) || Object.entries(data).some(([key, item]) => !key || typeof item !== "string" || !item.trim())) throw new Error("Workspace aliases must be a JSON object of non-empty strings");
+  return data as Record<string, string>;
 }
 
 function positiveInteger(value: string | undefined, fallback: number): number {
