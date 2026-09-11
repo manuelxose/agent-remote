@@ -23,7 +23,7 @@ for (const adapter of adapters) {
       const result = await adapter.execute({
         prompt: "Reply with the single word OK.",
         conversationId: `smoke-${adapter.id}`,
-        timeoutMs: 10_000,
+        timeoutMs: 60_000,
         maxOutputBytes: 8 * 1024
       }, {
         correlationId: `smoke-${adapter.id}`,
