@@ -240,9 +240,9 @@
     "semantic_hash": ""
   },
   ".planning/STATE.md": {
-    "mtime": 1789137402.5859945,
-    "seen": 1789137437.8721347,
-    "ast_hash": "fa6958c8656a973b4df0761df88c457d",
+    "mtime": 1789137878.9921815,
+    "seen": 1789137882.8902752,
+    "ast_hash": "36ee9e33b20f7b4cd37783d89538ffe3",
     "semantic_hash": ""
   },
   ".planning/phases/01-architectural-foundation/01-01-PLAN.md": {
@@ -426,9 +426,9 @@
     "semantic_hash": ""
   },
   "packages/control-plane/src/index.ts": {
-    "mtime": 1789137266.64571,
-    "seen": 1789137393.2261946,
-    "ast_hash": "3b6643e46e517ad6454b03811050616d",
+    "mtime": 1789137730.5562866,
+    "seen": 1789137882.8902462,
+    "ast_hash": "ad36106e4ecb29f74b769aa9445b5110",
     "semantic_hash": ""
   },
   "packages/control-plane/src/persistence.ts": {
@@ -444,9 +444,9 @@
     "semantic_hash": ""
   },
   "test/control-plane.test.ts": {
-    "mtime": 1789137157.6700685,
-    "seen": 1789137393.2262053,
-    "ast_hash": "2e4a223068a1545c899dcb8717da25cb",
+    "mtime": 1789137843.9908328,
+    "seen": 1789137882.8902595,
+    "ast_hash": "f671b3292f0a12446562e0963e98f748",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-09-11-enterprise-conversational-control-plane-design.md": {
@@ -456,9 +456,9 @@
     "semantic_hash": ""
   },
   ".planning/phases/05-enterprise-conversational-control-plane/VERIFICATION.md": {
-    "mtime": 1789137431.1455646,
-    "seen": 1789137437.8721821,
-    "ast_hash": "10e39a2b22f031504ec988789c285b21",
+    "mtime": 1789137878.9921815,
+    "seen": 1789137882.8902833,
+    "ast_hash": "9f3c5aeaea35495025008dfe2ecca71a",
     "semantic_hash": ""
   },
   ".planning/phases/05-enterprise-conversational-control-plane/05-REVIEW.md": {

@@ -169,15 +169,16 @@ export class ControlPlane {
       if (!(await this.claim(message, identity))) return this.duplicate(correlationId, identity.id);
       return this.rejected(correlationId, "Malformed command. Use /help to see available commands.");
     }
+    const definition = parsed ? this.registry.get(parsed.name) : undefined;
     let session = parsed?.name === "init"
       ? await this.repositories.findByExternal(message.channel, message.conversationId).then(value => value?.ownerId === identity.id ? value : undefined)
       : await this.resolveSession(message, identity);
-    if (!session && roleAtLeast(identity.role, "operator") && (!parsed || ["claude", "codex", "copilot"].includes(parsed.name))) {
-      session = await this.autoInitialize(message, identity, parsed?.name);
+    if (!session && roleAtLeast(identity.role, "operator") && (!parsed || definition?.requiresInitialization)) {
+      const requestedAgent = parsed && ["claude", "codex", "copilot"].includes(parsed.name) ? parsed.name : undefined;
+      session = await this.autoInitialize(message, identity, requestedAgent);
     }
     if (parsed) {
       await this.publish("command.received", correlationId, { name: parsed.name, ownerId: identity.id });
-      const definition = this.registry.get(parsed.name);
       if (!definition) {
         if (!(await this.claim(message, identity))) return this.duplicate(correlationId, identity.id);
         return this.rejected(correlationId, `Unknown command: /${parsed.name}\nUse /help to see available commands.`);

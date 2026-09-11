@@ -560,7 +560,7 @@
       "file_type": "code",
       "norm_label": "executionqueue",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L555"
+      "source_location": "L556"
     },
     {
       "id": "packages_control_plane_src_index_modelunavailableerror",
@@ -3614,7 +3614,7 @@
       "file_type": "code",
       "norm_label": ".acceptrate()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L539"
+      "source_location": "L540"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_autoinitialize",
@@ -3626,7 +3626,7 @@
       "file_type": "code",
       "norm_label": ".autoinitialize()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L279"
+      "source_location": "L280"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_cancel",
@@ -3638,7 +3638,7 @@
       "file_type": "code",
       "norm_label": ".cancel()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L402"
+      "source_location": "L403"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_chat",
@@ -3650,7 +3650,7 @@
       "file_type": "code",
       "norm_label": ".chat()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L305"
+      "source_location": "L306"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_chats",
@@ -3662,7 +3662,7 @@
       "file_type": "code",
       "norm_label": ".chats()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L299"
+      "source_location": "L300"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_claim",
@@ -3674,7 +3674,7 @@
       "file_type": "code",
       "norm_label": ".claim()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L525"
+      "source_location": "L526"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_close",
@@ -3686,7 +3686,7 @@
       "file_type": "code",
       "norm_label": ".close()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L322"
+      "source_location": "L323"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_constructor",
@@ -3722,7 +3722,7 @@
       "file_type": "code",
       "norm_label": ".duplicate()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L530"
+      "source_location": "L531"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_executeprompt",
@@ -3734,7 +3734,7 @@
       "file_type": "code",
       "norm_label": ".executeprompt()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L424"
+      "source_location": "L425"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_finalizeexecution",
@@ -3746,7 +3746,7 @@
       "file_type": "code",
       "norm_label": ".finalizeexecution()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L477"
+      "source_location": "L478"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_handle",
@@ -3770,7 +3770,7 @@
       "file_type": "code",
       "norm_label": ".history()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L419"
+      "source_location": "L420"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_init",
@@ -3782,7 +3782,7 @@
       "file_type": "code",
       "norm_label": ".init()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L255"
+      "source_location": "L256"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_model",
@@ -3794,7 +3794,7 @@
       "file_type": "code",
       "norm_label": ".model()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L355"
+      "source_location": "L356"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_publish",
@@ -3806,7 +3806,7 @@
       "file_type": "code",
       "norm_label": ".publish()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L535"
+      "source_location": "L536"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_queue",
@@ -3818,7 +3818,7 @@
       "file_type": "code",
       "norm_label": ".queue()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L511"
+      "source_location": "L512"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_registercommands",
@@ -3830,7 +3830,7 @@
       "file_type": "code",
       "norm_label": ".registercommands()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L230"
+      "source_location": "L231"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_rejected",
@@ -3842,7 +3842,7 @@
       "file_type": "code",
       "norm_label": ".rejected()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L520"
+      "source_location": "L521"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_rename",
@@ -3854,7 +3854,7 @@
       "file_type": "code",
       "norm_label": ".rename()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L314"
+      "source_location": "L315"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_reset",
@@ -3866,7 +3866,7 @@
       "file_type": "code",
       "norm_label": ".reset()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L333"
+      "source_location": "L334"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_resolvesession",
@@ -3878,7 +3878,7 @@
       "file_type": "code",
       "norm_label": ".resolvesession()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L490"
+      "source_location": "L491"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_resolveworkspace",
@@ -3890,7 +3890,7 @@
       "file_type": "code",
       "norm_label": ".resolveworkspace()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L499"
+      "source_location": "L500"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_retry",
@@ -3902,7 +3902,7 @@
       "file_type": "code",
       "norm_label": ".retry()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L413"
+      "source_location": "L414"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_running",
@@ -3914,7 +3914,7 @@
       "file_type": "code",
       "norm_label": ".running()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L396"
+      "source_location": "L397"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_selectagent",
@@ -3926,7 +3926,7 @@
       "file_type": "code",
       "norm_label": ".selectagent()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L344"
+      "source_location": "L345"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_status",
@@ -3938,7 +3938,7 @@
       "file_type": "code",
       "norm_label": ".status()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L391"
+      "source_location": "L392"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_touch",
@@ -3950,7 +3950,7 @@
       "file_type": "code",
       "norm_label": ".touch()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L504"
+      "source_location": "L505"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_workspace",
@@ -3962,7 +3962,7 @@
       "file_type": "code",
       "norm_label": ".workspace()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L372"
+      "source_location": "L373"
     },
     {
       "id": "packages_control_plane_src_index_controlplane_workspaces",
@@ -3974,7 +3974,7 @@
       "file_type": "code",
       "norm_label": ".workspaces()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L385"
+      "source_location": "L386"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_cancel",
@@ -3986,7 +3986,7 @@
       "file_type": "code",
       "norm_label": ".cancel()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L581"
+      "source_location": "L582"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_constructor",
@@ -3998,7 +3998,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L560"
+      "source_location": "L561"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_depth",
@@ -4010,7 +4010,7 @@
       "file_type": "code",
       "norm_label": ".depth()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L563"
+      "source_location": "L564"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_enqueue",
@@ -4022,7 +4022,7 @@
       "file_type": "code",
       "norm_label": ".enqueue()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L566"
+      "source_location": "L567"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_hascapacity",
@@ -4034,7 +4034,7 @@
       "file_type": "code",
       "norm_label": ".hascapacity()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L564"
+      "source_location": "L565"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_running",
@@ -4046,7 +4046,7 @@
       "file_type": "code",
       "norm_label": ".running()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L562"
+      "source_location": "L563"
     },
     {
       "id": "packages_control_plane_src_index_executionqueue_start",
@@ -4058,7 +4058,7 @@
       "file_type": "code",
       "norm_label": ".start()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L591"
+      "source_location": "L592"
     },
     {
       "id": "packages_control_plane_src_index_modelunavailableerror_constructor",
@@ -4730,7 +4730,7 @@
       "file_type": "code",
       "norm_label": "execute()",
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L74"
+      "source_location": "L82"
     },
     {
       "id": "test_control_plane_test_handlemessage",
@@ -4742,7 +4742,7 @@
       "file_type": "code",
       "norm_label": "handlemessage()",
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L73"
+      "source_location": "L81"
     },
     {
       "id": "test_control_plane_test_messages",
@@ -4778,7 +4778,7 @@
       "file_type": "code",
       "norm_label": "setupwithmodelaliases()",
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L59"
+      "source_location": "L67"
     },
     {
       "id": "test_control_plane_persistence_test_conversation",
@@ -5054,7 +5054,7 @@
       "file_type": "code",
       "norm_label": "roleatleast()",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L608"
+      "source_location": "L609"
     },
     {
       "id": "packages_routing_src_index_configurationrouter_constructor",
@@ -10890,7 +10890,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L280",
+      "source_location": "L281",
       "weight": 1.0
     },
     {
@@ -10902,7 +10902,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L295",
+      "source_location": "L296",
       "weight": 1.0
     },
     {
@@ -10914,24 +10914,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L404",
+      "source_location": "L405",
       "weight": 1.0
     },
     {
       "source": "packages_control_plane_src_index_controlplane_cancel",
       "target": "packages_control_plane_src_index_controlplane_touch",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L407",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_cancel",
-      "target": "packages_control_plane_src_index_controlplane_publish",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -10943,7 +10931,7 @@
     },
     {
       "source": "packages_control_plane_src_index_controlplane_cancel",
-      "target": "packages_control_plane_src_index_executionqueue_cancel",
+      "target": "packages_control_plane_src_index_controlplane_publish",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -10951,6 +10939,18 @@
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
       "source_location": "L409",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_cancel",
+      "target": "packages_control_plane_src_index_executionqueue_cancel",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L410",
       "weight": 1.0
     },
     {
@@ -10962,7 +10962,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L324",
+      "source_location": "L325",
       "weight": 1.0
     },
     {
@@ -10974,7 +10974,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L327",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -10986,7 +10986,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L329",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
@@ -11058,7 +11058,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L531",
+      "source_location": "L532",
       "weight": 1.0
     },
     {
@@ -11070,7 +11070,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L427",
+      "source_location": "L428",
       "weight": 1.0
     },
     {
@@ -11082,7 +11082,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L429",
+      "source_location": "L430",
       "weight": 1.0
     },
     {
@@ -11094,7 +11094,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L431",
+      "source_location": "L432",
       "weight": 1.0
     },
     {
@@ -11106,24 +11106,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L431",
+      "source_location": "L432",
       "weight": 1.0
     },
     {
       "source": "packages_control_plane_src_index_controlplane_executeprompt",
       "target": "packages_control_plane_src_index_controlplane_touch",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L439",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_executeprompt",
-      "target": "packages_control_plane_src_index_controlplane_publish",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11135,6 +11123,18 @@
     },
     {
       "source": "packages_control_plane_src_index_controlplane_executeprompt",
+      "target": "packages_control_plane_src_index_controlplane_publish",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L441",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_executeprompt",
       "target": "packages_control_plane_src_index_commanddefinition_execute",
       "relation": "calls",
       "_origin": "ast",
@@ -11142,7 +11142,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L449",
+      "source_location": "L450",
       "weight": 1.0
     },
     {
@@ -11154,7 +11154,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L453",
+      "source_location": "L454",
       "weight": 1.0
     },
     {
@@ -11166,7 +11166,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L459",
+      "source_location": "L460",
       "weight": 1.0
     },
     {
@@ -11178,7 +11178,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L486",
+      "source_location": "L487",
       "weight": 1.0
     },
     {
@@ -11190,7 +11190,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L487",
+      "source_location": "L488",
       "weight": 1.0
     },
     {
@@ -11250,7 +11250,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L174",
+      "source_location": "L175",
       "weight": 1.0
     },
     {
@@ -11262,7 +11262,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L175",
+      "source_location": "L176",
       "weight": 1.0
     },
     {
@@ -11274,7 +11274,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L176",
+      "source_location": "L178",
       "weight": 1.0
     },
     {
@@ -11286,7 +11286,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L179",
+      "source_location": "L181",
       "weight": 1.0
     },
     {
@@ -11298,7 +11298,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L198",
+      "source_location": "L199",
       "weight": 1.0
     },
     {
@@ -11310,7 +11310,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L227",
+      "source_location": "L228",
       "weight": 1.0
     },
     {
@@ -11322,7 +11322,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L258",
+      "source_location": "L259",
       "weight": 1.0
     },
     {
@@ -11334,7 +11334,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L275",
+      "source_location": "L276",
       "weight": 1.0
     },
     {
@@ -11346,7 +11346,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L358",
+      "source_location": "L359",
       "weight": 1.0
     },
     {
@@ -11358,7 +11358,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L361",
+      "source_location": "L362",
       "weight": 1.0
     },
     {
@@ -11370,7 +11370,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L364",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
@@ -11382,7 +11382,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L365",
+      "source_location": "L366",
       "weight": 1.0
     },
     {
@@ -11394,7 +11394,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L514",
+      "source_location": "L515",
       "weight": 1.0
     },
     {
@@ -11406,7 +11406,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L233",
+      "source_location": "L234",
       "weight": 1.0
     },
     {
@@ -11418,7 +11418,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L234",
+      "source_location": "L235",
       "weight": 1.0
     },
     {
@@ -11430,7 +11430,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L235",
+      "source_location": "L236",
       "weight": 1.0
     },
     {
@@ -11442,7 +11442,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L236",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
@@ -11454,7 +11454,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L237",
+      "source_location": "L238",
       "weight": 1.0
     },
     {
@@ -11466,7 +11466,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L238",
+      "source_location": "L239",
       "weight": 1.0
     },
     {
@@ -11478,7 +11478,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L239",
+      "source_location": "L240",
       "weight": 1.0
     },
     {
@@ -11490,7 +11490,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L241",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -11502,7 +11502,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L242",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -11514,7 +11514,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L243",
+      "source_location": "L244",
       "weight": 1.0
     },
     {
@@ -11526,7 +11526,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L244",
+      "source_location": "L245",
       "weight": 1.0
     },
     {
@@ -11538,7 +11538,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L245",
+      "source_location": "L246",
       "weight": 1.0
     },
     {
@@ -11550,7 +11550,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L246",
+      "source_location": "L247",
       "weight": 1.0
     },
     {
@@ -11562,7 +11562,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L247",
+      "source_location": "L248",
       "weight": 1.0
     },
     {
@@ -11574,7 +11574,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L248",
+      "source_location": "L249",
       "weight": 1.0
     },
     {
@@ -11586,7 +11586,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L521",
+      "source_location": "L522",
       "weight": 1.0
     },
     {
@@ -11598,7 +11598,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L317",
+      "source_location": "L318",
       "weight": 1.0
     },
     {
@@ -11610,7 +11610,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L318",
+      "source_location": "L319",
       "weight": 1.0
     },
     {
@@ -11622,7 +11622,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L340",
+      "source_location": "L341",
       "weight": 1.0
     },
     {
@@ -11634,7 +11634,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L416",
+      "source_location": "L417",
       "weight": 1.0
     },
     {
@@ -11646,24 +11646,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L398",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
       "source": "packages_control_plane_src_index_controlplane_selectagent",
       "target": "packages_control_plane_src_index_controlplane_touch",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L350",
-      "weight": 1.0
-    },
-    {
-      "source": "packages_control_plane_src_index_controlplane_selectagent",
-      "target": "packages_control_plane_src_index_controlplane_publish",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11675,7 +11663,7 @@
     },
     {
       "source": "packages_control_plane_src_index_controlplane_selectagent",
-      "target": "packages_control_plane_src_index_configuredmodelpolicy_describe",
+      "target": "packages_control_plane_src_index_controlplane_publish",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11683,6 +11671,18 @@
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
       "source_location": "L352",
+      "weight": 1.0
+    },
+    {
+      "source": "packages_control_plane_src_index_controlplane_selectagent",
+      "target": "packages_control_plane_src_index_configuredmodelpolicy_describe",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "packages/control-plane/src/index.ts",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -11694,7 +11694,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L377",
+      "source_location": "L378",
       "weight": 1.0
     },
     {
@@ -11706,7 +11706,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L380",
+      "source_location": "L381",
       "weight": 1.0
     },
     {
@@ -11718,7 +11718,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L381",
+      "source_location": "L382",
       "weight": 1.0
     },
     {
@@ -11730,7 +11730,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L569",
+      "source_location": "L570",
       "weight": 1.0
     },
     {
@@ -12678,7 +12678,7 @@
       "confidence_score": 1.0,
       "context": "export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L613",
+      "source_location": "L614",
       "weight": 1.0
     },
     {
@@ -13182,7 +13182,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L279",
+      "source_location": "L280",
       "weight": 1.0
     },
     {
@@ -13194,7 +13194,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L535",
+      "source_location": "L536",
       "weight": 1.0
     },
     {
@@ -13206,7 +13206,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L490",
+      "source_location": "L491",
       "weight": 1.0
     },
     {
@@ -13242,7 +13242,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L556",
+      "source_location": "L557",
       "weight": 1.0
     },
     {
@@ -13254,7 +13254,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L566",
+      "source_location": "L567",
       "weight": 1.0
     },
     {
@@ -13266,7 +13266,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L591",
+      "source_location": "L592",
       "weight": 1.0
     },
     {
@@ -15657,7 +15657,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L279",
+      "source_location": "L280",
       "weight": 1.0
     },
     {
@@ -15669,7 +15669,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L525",
+      "source_location": "L526",
       "weight": 1.0
     },
     {
@@ -15681,7 +15681,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L424",
+      "source_location": "L425",
       "weight": 1.0
     },
     {
@@ -15693,7 +15693,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L424",
+      "source_location": "L425",
       "weight": 1.0
     },
     {
@@ -15705,7 +15705,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L477",
+      "source_location": "L478",
       "weight": 1.0
     },
     {
@@ -15717,7 +15717,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L477",
+      "source_location": "L478",
       "weight": 1.0
     },
     {
@@ -15741,7 +15741,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L490",
+      "source_location": "L491",
       "weight": 1.0
     },
     {
@@ -15753,7 +15753,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L504",
+      "source_location": "L505",
       "weight": 1.0
     },
     {
@@ -16125,7 +16125,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L613",
+      "source_location": "L614",
       "weight": 1.0
     },
     {
@@ -16137,7 +16137,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L613",
+      "source_location": "L614",
       "weight": 1.0
     },
     {
@@ -16149,7 +16149,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L613",
+      "source_location": "L614",
       "weight": 1.0
     },
     {
@@ -16161,7 +16161,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L613",
+      "source_location": "L614",
       "weight": 1.0
     },
     {
@@ -16173,7 +16173,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L613",
+      "source_location": "L614",
       "weight": 1.0
     },
     {
@@ -16185,7 +16185,7 @@
       "confidence_score": 1.0,
       "context": "re-export",
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L613",
+      "source_location": "L614",
       "weight": 1.0
     },
     {
@@ -18812,7 +18812,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L555",
+      "source_location": "L556",
       "weight": 1.0
     },
     {
@@ -18823,7 +18823,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L608",
+      "source_location": "L609",
       "weight": 1.0
     },
     {
@@ -21056,7 +21056,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L221",
+      "source_location": "L228",
       "weight": 1.0
     },
     {
@@ -21067,18 +21067,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "test/control-plane.test.ts",
-      "source_location": "L222",
-      "weight": 1.0
-    },
-    {
-      "source": "test_control_plane_test",
-      "target": "test_control_plane_test_setupwithmodelaliases",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "test/control-plane.test.ts",
-      "source_location": "L59",
+      "source_location": "L229",
       "weight": 1.0
     },
     {
@@ -21090,6 +21079,17 @@
       "confidence_score": 1.0,
       "source_file": "test/control-plane.test.ts",
       "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "test_control_plane_test",
+      "target": "test_control_plane_test_setupwithmodelaliases",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/control-plane.test.ts",
+      "source_location": "L67",
       "weight": 1.0
     },
     {
@@ -22447,7 +22447,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L230",
+      "source_location": "L231",
       "weight": 1.0
     },
     {
@@ -22458,7 +22458,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L255",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
@@ -22469,7 +22469,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L279",
+      "source_location": "L280",
       "weight": 1.0
     },
     {
@@ -22480,7 +22480,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L299",
+      "source_location": "L300",
       "weight": 1.0
     },
     {
@@ -22491,7 +22491,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L305",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -22502,7 +22502,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L314",
+      "source_location": "L315",
       "weight": 1.0
     },
     {
@@ -22513,7 +22513,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L322",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -22524,7 +22524,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L333",
+      "source_location": "L334",
       "weight": 1.0
     },
     {
@@ -22535,7 +22535,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L344",
+      "source_location": "L345",
       "weight": 1.0
     },
     {
@@ -22546,7 +22546,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L355",
+      "source_location": "L356",
       "weight": 1.0
     },
     {
@@ -22557,7 +22557,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L372",
+      "source_location": "L373",
       "weight": 1.0
     },
     {
@@ -22568,7 +22568,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L385",
+      "source_location": "L386",
       "weight": 1.0
     },
     {
@@ -22579,7 +22579,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L391",
+      "source_location": "L392",
       "weight": 1.0
     },
     {
@@ -22590,7 +22590,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L396",
+      "source_location": "L397",
       "weight": 1.0
     },
     {
@@ -22601,7 +22601,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L402",
+      "source_location": "L403",
       "weight": 1.0
     },
     {
@@ -22612,7 +22612,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L413",
+      "source_location": "L414",
       "weight": 1.0
     },
     {
@@ -22623,7 +22623,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L419",
+      "source_location": "L420",
       "weight": 1.0
     },
     {
@@ -22634,7 +22634,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L424",
+      "source_location": "L425",
       "weight": 1.0
     },
     {
@@ -22645,7 +22645,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L477",
+      "source_location": "L478",
       "weight": 1.0
     },
     {
@@ -22656,7 +22656,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L490",
+      "source_location": "L491",
       "weight": 1.0
     },
     {
@@ -22667,7 +22667,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L499",
+      "source_location": "L500",
       "weight": 1.0
     },
     {
@@ -22678,7 +22678,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L504",
+      "source_location": "L505",
       "weight": 1.0
     },
     {
@@ -22689,7 +22689,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L511",
+      "source_location": "L512",
       "weight": 1.0
     },
     {
@@ -22700,7 +22700,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L520",
+      "source_location": "L521",
       "weight": 1.0
     },
     {
@@ -22711,7 +22711,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L525",
+      "source_location": "L526",
       "weight": 1.0
     },
     {
@@ -22722,7 +22722,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L530",
+      "source_location": "L531",
       "weight": 1.0
     },
     {
@@ -22733,7 +22733,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L535",
+      "source_location": "L536",
       "weight": 1.0
     },
     {
@@ -22744,7 +22744,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L539",
+      "source_location": "L540",
       "weight": 1.0
     },
     {
@@ -22755,7 +22755,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L560",
+      "source_location": "L561",
       "weight": 1.0
     },
     {
@@ -22766,7 +22766,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L562",
+      "source_location": "L563",
       "weight": 1.0
     },
     {
@@ -22777,7 +22777,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L563",
+      "source_location": "L564",
       "weight": 1.0
     },
     {
@@ -22788,7 +22788,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L564",
+      "source_location": "L565",
       "weight": 1.0
     },
     {
@@ -22799,7 +22799,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L566",
+      "source_location": "L567",
       "weight": 1.0
     },
     {
@@ -22810,7 +22810,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L581",
+      "source_location": "L582",
       "weight": 1.0
     },
     {
@@ -22821,7 +22821,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "packages/control-plane/src/index.ts",
-      "source_location": "L591",
+      "source_location": "L592",
       "weight": 1.0
     },
     {
@@ -24471,5 +24471,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "30a1497ff935bae10127df18e5f50cf9aa4af5fc"
+  "built_at_commit": "14f989624fab78ffa8614a743381035820a7cf32"
 }

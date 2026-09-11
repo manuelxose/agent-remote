@@ -5,7 +5,7 @@ Date: 2026-09-11
 ## Automated verification
 
 - `npm run build`: PASS.
-- `npm test`: PASS — 126 tests, 124 passed, 0 failed, 2 skipped.
+- `npm test`: PASS — 127 tests, 125 passed, 0 failed, 2 skipped.
 - Focused control-plane tests: PASS — atomic JSON persistence, corruption failure,
   registry help, initialization restrictions, multiple chats, idempotency,
   cancellation, queue bounds, and concurrent logical chats.

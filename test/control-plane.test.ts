@@ -56,6 +56,14 @@ test("ordinary prompts auto-initialize authorized conversations", async () => {
   assert.equal(calls.length, 1);
 });
 
+test("initialization-required commands auto-initialize authorized conversations", async () => {
+  const { control } = setupWithModelAliases();
+  const identity = { id: "owner", role: "owner" as const };
+  const model = await control.handle(messages("auto-model", "/model", "new-command-chat"), identity);
+  assert.match(model.text, /codex-mini-latest/);
+  assert.match((await control.handle(messages("auto-agent", "/agent", "new-command-chat"), identity)).text, /codex/);
+});
+
 function setupWithModelAliases() {
   const calls: Array<{ model?: string }> = [];
   const agent = (id: string) => ({ id, type: "developer-agent" as const, async handleMessage() { throw new Error("runtime owns execution"); } });
@@ -84,11 +92,10 @@ test("accepted prompts send an immediate acknowledgement before execution", asyn
   assert.deepEqual(order, ["ack", "execute"]);
 });
 
-test("pre-init restrictions and active-agent selection are enforced", async () => {
+test("automatic initialization and active-agent selection are enforced", async () => {
   const { control, calls } = setup();
-  assert.match((await control.handle(messages("before", "/agent"), { id: "owner", role: "owner" })).text, /\/init/);
+  assert.match((await control.handle(messages("before", "/agent"), { id: "owner", role: "owner" })).text, /codex/);
   await control.handle(messages("init", "/init backend-api"), { id: "owner", role: "owner" });
-  assert.match((await control.handle(messages("no-agent", "inspect this"), { id: "owner", role: "owner" })).text, /Select an agent/);
   assert.match((await control.handle(messages("select", "/claude"), { id: "owner", role: "owner" })).text, /Claude activated/);
   const response = await control.handle(messages("prompt", "inspect this"), { id: "owner", role: "owner" });
   assert.equal(response.text, "done:inspect this");
