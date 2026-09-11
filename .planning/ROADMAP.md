@@ -112,3 +112,8 @@ Plans:
 - [x] 06-01-PLAN.md — neutral contracts, streaming sessions, control-plane delivery, WhatsApp correlation, lifecycle, tests, docs, and verification
 
 Verification: `.planning/phases/06-real-time-conversational-runtime/VERIFICATION.md`.
+
+## Phase 7: Single-Number Presentation Runtime — Planned
+Requirements: IDENTITY-01, IDENTITY-02, DELIVERY-01, PRESENTATION-01, PRESENTATION-02, SECURITY-05, OPS-02, TEST-03, DOC-03.
+- [ ] 07-01-PLAN.md — structured message origins, bounded registry, final-only WhatsApp delivery, opt-in Web/Desktop companion, documentation, and live verification
+Verification: `.planning/phases/07-single-number-presentation-runtime/VERIFICATION.md`.

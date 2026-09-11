@@ -2,13 +2,15 @@
 
 ## Current Position
 
-Phase 6 — Real-Time Conversational Runtime (complete)
+Phase 7 — Single-Number Presentation Runtime (planned)
 
 ## Status
 
 The Phase 5 control plane is implemented: central command registry, explicit state, owner-scoped managed chats, atomic versioned JSON state, bounded per-chat queues, cancellation, idempotency, explicit model policy, application composition, docs, and tests. Deterministic verification is complete; unavailable Claude/Copilot CLIs and live WhatsApp credentials are recorded as UNVERIFIED in the phase verification artifact.
 
 Phase 6 design is approved and recorded in `docs/superpowers/specs/2026-09-11-real-time-conversational-runtime-design.md`; implementation follows the executable plan in `docs/superpowers/plans/2026-09-11-real-time-conversational-runtime.md`. The phase is complete locally with streaming contracts, managed sessions, correlated bounded WhatsApp delivery, telemetry, diagnostics, documentation, tests, and a refreshed Graphify graph. Codex smoke passed; Claude/Copilot Phase 6 provider execution and live WhatsApp streaming remain explicitly unverified.
+
+Phase 7 design is approved and recorded in `docs/superpowers/specs/2026-09-11-single-number-presentation-runtime-design.md`; implementation follows `docs/superpowers/plans/2026-09-11-single-number-presentation-runtime.md`. The phase is planned and has not yet changed production code.
 
 ## Decisions
 
