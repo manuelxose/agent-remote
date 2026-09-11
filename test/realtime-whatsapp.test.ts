@@ -49,3 +49,30 @@ test("expired or unknown WhatsApp reply context falls back to an ordinary send",
   assert.equal(sent[0].length, 2);
   await channel.stop();
 });
+
+test("registry preserves exact Baileys IDs and response metadata", async () => {
+  const socket = {
+    ev: new Events(),
+    async sendMessage() { return { key: { id: "wa-agent-a" } }; },
+    async end() {}
+  };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net" }),
+    onMessage: async () => {}, loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }), createSocket: () => socket
+  });
+  await channel.start();
+  socket.ev.emit("connection.update", { connection: "open" });
+  await channel.send("u@s.whatsapp.net", {
+    text: "reply",
+    replyTo: { channel: "whatsapp", conversationId: "u@s.whatsapp.net", messageId: "incoming-a" },
+    origin: { type: "agent", agentId: "claude", executionId: "exec-a", logicalSessionId: "session-a" }
+  });
+  const [entry] = channel.agentMessageRegistry();
+  assert.equal(entry?.whatsappMessageId, "wa-agent-a");
+  assert.equal(entry?.conversationId, "u@s.whatsapp.net");
+  assert.deepEqual(entry?.origin, { type: "agent", agentId: "claude", executionId: "exec-a", logicalSessionId: "session-a" });
+  assert.equal(entry?.replyToMessageId, "incoming-a");
+  assert.equal(typeof entry?.createdAt, "number");
+  assert.equal(channel.agentMessageRegistry().some(item => item.whatsappMessageId === "wa-human-a"), false);
+  await channel.stop();
+});
