@@ -364,8 +364,9 @@ export function resolveWhatsAppRole(env: Readonly<Record<string, string | undefi
 
 export function resolveWhatsAppIdentity(env: Readonly<Record<string, string | undefined>>, senderId: string): string {
   const allowlistedUsers = parseList(env.WHATSAPP_ALLOWED_USERS);
-  return env.WHATSAPP_ALLOW_SELF_MESSAGES?.trim().toLowerCase() === "true" && allowlistedUsers.length === 1
-    ? allowlistedUsers[0]
+  const phoneIdentity = allowlistedUsers.filter(value => value.endsWith("@s.whatsapp.net"));
+  return env.WHATSAPP_ALLOW_SELF_MESSAGES?.trim().toLowerCase() === "true" && phoneIdentity.length === 1
+    ? phoneIdentity[0]
     : senderId;
 }
 

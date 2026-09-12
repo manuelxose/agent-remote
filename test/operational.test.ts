@@ -410,6 +410,13 @@ test("one-number self identities use the stable allowlisted identity", () => {
   assert.equal(resolveWhatsAppIdentity({ WHATSAPP_ALLOW_SELF_MESSAGES: "true", WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net" }, "owner@lid"), "owner@s.whatsapp.net");
 });
 
+test("one-number self identities retain their phone identity when a LID alias is allowlisted", () => {
+  assert.equal(resolveWhatsAppIdentity({
+    WHATSAPP_ALLOW_SELF_MESSAGES: "true",
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net,owner@lid"
+  }, "owner@lid"), "owner@s.whatsapp.net");
+});
+
 test("rejects a default workspace outside approved roots", () => {
   assert.throws(() => loadApplicationConfig({
     AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
