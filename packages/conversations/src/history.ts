@@ -1,5 +1,7 @@
-import { chmod, mkdir, open, readFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { chmod, mkdir, open, rename, stat } from "node:fs/promises";
 import { dirname } from "node:path";
+import { createInterface } from "node:readline";
 import type { Message } from "../../core/src/index.js";
 
 export interface HistoryChat {
@@ -32,6 +34,8 @@ export interface HistoryStore {
 }
 
 const separator = "\u0000";
+const defaultMessageRetention = 10_000;
+const compactionSlack = 1_000;
 
 export class InMemoryHistoryStore implements HistoryStore {
   protected readonly chats = new Map<string, HistoryChat>();
@@ -105,8 +109,9 @@ export class InMemoryHistoryStore implements HistoryStore {
 export class JsonHistoryStore extends InMemoryHistoryStore {
   private loaded?: Promise<void>;
   private writeQueue = Promise.resolve();
+  private droppedSinceCompaction = 0;
 
-  constructor(readonly path: string) {
+  constructor(readonly path: string, private readonly maxMessages = defaultMessageRetention) {
     super();
   }
 
@@ -150,6 +155,8 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
       }
       throw error;
     }
+    this.retainMessages();
+    if (this.droppedSinceCompaction >= compactionSlack) await this.compact();
   }
 
   override async listChats(channel: string, query?: string, limit?: number): Promise<HistoryChat[]> {
@@ -168,9 +175,8 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
   }
 
   private async load(): Promise<void> {
-    let contents: string;
     try {
-      contents = await readFile(this.path, "utf8");
+      await stat(this.path);
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
       throw error;
@@ -178,7 +184,8 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
 
     await this.enforcePermissions();
 
-    for (const line of contents.split(/\r?\n/)) {
+    const input = createInterface({ input: createReadStream(this.path, { encoding: "utf8" }), crlfDelay: Infinity });
+    for await (const line of input) {
       if (!line.trim()) continue;
       try {
         const record = JSON.parse(line) as { type?: string; chat?: unknown; message?: unknown };
@@ -187,12 +194,16 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
           if (chat) await super.upsertChat(chat);
         } else if (record.type === "message") {
           const message = parseMessage(record.message);
-          if (message) await super.upsertMessage(message);
+          if (message) {
+            await super.upsertMessage(message);
+            this.retainMessages();
+          }
         }
       } catch {
         // Ignore malformed records and continue loading valid history.
       }
     }
+    if (this.droppedSinceCompaction) await this.compact();
   }
 
   private enqueue(record: object): Promise<void> {
@@ -208,6 +219,32 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
     });
     this.writeQueue = write.then(() => undefined, () => undefined);
     return write;
+  }
+
+  private retainMessages(): void {
+    // ponytail: retain a bounded in-memory JSONL cache; migrate to SQLite when full archive search is required.
+    while (this.messages.size > this.maxMessages) {
+      const oldest = this.messages.keys().next().value;
+      if (oldest === undefined) return;
+      this.messages.delete(oldest);
+      this.droppedSinceCompaction++;
+    }
+  }
+
+  private async compact(): Promise<void> {
+    const temporaryPath = `${this.path}.compact`;
+    await mkdir(dirname(this.path), { recursive: true });
+    const file = await open(temporaryPath, "w", 0o600);
+    try {
+      await file.chmod(0o600);
+      for (const chat of this.chats.values()) await file.writeFile(`${JSON.stringify({ type: "chat", chat })}\n`, "utf8");
+      for (const message of this.messages.values()) await file.writeFile(`${JSON.stringify({ type: "message", message })}\n`, "utf8");
+    } finally {
+      await file.close();
+    }
+    await rename(temporaryPath, this.path);
+    await this.enforcePermissions();
+    this.droppedSinceCompaction = 0;
   }
 
   protected async enforcePermissions(): Promise<void> {

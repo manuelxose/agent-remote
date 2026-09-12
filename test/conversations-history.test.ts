@@ -159,6 +159,27 @@ test("JSON history skips malformed lines while retaining valid records", async (
   }
 });
 
+test("JSON history streams and compacts oversized histories to its retained message limit", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-"));
+  const path = join(directory, "history.jsonl");
+  try {
+    await appendFile(path, [
+      JSON.stringify({ type: "chat", chat: { channel: "whatsapp", conversationId: "chat-1", displayName: "Chat", kind: "private", updatedAt: "2026-01-01T00:00:00.000Z" } }),
+      ...["m-1", "m-2", "m-3", "m-4"].map((id, index) => JSON.stringify({ type: "message", message: message(id, "chat-1", id, `2026-01-01T00:0${index}:00.000Z`) }))
+    ].join("\n") + "\n");
+
+    const store = new JsonHistoryStore(path, 2);
+    const result = await store.query("whatsapp", "chat-1", "", { maxMessages: 10, maxCharacters: 1000 });
+
+    assert.deepEqual(result?.messages.map(item => item.id), ["m-3", "m-4"]);
+    assert.equal(result?.importedMessageCount, 2);
+    const records = (await readFile(path, "utf8")).trim().split("\n").map(line => JSON.parse(line) as { type: string });
+    assert.equal(records.filter(record => record.type === "message").length, 2);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("JSON history serializes concurrent writes into valid JSONL", async () => {
   const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-"));
   const path = join(directory, "history.jsonl");
@@ -189,6 +210,23 @@ test("JSON history retries a chat after persistence failure", async () => {
 
     await store.upsertChat(chat);
     assert.equal((await new JsonHistoryStore(path).listChats("whatsapp"))[0]?.displayName, "Chat");
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("JSON history retains prior messages when a capped append fails", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-"));
+  const path = join(directory, "history.jsonl");
+  try {
+    const store = new ChmodFailingHistoryStore(path, 1);
+    store.failChmod = false;
+    await store.upsertMessage(message("m-1", "chat-1", "original"));
+    store.failChmod = true;
+
+    await assert.rejects(() => store.upsertMessage(message("m-2", "chat-1", "failed")), /forced chmod failure/);
+    const result = await store.query("whatsapp", "chat-1", "", { maxMessages: 10, maxCharacters: 100 });
+    assert.deepEqual(result?.messages.map(item => item.id), ["m-1"]);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
