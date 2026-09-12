@@ -270,7 +270,7 @@ export class WhatsAppChannel implements Channel {
   }
 
   private async handleMessages(update: BaileysEventMap["messages.upsert"], socket: WhatsAppSocket): Promise<void> {
-    if (this.socket !== socket) return;
+    if (this.socket !== socket || update.type === "append") return;
     if (update.requestId) return;
     for (const payload of update.messages) {
       if (this.isTrackedOutbound(payload)) continue;
