@@ -247,12 +247,14 @@ test("imports history batches without routing them", async () => {
   events.emit("messaging-history.set", {
     chats: [
       { id: "private@s.whatsapp.net", name: "Ana" },
-      { id: "group@g.us", subject: "Viaje" }
+      { id: "group@g.us", subject: "Viaje" },
+      { id: "contact@s.whatsapp.net" }
     ],
-    contacts: [],
+    contacts: [{ id: "contact@s.whatsapp.net", name: "Lucía", notify: "Lucia" }],
     messages: [
       { key: { id: "history-1", remoteJid: "private@s.whatsapp.net", fromMe: true }, message: { conversation: "hotel" } },
-      { key: { id: "history-2", remoteJid: "group@g.us", participant: "u@s.whatsapp.net" }, message: { conversation: "tren" } }
+      { key: { id: "history-2", remoteJid: "group@g.us", participant: "u@s.whatsapp.net" }, message: { conversation: "tren" } },
+      { key: { id: "history-3", remoteJid: "contact@s.whatsapp.net" }, message: { conversation: "pedido" } }
     ],
     isLatest: true
   });
@@ -261,11 +263,13 @@ test("imports history batches without routing them", async () => {
   assert.equal(routed, 0);
   assert.deepEqual(chats.map(chat => [chat.conversationId, chat.displayName, chat.kind]), [
     ["private@s.whatsapp.net", "Ana", "private"],
-    ["group@g.us", "Viaje", "group"]
+    ["group@g.us", "Viaje", "group"],
+    ["contact@s.whatsapp.net", "Lucía", "private"]
   ]);
   assert.deepEqual(imported.map(message => [message.id, message.text, message.groupId]), [
     ["history-1", "hotel", undefined],
-    ["history-2", "tren", "group@g.us"]
+    ["history-2", "tren", "group@g.us"],
+    ["history-3", "pedido", undefined]
   ]);
 });
 

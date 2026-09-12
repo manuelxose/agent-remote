@@ -44,6 +44,19 @@ test("history store deduplicates messages and resolves case-insensitive partial 
   assert.equal(result?.messages[0]?.text, "Hotel confirmado");
 });
 
+test("history store resolves partial conversation IDs", async () => {
+  const store = new InMemoryHistoryStore();
+  await store.upsertChat({
+    channel: "whatsapp",
+    conversationId: "123456789@s.whatsapp.net",
+    displayName: "Contacto",
+    kind: "private",
+    updatedAt: "2026-01-01T00:00:00.000Z"
+  });
+
+  assert.equal((await store.listChats("whatsapp", "6789@s.whatsapp.net"))[0]?.displayName, "Contacto");
+});
+
 test("history query returns messages in chronological order with available time bounds", async () => {
   const store = new InMemoryHistoryStore();
   await store.upsertChat({

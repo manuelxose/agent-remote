@@ -285,6 +285,14 @@ export class WhatsAppChannel implements Channel {
 
   private async handleHistory(update: BaileysEventMap["messaging-history.set"], socket: WhatsAppSocket): Promise<void> {
     if (this.socket !== socket || !this.historySink) return;
+    const contactNames = new Map<string, string>();
+    for (const contact of update.contacts ?? []) {
+      const displayName = contact.name || contact.notify || contact.verifiedName;
+      if (!displayName) continue;
+      for (const id of [contact.id, contact.lid, contact.phoneNumber]) {
+        if (id) contactNames.set(id, displayName);
+      }
+    }
     for (const chat of update.chats) {
       const conversationId = typeof chat.id === "string" ? chat.id : undefined;
       if (!conversationId) continue;
@@ -292,7 +300,7 @@ export class WhatsAppChannel implements Channel {
       await this.persistChat({
         channel: this.id,
         conversationId,
-        displayName: typeof fields.name === "string" && fields.name ? fields.name : typeof fields.subject === "string" && fields.subject ? fields.subject : conversationId,
+        displayName: typeof fields.name === "string" && fields.name ? fields.name : typeof fields.subject === "string" && fields.subject ? fields.subject : contactNames.get(conversationId) ?? conversationId,
         kind: historyChatKind(conversationId),
         updatedAt: new Date().toISOString()
       });

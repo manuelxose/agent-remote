@@ -59,7 +59,7 @@ export class InMemoryHistoryStore implements HistoryStore {
   async listChats(channel: string, query?: string, limit?: number): Promise<HistoryChat[]> {
     const needle = query?.toLowerCase() ?? "";
     const chats = [...this.chats.values()]
-      .filter(chat => chat.channel === channel && chat.displayName.toLowerCase().includes(needle))
+      .filter(chat => chat.channel === channel && (chat.displayName.toLowerCase().includes(needle) || chat.conversationId.toLowerCase().includes(needle)))
       .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
       .slice(0, limit === undefined ? undefined : Math.max(0, Math.floor(limit)));
     return chats.map(cloneChat);
