@@ -10,6 +10,7 @@ export {
   type WhatsAppAuthState,
   type WhatsAppChannelOptions,
   type WhatsAppHealth,
+  type WhatsAppHistorySink,
   type WhatsAppLogger,
   type WhatsAppSocket,
   type WhatsAppSocketFactory,

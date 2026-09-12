@@ -2,6 +2,7 @@ import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { WhatsAppChannel } from "../dist/channels/whatsapp/src/index.js";
 import { parseWhatsAppConfig } from "../dist/channels/whatsapp/src/config.js";
+import { InMemoryHistoryStore } from "../dist/packages/conversations/src/index.js";
 
 class FakeEvents {
   private readonly listeners = new Map<string, Set<(value: any) => void>>();
@@ -18,6 +19,10 @@ class FakeEvents {
 
   emit(event: string, value: any): void {
     for (const listener of this.listeners.get(event) ?? []) listener(value);
+  }
+
+  listenerCount(event: string): number {
+    return this.listeners.get(event)?.size ?? 0;
   }
 }
 
@@ -223,3 +228,117 @@ test("credential updates are persisted and transient closes reconnect", async ()
   assert.equal(sockets.length, 2);
   await channel.stop();
 });
+
+test("imports history batches without routing them", async () => {
+  const imported: any[] = [];
+  const chats: any[] = [];
+  const events = new FakeEvents();
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  let routed = 0;
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "private@s.whatsapp.net" }),
+    onMessage: async () => { routed++; },
+    historySink: { upsertChat: async chat => chats.push(chat), upsertMessage: async message => imported.push(message) },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  events.emit("messaging-history.set", {
+    chats: [
+      { id: "private@s.whatsapp.net", name: "Ana" },
+      { id: "group@g.us", subject: "Viaje" },
+      { id: "contact@s.whatsapp.net" }
+    ],
+    contacts: [{ id: "contact@s.whatsapp.net", name: "Lucía", notify: "Lucia" }],
+    messages: [
+      { key: { id: "history-1", remoteJid: "private@s.whatsapp.net", fromMe: true }, message: { conversation: "hotel" } },
+      { key: { id: "history-2", remoteJid: "group@g.us", participant: "u@s.whatsapp.net" }, message: { conversation: "tren" } },
+      { key: { id: "history-3", remoteJid: "contact@s.whatsapp.net" }, message: { conversation: "pedido" } }
+    ],
+    isLatest: true
+  });
+  await flush();
+
+  assert.equal(routed, 0);
+  assert.deepEqual(chats.map(chat => [chat.conversationId, chat.displayName, chat.kind]), [
+    ["private@s.whatsapp.net", "Ana", "private"],
+    ["group@g.us", "Viaje", "group"],
+    ["contact@s.whatsapp.net", "Lucía", "private"]
+  ]);
+  assert.deepEqual(imported.map(message => [message.id, message.text, message.groupId]), [
+    ["history-1", "hotel", undefined],
+    ["history-2", "tren", "group@g.us"],
+    ["history-3", "pedido", undefined]
+  ]);
+});
+
+test("persists duplicate live messages once before routing them", async () => {
+  const events = new FakeEvents();
+  const store = new InMemoryHistoryStore();
+  const order: string[] = [];
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net" }),
+    onMessage: async () => { order.push("route"); },
+    historySink: {
+      upsertChat: async chat => store.upsertChat(chat),
+      upsertMessage: async message => { order.push("store"); await store.upsertMessage(message); }
+    },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  const message = { key: { id: "live-1", remoteJid: "u@s.whatsapp.net" }, message: { conversation: "hello" } };
+  events.emit("messages.upsert", { messages: [message] });
+  await flush();
+  events.emit("messages.upsert", { messages: [message] });
+  await flush();
+
+  assert.deepEqual(order, ["store", "route", "store", "route"]);
+  assert.equal((await store.query("whatsapp", "u@s.whatsapp.net", "", { maxMessages: 10, maxCharacters: 1000 }))?.importedMessageCount, 1);
+});
+
+test("history persistence failures do not block live routing", async () => {
+  const events = new FakeEvents();
+  const logs: any[] = [];
+  const received: any[] = [];
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net" }),
+    onMessage: async message => received.push(message),
+    historySink: { upsertChat: async () => {}, upsertMessage: async () => { throw new Error("disk full"); } },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket,
+    logger: { info() {}, warn() {}, error(event, fields) { logs.push({ event, ...fields }); } }
+  });
+
+  await channel.start();
+  events.emit("messages.upsert", { messages: [{ key: { id: "live-2", remoteJid: "u@s.whatsapp.net" }, message: { conversation: "hello" } }] });
+  await flush();
+
+  assert.equal(received.length, 1);
+  assert.equal(logs[0]?.event, "whatsapp_history_persistence_failed");
+  assert.deepEqual(Object.keys(logs[0] ?? {}), ["event"]);
+});
+
+test("stop removes history listeners from an off-only emitter", async () => {
+  const events = new FakeEvents();
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth" }),
+    onMessage: async () => {},
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  assert.equal(events.listenerCount("messaging-history.set"), 1);
+  await channel.stop();
+  assert.equal(events.listenerCount("messaging-history.set"), 0);
+});
+
+async function flush(): Promise<void> {
+  await new Promise<void>(resolve => setImmediate(resolve));
+}

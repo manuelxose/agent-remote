@@ -1,4 +1,4 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -24,6 +24,17 @@ async function settle(): Promise<void> {
   for (let index = 0; index < 4; index += 1) await new Promise(resolve => setImmediate(resolve));
 }
 
+async function waitForHistory(path: string, text: string): Promise<string> {
+  for (let index = 0; index < 100; index += 1) {
+    try {
+      const contents = await readFile(path, "utf8");
+      if (contents.includes(text)) return contents;
+    } catch {}
+    await new Promise(resolve => setTimeout(resolve, 1));
+  }
+  return readFile(path, "utf8");
+}
+
 async function gatewayFixture(adapter: any) {
   const directory = await mkdtemp(join(tmpdir(), "agent-remote-presentation-"));
   const routesPath = join(directory, "routes.json");
@@ -32,6 +43,7 @@ async function gatewayFixture(adapter: any) {
     AGENT_REMOTE_ROUTES_PATH: routesPath,
     AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
     AGENT_REMOTE_CONTROL_PLANE_PATH: join(directory, "control-plane.json"),
+    AGENT_REMOTE_HISTORY_PATH: join(directory, "whatsapp-history.jsonl"),
     WHATSAPP_AUTH_PATH: join(directory, "auth"),
     WHATSAPP_ALLOWED_USERS: "a@s.whatsapp.net,b@s.whatsapp.net"
   }, process.cwd());
@@ -108,6 +120,103 @@ test("loads routes and composes the existing developer-agent graph", async () =>
   assert.deepEqual(await application.runtime.getAvailability("codex"), await application.runtime.getAvailability("codex"));
   await application.stop();
   await application.stop();
+});
+
+test("loads the default and configured persistent WhatsApp history paths", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-config-"));
+  const routesPath = join(directory, "routes.json");
+  await writeFile(routesPath, "{}");
+  const env = {
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  };
+
+  assert.equal(loadApplicationConfig(env, directory).historyPath, join(directory, "data", "whatsapp-history.jsonl"));
+  assert.equal(loadApplicationConfig({ ...env, AGENT_REMOTE_HISTORY_PATH: "data/imported-history.jsonl" }, directory).historyPath, join(directory, "data", "imported-history.jsonl"));
+});
+
+test("application reloads persisted WhatsApp messages for control-plane history queries", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-compose-"));
+  const routesPath = join(directory, "routes.json");
+  await writeFile(routesPath, "{}");
+  const events = new FakeEvents();
+  const socket = {
+    ev: events,
+    async sendMessage() { return { key: { id: "out" } }; },
+    async sendPresenceUpdate() {},
+    async end() {}
+  };
+  const env = {
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_HISTORY_PATH: "data/imported-history.jsonl",
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  };
+  const config = loadApplicationConfig(env, directory);
+  const application = createApplication(config, {
+    whatsapp: {
+      loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+      createSocket: () => socket,
+      logger: { info() {}, warn() {}, error() {} }
+    }
+  } as any);
+
+  try {
+    await application.start();
+    events.emit("messaging-history.set", {
+      chats: [{ id: "source@g.us", subject: "Source chat" }],
+      messages: [{ key: { id: "history-message", remoteJid: "source@g.us", participant: "friend@s.whatsapp.net" }, message: { conversation: "saved history message" } }]
+    });
+    await settle();
+    assert.match(await waitForHistory(config.historyPath, "saved history message"), /saved history message/);
+  } finally {
+    await application.stop();
+  }
+
+  const prompts: string[] = [];
+  const runtime = new DeveloperAgentRuntime({
+    policy: new WorkspacePolicy([process.cwd()]), shell: async () => "", readFile: async () => "", writeFile: async () => undefined, git: async () => ""
+  }, {
+    adapters: {
+      codex: {
+        id: "codex",
+        async isAvailable() { return true; },
+        async getAvailability() { return { available: true as const, executable: "codex" }; },
+        async execute(request: any) { prompts.push(request.prompt); return { status: "completed" as const, text: "answer", sessionId: "native-history" }; }
+      }
+    },
+    sessions: new InMemoryDeveloperSessionStore(), defaultWorkspaceRoot: process.cwd(), events: new InMemoryEventBus()
+  });
+  const restartedEvents = new FakeEvents();
+  const restartedSocket = {
+    ev: restartedEvents,
+    async sendMessage() { return { key: { id: "out" } }; },
+    async sendPresenceUpdate() {},
+    async end() {}
+  };
+  const restarted = createApplication(loadApplicationConfig(env, directory), {
+    runtime,
+    whatsapp: {
+      loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+      createSocket: () => restartedSocket,
+      logger: { info() {}, warn() {}, error() {} }
+    }
+  } as any);
+  try {
+    await restarted.start();
+    const identity = { id: "owner@s.whatsapp.net", role: "owner" as const };
+    const message = (id: string, text: string) => ({ id, channel: "whatsapp", conversationId: "owner@s.whatsapp.net", senderId: "owner@s.whatsapp.net", text, receivedAt: new Date() });
+    await restarted.controlPlane.handle(message("history-init", "/init"), identity);
+    await restarted.controlPlane.handle(message("history-agent", "/codex"), identity);
+    const result = await restarted.controlPlane.handle(message("history-query", "/chat \"Source chat\" what was saved"), identity);
+    assert.equal(result.status, undefined);
+    assert.match(prompts[0] ?? "", /saved history message/);
+  } finally {
+    await restarted.stop();
+  }
 });
 
 test("gateway presents a successful execution without a processing acknowledgement", async () => {

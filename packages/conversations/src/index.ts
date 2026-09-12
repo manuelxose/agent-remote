@@ -1,5 +1,7 @@
 import type { Conversation, ConversationContext, ExecutionContext, Message, Route } from "../../core/src/index.js";
 
+export * from "./history.js";
+
 export interface ConversationStore {
   getOrCreate(message: Message): Promise<Conversation>;
 }
