@@ -8,7 +8,10 @@ import type { Channel, Message, OutboundMessage } from "../../../packages/core/s
 import type { HistoryChat } from "../../../packages/conversations/src/index.js";
 import { authorizeWhatsAppMessage, type WhatsAppAuthorization, type WhatsAppConfig } from "./config.js";
 import { AgentMessageRegistry } from "./agent-registry.js";
+import { installLibsignalSessionLogFilter } from "./libsignal-logging.js";
 import { translateWhatsAppMessage } from "./translate.js";
+
+installLibsignalSessionLogFilter();
 
 export type WhatsAppStatus = "stopped" | "connecting" | "qr" | "connected" | "reconnecting" | "logged_out" | "failed";
 

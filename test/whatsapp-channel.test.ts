@@ -2,6 +2,7 @@ import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { WhatsAppChannel } from "../dist/channels/whatsapp/src/index.js";
 import { parseWhatsAppConfig } from "../dist/channels/whatsapp/src/config.js";
+import { installLibsignalSessionLogFilter } from "../dist/channels/whatsapp/src/libsignal-logging.js";
 import { InMemoryHistoryStore } from "../dist/packages/conversations/src/index.js";
 
 class FakeEvents {
@@ -25,6 +26,22 @@ class FakeEvents {
     return this.listeners.get(event)?.size ?? 0;
   }
 }
+
+test("filters libsignal session dumps without hiding ordinary logs", () => {
+  const messages: unknown[][] = [];
+  const logger = {
+    info: (...values: unknown[]) => messages.push(["info", ...values]),
+    warn: (...values: unknown[]) => messages.push(["warn", ...values])
+  };
+
+  installLibsignalSessionLogFilter(logger);
+  logger.info("Closing session:", { privateKey: "never log" });
+  logger.warn("Session already closed", { privateKey: "never log" });
+  logger.info("whatsapp_connected");
+  logger.warn("whatsapp_security_rejection");
+
+  assert.deepEqual(messages, [["info", "whatsapp_connected"], ["warn", "whatsapp_security_rejection"]]);
+});
 
 test("authorized incoming messages reach the supplied gateway handler", async () => {
   const events = new FakeEvents();
