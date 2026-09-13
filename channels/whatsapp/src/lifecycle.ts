@@ -1,4 +1,5 @@
 import makeWASocket, {
+  Browsers,
   DisconnectReason,
   type AuthenticationState,
   type BaileysEventMap,
@@ -151,9 +152,12 @@ export class WhatsAppChannel implements Channel {
     });
     this.createSocket = options.createSocket ?? (state => makeWASocket({
       auth: state,
+      browser: Browsers.macOS("Desktop"),
       logger: silentBaileysLogger,
       printQRInTerminal: false,
-      markOnlineOnConnect: false
+      markOnlineOnConnect: false,
+      syncFullHistory: true,
+      shouldSyncHistoryMessage: () => true
     }));
     this.historySink = options.historySink;
     this.stopping = false;
