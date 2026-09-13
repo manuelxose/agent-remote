@@ -270,7 +270,17 @@ export class WhatsAppChannel implements Channel {
   }
 
   private async handleMessages(update: BaileysEventMap["messages.upsert"], socket: WhatsAppSocket): Promise<void> {
-    if (this.socket !== socket || update.type === "append") return;
+    if (this.socket !== socket) return;
+    if (update.type === "append") {
+      for (const payload of update.messages) {
+        const message = translateWhatsAppMessage(payload, { allowSelfMessages: true });
+        if (!message) continue;
+        const displayName = !message.groupId && typeof payload.pushName === "string" ? payload.pushName.trim() : "";
+        if (displayName) await this.persistChat({ channel: this.id, conversationId: message.conversationId, displayName, kind: "private", updatedAt: message.receivedAt.toISOString() });
+        await this.persistMessage(message);
+      }
+      return;
+    }
     if (update.requestId) return;
     for (const payload of update.messages) {
       if (this.isTrackedOutbound(payload)) continue;

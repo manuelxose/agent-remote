@@ -290,13 +290,16 @@ test("imports history batches without routing them", async () => {
   ]);
 });
 
-test("does not route appended WhatsApp history messages", async () => {
+test("persists appended WhatsApp history messages without routing them", async () => {
   const events = new FakeEvents();
   const received: unknown[] = [];
+  const chats: any[] = [];
+  const messages: any[] = [];
   const socket = { ev: events, async sendMessage() {}, async end() {} };
   const channel = new WhatsAppChannel({
     config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_USERS: "u@s.whatsapp.net" }),
     onMessage: async payload => received.push(payload),
+    historySink: { upsertChat: async chat => chats.push(chat), upsertMessage: async message => messages.push(message) },
     loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
     createSocket: () => socket
   });
@@ -304,11 +307,13 @@ test("does not route appended WhatsApp history messages", async () => {
   await channel.start();
   events.emit("messages.upsert", {
     type: "append",
-    messages: [{ key: { id: "history-upsert-1", remoteJid: "u@s.whatsapp.net" }, message: { conversation: "old message" } }]
+    messages: [{ key: { id: "history-upsert-1", remoteJid: "u@s.whatsapp.net" }, pushName: "Silvia", message: { conversation: "old message" } }]
   });
   await flush();
 
   assert.equal(received.length, 0);
+  assert.deepEqual(chats.map(chat => [chat.displayName, chat.conversationId]), [["Silvia", "u@s.whatsapp.net"]]);
+  assert.equal(messages[0]?.id, "history-upsert-1");
 });
 
 test("persists duplicate live messages once before routing them", async () => {
