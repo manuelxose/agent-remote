@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 import { isAbsolute, resolve } from "node:path";
 import qrcode from "qrcode-terminal";
 import type { ConversationAgent, Message, Route } from "../../../packages/core/src/index.js";
-import { InMemoryConversationStore, JsonHistoryStore, historySearchMatches, normalizeHistorySearch, parseWhatsAppExport } from "../../../packages/conversations/src/index.js";
+import { InMemoryConversationStore, JsonHistoryStore, historySearchMatches, normalizeHistorySearch, parseWhatsAppExport, type HistoryChat } from "../../../packages/conversations/src/index.js";
 import { ConfiguredModelPolicy, ControlPlane, JsonControlPlaneStore, type Role } from "../../../packages/control-plane/src/index.js";
 import { InMemoryEventBus } from "../../../packages/events/src/index.js";
 import { ConfigurationRouter } from "../../../packages/routing/src/index.js";
@@ -17,7 +17,7 @@ import { DeveloperAgentRuntime } from "../../../runtime/developer-agent/src/inde
 import { JsonDeveloperSessionStore } from "../../../runtime/developer-agent/src/sessions.js";
 import { createWhatsAppGateway, type WhatsAppGatewayApplication, type WhatsAppGatewayOptions } from "./whatsapp.js";
 import { formatOperationalError } from "./doctor.js";
-import { parseWhatsAppImportCommand, translateWhatsAppMessage, type WhatsAppImportFile, type WhatsAppImportRequest } from "../../../channels/whatsapp/src/index.js";
+import { parseWhatsAppImportCommand, translateWhatsAppMessage, type WhatsAppChannel, type WhatsAppImportFile, type WhatsAppImportRequest } from "../../../channels/whatsapp/src/index.js";
 import { resolveDeveloperExecutable } from "../../../runtime/developer-agent/src/process.js";
 import { StreamDelivery, type StreamingDeliveryPolicy } from "../../../packages/control-plane/src/delivery.js";
 import { createPresentationBridge, type PresentationBridge } from "./presentation-bridge.js";
@@ -212,6 +212,20 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
     }
   });
   let whatsapp!: WhatsAppGatewayApplication;
+  const pendingImportSelections = new Map<string, { candidates: HistoryChat[]; expiresAt: number }>();
+  const importSelectionTtlMs = 5 * 60_000;
+  const completeImport = async (selected: HistoryChat, message: Message, channel: WhatsAppChannel): Promise<void> => {
+    const result = await history.query("whatsapp", selected.conversationId, "", { maxMessages: 1, maxCharacters: 1 });
+    if (result?.importedMessageCount) {
+      await channel.send(message.conversationId, { text: `Conversation imported: ${selected.displayName}. You can ask about it with /chat "${selected.displayName}" <question>.`, replyTo: message.replyReference });
+      return;
+    }
+    if (await channel.requestChatHistory(selected.conversationId)) {
+      await channel.send(message.conversationId, { text: `Import requested for ${selected.displayName}. Wait a moment, then ask with /chat "${selected.displayName}" <question>.`, replyTo: message.replyReference });
+      return;
+    }
+    await channel.send(message.conversationId, { text: `Conversation found: ${selected.displayName}, but WhatsApp has not delivered its messages to this linked device yet.`, replyTo: message.replyReference });
+  };
   whatsapp = createWhatsAppGateway({
     conversations: new InMemoryConversationStore(),
     router: new ConfigurationRouter(config.routes),
@@ -232,6 +246,36 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
       } else await channel.send(message.conversationId, result);
       if (result.metadata?.executionId) controlPlane.markExecutionTransportReply(result.metadata.executionId, true);
     },
+    onImportSelection: async (message, channel) => {
+      const pending = pendingImportSelections.get(message.conversationId);
+      if (!pending) return false;
+      if (Date.now() > pending.expiresAt) {
+        pendingImportSelections.delete(message.conversationId);
+        await channel.send(message.conversationId, { text: "The import selection expired. Send /import <name> again.", replyTo: message.replyReference });
+        return true;
+      }
+      const value = message.text.trim();
+      let selected: HistoryChat | undefined;
+      if (/^\d+$/.test(value)) {
+        const index = Number(value) - 1;
+        selected = Number.isInteger(index) ? pending.candidates[index] : undefined;
+        if (!selected) {
+          await channel.send(message.conversationId, { text: `Choose a number from 1 to ${pending.candidates.length}.`, replyTo: message.replyReference });
+          return true;
+        }
+      } else {
+        const normalized = normalizeHistorySearch(value);
+        const matches = pending.candidates.filter(chat => normalizeHistorySearch(chat.displayName) === normalized || normalizeHistorySearch(chat.conversationId) === normalized);
+        if (matches.length !== 1) {
+          await channel.send(message.conversationId, { text: `Reply with a number from 1 to ${pending.candidates.length}, or the full chat name/ID.`, replyTo: message.replyReference });
+          return true;
+        }
+        selected = matches[0];
+      }
+      pendingImportSelections.delete(message.conversationId);
+      await completeImport(selected, message, channel);
+      return true;
+    },
     onImportFile: async (file: WhatsAppImportFile, channel) => {
       if (resolveWhatsAppRole(config.env, file.message.senderId) === "viewer") {
         await channel.send(file.message.conversationId, { text: "You are not authorized to import chat history.", replyTo: file.message.replyReference });
@@ -250,7 +294,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
     },
     onImportRequest: async (request: WhatsAppImportRequest, channel) => {
       for (const chat of channel.knownChats()) await history.upsertChat(chat);
-      const chats = await history.listChats("whatsapp", undefined, 1000);
+      const chats = await history.listChats("whatsapp", request.name, 1000);
       if (!request.name) {
         await channel.send(request.message.conversationId, { text: chats.length ? `Available chats:\n${chats.map(chat => `${chat.displayName} (${chat.conversationId})`).join("\n")}` : "Use /importar <name> to choose a WhatsApp conversation.", replyTo: request.message.replyReference });
         return;
@@ -260,6 +304,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
       const exact = partial.filter(chat => normalizeHistorySearch(chat.displayName) === source || normalizeHistorySearch(chat.conversationId) === source);
       if (exact.length !== 1) {
         const candidates = exact.length ? exact : partial;
+        if (candidates.length) pendingImportSelections.set(request.message.conversationId, { candidates, expiresAt: Date.now() + importSelectionTtlMs });
         await channel.send(request.message.conversationId, {
           text: candidates.length
             ? `Choose the conversation by full name or ID:\n${candidates.map((chat, index) => `${index + 1}. ${chat.displayName} (${chat.conversationId})`).join("\n")}`
@@ -267,18 +312,9 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
           replyTo: request.message.replyReference
         });
         return;
-      }
-      const selected = exact[0];
-      const result = await history.query("whatsapp", selected.conversationId, "", { maxMessages: 1, maxCharacters: 1 });
-      if (result?.importedMessageCount) {
-        await channel.send(request.message.conversationId, { text: `Conversation imported: ${selected.displayName}. You can ask about it with /chat "${selected.displayName}" <question>.`, replyTo: request.message.replyReference });
-        return;
-      }
-      if (await channel.requestChatHistory(selected.conversationId)) {
-        await channel.send(request.message.conversationId, { text: `Import requested for ${selected.displayName}. Wait a moment, then ask with /chat "${selected.displayName}" <question>.`, replyTo: request.message.replyReference });
-        return;
-      }
-      await channel.send(request.message.conversationId, { text: `Conversation found: ${selected.displayName}, but WhatsApp has not delivered its messages to this linked device yet.`, replyTo: request.message.replyReference });
+     }
+     const selected = exact[0];
+      await completeImport(selected, request.message, channel);
     },
     onImportError: async (message, _error, channel) => {
       await channel.send(message.conversationId, { text: "Unable to download the attached export. Try sending the .txt file again.", replyTo: message.replyReference });

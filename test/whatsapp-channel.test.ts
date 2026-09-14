@@ -122,6 +122,29 @@ test("routes a direct /importar request without an attachment to the importer", 
   await channel.stop();
 });
 
+test("routes a pending import selection without sending it to the AI", async () => {
+  const events = new FakeEvents();
+  const selections: string[] = [];
+  let routed = 0;
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => { routed++; },
+    onImportSelection: async (message: any) => { selections.push(message.text); return true; },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  } as any);
+
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  events.emit("messages.upsert", { messages: [{ key: { id: "import-selection", remoteJid: "chat@s.whatsapp.net" }, message: { conversation: "1" } }] });
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.deepEqual(selections, ["1"]);
+  assert.equal(routed, 0);
+  await channel.stop();
+});
+
 test("keeps contact names available for direct imports", async () => {
   const events = new FakeEvents();
   const socket = { ev: events, async sendMessage() {}, async end() {} };

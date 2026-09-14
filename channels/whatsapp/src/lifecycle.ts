@@ -68,6 +68,7 @@ export interface WhatsAppChannelOptions {
   historySink?: WhatsAppHistorySink;
   onImportFile?: (file: WhatsAppImportFile) => Promise<void>;
   onImportRequest?: (request: WhatsAppImportRequest) => Promise<void>;
+  onImportSelection?: (message: Message) => Promise<boolean>;
   onImportError?: (message: Message, error: unknown) => Promise<void>;
   downloadMedia?: WhatsAppMediaDownloader;
 }
@@ -143,6 +144,7 @@ export class WhatsAppChannel implements Channel {
   private readonly historySink?: WhatsAppHistorySink;
   private readonly onImportFile?: (file: WhatsAppImportFile) => Promise<void>;
   private readonly onImportRequest?: (request: WhatsAppImportRequest) => Promise<void>;
+  private readonly onImportSelection?: (message: Message) => Promise<boolean>;
   private readonly onImportError?: (message: Message, error: unknown) => Promise<void>;
   private readonly downloadMedia: WhatsAppMediaDownloader;
   private listeners?: WhatsAppListenerSet;
@@ -189,6 +191,7 @@ export class WhatsAppChannel implements Channel {
     this.historySink = options.historySink;
     this.onImportFile = options.onImportFile;
     this.onImportRequest = options.onImportRequest;
+    this.onImportSelection = options.onImportSelection;
     this.onImportError = options.onImportError;
     this.downloadMedia = options.downloadMedia ?? (payload => downloadMediaMessage(payload as Parameters<typeof downloadMediaMessage>[0], "buffer", {}));
     this.stopping = false;
@@ -341,6 +344,7 @@ export class WhatsAppChannel implements Channel {
       try {
         const message = await this.receive(payload);
         const importRequest = parseWhatsAppImportCommand(message.text);
+        if (!importRequest && this.onImportSelection && await this.onImportSelection(message)) continue;
         const document = message.attachments?.find(attachment => attachment.kind === "document");
         if (importRequest && document && this.onImportFile) {
           try {

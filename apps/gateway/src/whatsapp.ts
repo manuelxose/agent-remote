@@ -23,6 +23,7 @@ export interface WhatsAppGatewayOptions {
   onError?: (error: unknown, payload: unknown, channel: WhatsAppChannel) => Promise<void>;
   onImportFile?: (file: WhatsAppImportFile, channel: WhatsAppChannel, gateway: Gateway) => Promise<void>;
   onImportRequest?: (request: WhatsAppImportRequest, channel: WhatsAppChannel, gateway: Gateway) => Promise<void>;
+  onImportSelection?: (message: Message, channel: WhatsAppChannel, gateway: Gateway) => Promise<boolean>;
   onImportError?: (message: Message, error: unknown, channel: WhatsAppChannel, gateway: Gateway) => Promise<void>;
   downloadMedia?: WhatsAppMediaDownloader;
   onCommand?: (payload: unknown, channel: WhatsAppChannel, gateway: Gateway) => Promise<boolean>;
@@ -65,6 +66,7 @@ export function createWhatsAppGateway(
     historySink: options.historySink,
     ...(options.onImportFile ? { onImportFile: (file: WhatsAppImportFile) => options.onImportFile!(file, channel, gateway) } : {}),
     ...(options.onImportRequest ? { onImportRequest: (request: WhatsAppImportRequest) => options.onImportRequest!(request, channel, gateway) } : {}),
+    ...(options.onImportSelection ? { onImportSelection: (message: Message) => options.onImportSelection!(message, channel, gateway) } : {}),
     ...(options.onImportError ? { onImportError: (message: Message, error: unknown) => options.onImportError!(message, error, channel, gateway) } : {}),
     ...(options.downloadMedia ? { downloadMedia: options.downloadMedia } : {})
   });
