@@ -71,9 +71,8 @@ export class InMemoryHistoryStore implements HistoryStore {
   }
 
   async listChats(channel: string, query?: string, limit?: number): Promise<HistoryChat[]> {
-    const needle = normalizeHistorySearch(query ?? "");
     const chats = [...this.chats.values()]
-      .filter(chat => chat.channel === channel && (normalizeHistorySearch(chat.displayName).includes(needle) || normalizeHistorySearch(chat.conversationId).includes(needle)))
+      .filter(chat => chat.channel === channel && (historySearchMatches(chat.displayName, query ?? "") || normalizeHistorySearch(chat.conversationId).includes(normalizeHistorySearch(query ?? ""))))
       .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
       .slice(0, limit === undefined ? undefined : Math.max(0, Math.floor(limit)));
     return chats.map(cloneChat);
@@ -301,6 +300,15 @@ function chatKey(channel: string, conversationId: string): string {
 
 export function normalizeHistorySearch(value: string): string {
   return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase("es").trim();
+}
+
+export function historySearchMatches(value: string, query: string): boolean {
+  const normalizedValue = normalizeHistorySearch(value);
+  const normalizedQuery = normalizeHistorySearch(query);
+  if (!normalizedQuery || normalizedValue.includes(normalizedQuery)) return true;
+  const valueTokens = normalizedValue.split(/\s+/).filter(Boolean);
+  const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
+  return queryTokens.every(queryToken => valueTokens.some(valueToken => valueToken.length >= 3 && (valueToken.startsWith(queryToken) || queryToken.startsWith(valueToken))));
 }
 
 function validateImportedMessages(chat: HistoryChat, messages: Message[]): void {

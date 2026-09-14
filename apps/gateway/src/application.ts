@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 import { isAbsolute, resolve } from "node:path";
 import qrcode from "qrcode-terminal";
 import type { ConversationAgent, Message, Route } from "../../../packages/core/src/index.js";
-import { InMemoryConversationStore, JsonHistoryStore, normalizeHistorySearch, parseWhatsAppExport } from "../../../packages/conversations/src/index.js";
+import { InMemoryConversationStore, JsonHistoryStore, historySearchMatches, normalizeHistorySearch, parseWhatsAppExport } from "../../../packages/conversations/src/index.js";
 import { ConfiguredModelPolicy, ControlPlane, JsonControlPlaneStore, type Role } from "../../../packages/control-plane/src/index.js";
 import { InMemoryEventBus } from "../../../packages/events/src/index.js";
 import { ConfigurationRouter } from "../../../packages/routing/src/index.js";
@@ -256,7 +256,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
         return;
       }
       const source = normalizeHistorySearch(request.name);
-      const partial = chats.filter(chat => normalizeHistorySearch(chat.displayName).includes(source) || normalizeHistorySearch(chat.conversationId).includes(source));
+      const partial = chats.filter(chat => historySearchMatches(chat.displayName, request.name!) || normalizeHistorySearch(chat.conversationId).includes(source));
       const exact = partial.filter(chat => normalizeHistorySearch(chat.displayName) === source || normalizeHistorySearch(chat.conversationId) === source);
       if (exact.length !== 1) {
         const candidates = exact.length ? exact : partial;

@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, Message, MessageOrigin, MessageReference, Route } from "../../core/src/index.js";
 import type { EventBus } from "../../events/src/index.js";
 import { InMemoryEventBus } from "../../events/src/index.js";
-import { normalizeHistorySearch, type HistoryChat, type HistoryQueryLimits, type HistoryQueryResult } from "../../conversations/src/index.js";
+import { historySearchMatches, normalizeHistorySearch, type HistoryChat, type HistoryQueryLimits, type HistoryQueryResult } from "../../conversations/src/index.js";
 import type { WorkspacePolicy } from "../../security/src/index.js";
 import {
   type ControlPlaneRepositories,
@@ -368,7 +368,7 @@ export class ControlPlane {
     if (!this.options.history) return { text: "Imported chat history is not configured.", status: "error" };
     const chats = await this.options.history.listChats(context.message.channel, undefined, 1000);
     const normalizedSource = normalizeHistorySearch(source);
-    const partialMatches = chats.filter(chat => normalizeHistorySearch(chat.displayName).includes(normalizedSource) || normalizeHistorySearch(chat.conversationId).includes(normalizedSource));
+    const partialMatches = chats.filter(chat => historySearchMatches(chat.displayName, source) || normalizeHistorySearch(chat.conversationId).includes(normalizedSource));
     const exactMatches = partialMatches.filter(chat => normalizeHistorySearch(chat.displayName) === normalizedSource || normalizeHistorySearch(chat.conversationId) === normalizedSource);
     const matches = exactMatches.length ? exactMatches : partialMatches;
     if (!matches.length) return { text: `Imported chat not found: ${source}\nTo add it, send /importar <name> with the WhatsApp .txt export attached.`, status: "warning" };
