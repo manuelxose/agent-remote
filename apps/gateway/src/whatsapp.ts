@@ -5,6 +5,7 @@ import {
   type WhatsAppAuthLoader,
   type WhatsAppHistorySink,
   type WhatsAppImportFile,
+  type WhatsAppImportRequest,
   type WhatsAppLogger,
   type WhatsAppMediaDownloader,
   type WhatsAppSocketFactory
@@ -21,6 +22,7 @@ export interface WhatsAppGatewayOptions {
   onMessage?: (message: Message, channel: WhatsAppChannel, gateway: Gateway) => Promise<void>;
   onError?: (error: unknown, payload: unknown, channel: WhatsAppChannel) => Promise<void>;
   onImportFile?: (file: WhatsAppImportFile, channel: WhatsAppChannel, gateway: Gateway) => Promise<void>;
+  onImportRequest?: (request: WhatsAppImportRequest, channel: WhatsAppChannel, gateway: Gateway) => Promise<void>;
   onImportError?: (message: Message, error: unknown, channel: WhatsAppChannel, gateway: Gateway) => Promise<void>;
   downloadMedia?: WhatsAppMediaDownloader;
   onCommand?: (payload: unknown, channel: WhatsAppChannel, gateway: Gateway) => Promise<boolean>;
@@ -62,6 +64,7 @@ export function createWhatsAppGateway(
     createSocket: options.createSocket,
     historySink: options.historySink,
     ...(options.onImportFile ? { onImportFile: (file: WhatsAppImportFile) => options.onImportFile!(file, channel, gateway) } : {}),
+    ...(options.onImportRequest ? { onImportRequest: (request: WhatsAppImportRequest) => options.onImportRequest!(request, channel, gateway) } : {}),
     ...(options.onImportError ? { onImportError: (message: Message, error: unknown) => options.onImportError!(message, error, channel, gateway) } : {}),
     ...(options.downloadMedia ? { downloadMedia: options.downloadMedia } : {})
   });

@@ -34,13 +34,13 @@
 5. Add parser and persistence tests for normal exports, continuations, malformed input, size limits, and repeated imports.
 6. Run the focused conversations tests.
 
-## Task 3: Wire `/importar` through WhatsApp without AI routing
+## Task 3: Wire direct `/importar` and export fallback through WhatsApp
 
-1. Detect `/importar [nombre opcional]` captions with a document attachment in the WhatsApp lifecycle.
-2. Download the document through the existing Baileys socket and invoke an application callback with sender/message metadata, filename, MIME type, and bytes.
-3. Add the `/importar` text-command response explaining that a `.txt` export must be attached when no document is present.
-4. Parse, authorize, atomically persist, and acknowledge the import from the gateway application; never call the AI `onMessage` callback for the import command.
-5. Add channel/application tests covering callback invocation, missing attachment, authorization, and failure acknowledgement.
+1. Detect `/importar [nombre opcional]` and `/import [nombre opcional]` in the WhatsApp lifecycle without routing them to the AI.
+2. Preserve contact/chat names and message anchors from WhatsApp history events for direct lookup and on-demand history requests.
+3. Download an attached document through Baileys as the export fallback and invoke the application callback with sender/message metadata, filename, MIME type, and bytes.
+4. Resolve exact direct imports, request available history, atomically persist, and acknowledge the result from the gateway application.
+5. Add channel/application tests covering direct callback invocation, aliases, contact names, export fallback, authorization, and failure acknowledgement.
 6. Run the full test suite and production build.
 
 ## Task 4: Ship and verify runtime

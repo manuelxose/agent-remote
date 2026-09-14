@@ -60,22 +60,26 @@ When no indexed chat matches, `/chat` says that the source is not imported
 and explains the supported import action:
 
 ```text
-/importar Silvia.txt
+/importar Silvia
+/import Silvia
 ```
 
-The import command accepts a WhatsApp exported `.txt` attachment sent to the
-bot. The parser recognizes the standard locale-independent shape where each
-line begins with a date/time prefix followed by ` - ` and a sender separator
-(`: `), while preserving unrecognized lines as continuations of the prior
-message. It creates or updates one history chat using the supplied file name
-as display name, unless the export header or explicit command name supplies a
-better name. Group exports remain one chat and do not become separate sender
-chats. Malformed or unsupported files return a bounded error without writing
-partial records.
+The direct command searches names received through WhatsApp history and
+contacts, indexes the exact conversation, and requests on-demand history from
+Baileys when a valid message anchor exists. It does not route the command to
+the AI. A `.txt` export remains the fallback for a conversation that WhatsApp
+has not delivered to the linked device. The parser recognizes the standard
+locale-independent shape where each line begins with a date/time prefix
+followed by ` - ` and a sender separator (`: `), while preserving
+unrecognized lines as continuations of the prior message. It creates or
+updates one history chat using the supplied file name as display name. Group
+exports remain one chat and do not become separate sender chats. Malformed or
+unsupported files return a bounded error without writing partial records.
 
 The existing full WhatsApp history sync remains enabled for chats delivered
-by the linked device. The export fallback exists because Baileys cannot
-reliably fetch an arbitrary absent chat by name after pairing.
+by the linked device. Direct import can only fetch a chat that WhatsApp has
+identified to the linked device and for which Baileys has a history anchor;
+the export fallback exists for an arbitrary absent chat.
 
 ## Data flow
 

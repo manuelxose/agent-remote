@@ -98,6 +98,116 @@ test("downloads an attached /importar export without routing it to the AI", asyn
   await channel.stop();
 });
 
+test("routes a direct /importar request without an attachment to the importer", async () => {
+  const events = new FakeEvents();
+  const requests: any[] = [];
+  let routed = 0;
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => { routed++; },
+    onImportRequest: async request => requests.push(request),
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  events.emit("messages.upsert", { messages: [{ key: { id: "import-direct", remoteJid: "chat@s.whatsapp.net" }, message: { conversation: "/importar Silvia" } }] });
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.equal(routed, 0);
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].name, "Silvia");
+  await channel.stop();
+});
+
+test("keeps contact names available for direct imports", async () => {
+  const events = new FakeEvents();
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => {},
+    historySink: { upsertChat: async () => {}, upsertMessage: async () => {} },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  events.emit("contacts.update", [{ id: "silvia@s.whatsapp.net", name: "Silvia" }]);
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.deepEqual(channel.knownChats()[0]?.displayName, "Silvia");
+  await channel.stop();
+});
+
+test("indexes conversation names from chat upsert events", async () => {
+  const events = new FakeEvents();
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => {},
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  events.emit("chats.upsert", [{ id: "silvia@s.whatsapp.net", name: "Silvia" }]);
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.equal(channel.knownChats()[0]?.displayName, "Silvia");
+  await channel.stop();
+});
+
+test("uses private message push names while importing history", async () => {
+  const events = new FakeEvents();
+  const chats: any[] = [];
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => {},
+    historySink: { upsertChat: async chat => chats.push(chat), upsertMessage: async () => {} },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  events.emit("messaging-history.set", {
+    chats: [], contacts: [], messages: [{ key: { id: "history-silvia", remoteJid: "silvia@s.whatsapp.net" }, pushName: "Silvia", messageTimestamp: 1, message: { conversation: "hola" } }]
+  });
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.equal(chats[0]?.displayName, "Silvia");
+  await channel.stop();
+});
+
+test("requests on-demand history only with a real message anchor", async () => {
+  const events = new FakeEvents();
+  const requests: unknown[] = [];
+  const socket = { ev: events, async sendMessage() {}, async end() {}, async fetchMessageHistory(...args: unknown[]) { requests.push(args); return "request-1"; } };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => {},
+    historySink: { upsertChat: async () => {}, upsertMessage: async () => {} },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  events.emit("messaging-history.set", {
+    chats: [{ id: "silvia@s.whatsapp.net", name: "Silvia" }], contacts: [],
+    messages: [{ key: { id: "oldest-silvia", remoteJid: "silvia@s.whatsapp.net", fromMe: false }, messageTimestamp: 12, message: { conversation: "hola" } }]
+  });
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.equal(await channel.requestChatHistory("silvia@s.whatsapp.net"), true);
+  assert.equal(requests.length, 1);
+  assert.equal((requests[0] as any[])[1].id, "oldest-silvia");
+  await channel.stop();
+});
+
 test("long responses are split at the configured WhatsApp size limit", async () => {
   const events = new FakeEvents();
   const sent: unknown[] = [];

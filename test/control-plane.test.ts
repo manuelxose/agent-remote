@@ -206,6 +206,8 @@ test("help is generated from the command registry and unknown commands do not ex
   assert.match(help.text, /\/importar/);
   const unknown = await control.handle(messages("unknown", "/does-not-exist"), { id: "owner", role: "owner" });
   assert.match(unknown.text, /Unknown command/);
+  const importing = await control.handle(messages("import-alias", "/import Silvia"), { id: "owner", role: "owner" });
+  assert.doesNotMatch(importing.text, /Unknown command/);
   assert.equal(calls.length, 0);
 });
 
