@@ -261,11 +261,13 @@ test("requests on-demand history only with a real message anchor", async () => {
 
 test("waits for an on-demand history page before reporting its size", async () => {
   const events = new FakeEvents();
+  const requests: unknown[][] = [];
   const socket = {
     ev: events,
     async sendMessage() {},
     async end() {},
-    async fetchMessageHistory() {
+    async fetchMessageHistory(...args: unknown[]) {
+      requests.push(args);
       setTimeout(() => events.emit("messaging-history.set", {
         chats: [], contacts: [], peerDataRequestSessionId: "request-page",
         messages: [{ key: { id: "older", remoteJid: "silvia@s.whatsapp.net" }, messageTimestamp: 1, message: { conversation: "older" } }]
@@ -290,6 +292,7 @@ test("waits for an on-demand history page before reporting its size", async () =
   await new Promise(resolve => setImmediate(resolve));
 
   assert.deepEqual(await (channel as any).requestChatHistoryPage("silvia@s.whatsapp.net"), { requested: true, messageCount: 1 });
+  assert.equal(requests[0]?.[0], 50);
   await channel.stop();
 });
 

@@ -284,14 +284,14 @@ export class WhatsAppChannel implements Channel {
     return [...this.knownChatsById.values()].map(chat => ({ ...chat }));
   }
 
-  async requestChatHistory(conversationId: string, count = 1000): Promise<boolean> {
+  async requestChatHistory(conversationId: string, count = 50): Promise<boolean> {
     const anchor = this.historyAnchors.get(conversationId);
     if (!anchor || !this.socket || this.status !== "connected" || typeof this.socket.fetchMessageHistory !== "function") return false;
     await this.socket.fetchMessageHistory(count, anchor.key, anchor.timestamp);
     return true;
   }
 
-  async requestChatHistoryPage(conversationId: string, count = 1000, fallbackAnchor?: { id: string; timestamp: number; fromMe?: boolean }): Promise<WhatsAppHistoryRequestResult> {
+  async requestChatHistoryPage(conversationId: string, count = 50, fallbackAnchor?: { id: string; timestamp: number; fromMe?: boolean }): Promise<WhatsAppHistoryRequestResult> {
     const anchor = this.historyAnchors.get(conversationId) ?? (fallbackAnchor ? {
       key: { remoteJid: conversationId, id: fallbackAnchor.id, ...(fallbackAnchor.fromMe === undefined ? {} : { fromMe: fallbackAnchor.fromMe }) },
       timestamp: fallbackAnchor.timestamp

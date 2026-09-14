@@ -214,6 +214,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
   let whatsapp!: WhatsAppGatewayApplication;
   const pendingImportSelections = new Map<string, { candidates: HistoryChat[]; expiresAt: number; mode?: "more" | "full" }>();
   const importSelectionTtlMs = 5 * 60_000;
+  const historyPageSize = 50;
   const completeImport = async (selected: HistoryChat, message: Message, channel: WhatsAppChannel, mode?: "more" | "full"): Promise<void> => {
     const result = await history.query("whatsapp", selected.conversationId, "", { maxMessages: 1, maxCharacters: mode ? 100_000 : 1 });
     if (!mode && result?.importedMessageCount) {
@@ -225,13 +226,22 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
       let batches = 0;
       let downloaded = 0;
       let complete = false;
+      let emptyPage = false;
+      let timedOut = false;
       while (mode === "full" || batches === 0) {
-        const page = await channel.requestChatHistoryPage(selected.conversationId, 1000, batches === 0 ? fallbackAnchor : undefined);
+        const page = await channel.requestChatHistoryPage(selected.conversationId, historyPageSize, batches === 0 ? fallbackAnchor : undefined);
         if (!page.requested) break;
         batches++;
-        if (page.messageCount === undefined) break;
+        if (page.messageCount === undefined) {
+          timedOut = true;
+          break;
+        }
         downloaded += page.messageCount;
-        if (page.messageCount < 1000) {
+        if (page.messageCount === 0) {
+          emptyPage = true;
+          break;
+        }
+        if (page.messageCount < historyPageSize) {
           complete = true;
           break;
         }
@@ -243,7 +253,13 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
         return;
       }
       const imported = updated?.importedMessageCount ?? result?.importedMessageCount ?? 0;
-      const suffix = complete ? " No quedan más mensajes disponibles." : " La descarga puede continuar con otro /import ... más.";
+      const suffix = complete
+        ? " WhatsApp ha entregado un bloque final; no se han recibido más mensajes en esta descarga."
+        : emptyPage
+          ? " WhatsApp no entregó mensajes adicionales en esta solicitud; no puedo confirmar que no haya más. Reintenta /import " + selected.displayName + " más."
+          : timedOut
+            ? " WhatsApp no confirmó el bloque solicitado; no puedo confirmar que no haya más. Reintenta /import " + selected.displayName + " más."
+            : " La descarga puede continuar con otro /import ... más.";
       const text = mode === "full"
         ? "Historial completo solicitado para " + selected.displayName + ": " + imported + " mensajes disponibles (" + downloaded + " nuevos en " + batches + " bloques)." + suffix
         : "Historial ampliado para " + selected.displayName + ": " + imported + " mensajes disponibles (" + downloaded + " nuevos).";

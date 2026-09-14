@@ -219,6 +219,61 @@ test("application reloads persisted WhatsApp messages for control-plane history 
   }
 });
 
+test("does not claim complete history when WhatsApp returns an empty page", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-empty-page-"));
+  const routesPath = join(directory, "routes.json");
+  await writeFile(routesPath, "{}");
+  const events = new FakeEvents();
+  const replies: string[] = [];
+  const historyRequests: unknown[][] = [];
+  const socket = {
+    ev: events,
+    async sendMessage(_conversationId: string, payload: { text: string }) { replies.push(payload.text); return { key: { id: "out" } }; },
+    async sendPresenceUpdate() {},
+    async fetchMessageHistory(...args: unknown[]) {
+      historyRequests.push(args);
+      setImmediate(() => events.emit("messaging-history.set", { chats: [], contacts: [], peerDataRequestSessionId: "empty-page", messages: [] }));
+      return "empty-page";
+    },
+    async end() {}
+  };
+  const config = loadApplicationConfig({
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_HISTORY_PATH: join(directory, "history.jsonl"),
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, directory);
+  const application = createApplication(config, {
+    whatsapp: {
+      loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+      createSocket: () => socket,
+      logger: { info() {}, warn() {}, error() {} }
+    }
+  } as any);
+
+  try {
+    await application.start();
+    events.emit("connection.update", { connection: "open" });
+    events.emit("messaging-history.set", {
+      chats: [{ id: "silvia@s.whatsapp.net", name: "Silvia" }],
+      contacts: [],
+      messages: [{ key: { id: "oldest", remoteJid: "silvia@s.whatsapp.net" }, messageTimestamp: 100, message: { conversation: "known" } }]
+    });
+    events.emit("chats.upsert", [{ id: "silvia@s.whatsapp.net", name: "Silvia", lastMessage: { key: { id: "oldest", remoteJid: "silvia@s.whatsapp.net" }, messageTimestamp: 100 } }]);
+    await settle();
+    events.emit("messages.upsert", { messages: [{ key: { id: "import", remoteJid: "owner@s.whatsapp.net" }, message: { conversation: "/import Silvia completo" } }] });
+    await settle();
+
+    const reply = replies.at(-1) ?? "";
+    assert.equal(historyRequests[0]?.[0], 50);
+    assert.doesNotMatch(reply, /No quedan más mensajes disponibles/);
+    assert.match(reply, /no puedo confirmar|no entregó mensajes adicionales/i);
+  } finally {
+    await application.stop();
+  }
+});
+
 test("gateway presents a successful execution without a processing acknowledgement", async () => {
   const adapter = {
     id: "codex",

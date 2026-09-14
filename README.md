@@ -67,7 +67,7 @@ Baileys persists credentials under `WHATSAPP_AUTH_PATH`; later restarts reuse th
 
 After pairing, the first ordinary message in an authorized chat initializes it automatically with Codex. `/init [name]` remains available when an explicit chat name is wanted. Managed chats, agents, workspaces, provider sessions, queues, and state are controlled by the central command registry.
 
-WhatsApp Web history sync imports available chat metadata and message text into `AGENT_REMOTE_HISTORY_PATH`. Use `/chat` to list imported chats, then `/chat <name-or-id> <question>` to reference a bounded excerpt. This is not a full archive: WhatsApp controls the synced coverage, so older chats and messages may be absent. Attachment descriptors may be retained as metadata, but attachment binaries are never downloaded. The local JSONL file is created and enforced as mode `0600`; keep it under `data/` and never commit it.
+WhatsApp Web history sync imports available chat metadata and message text into `AGENT_REMOTE_HISTORY_PATH`. Use `/chat` to list imported chats, then `/chat <name-or-id> <question>` to reference a bounded excerpt. Use `/import <name> más` to request another block of up to 50 older messages, or `/import <name> completo` to keep requesting blocks. This is not a guaranteed full archive: WhatsApp controls the synced coverage, and an empty or timed-out request is reported as unconfirmed rather than proof that no older messages exist. Attachment descriptors may be retained as metadata, but attachment binaries are never downloaded. The local JSONL file is created and enforced as mode `0600`; keep it under `data/` and never commit it.
 
 ## Provider behavior
 
@@ -77,7 +77,7 @@ Normal messages from authorized chats are automatically initialized and forwarde
 
 Send `/workspace` from an authorized WhatsApp chat to see the effective workspace path. It is the same local project directory used by this gateway and the provider CLI; the command does not expose file contents.
 
-The command set includes `/help`, `/init [name]`, `/chats`, `/chat`, `/rename`, `/close`, `/claude`, `/codex`, `/copilot`, `/agent`, `/model`, `/workspace`, `/workspaces`, `/status`, `/running`, `/cancel`, `/retry`, `/reset confirm`, `/history`, `/doctor`, `/health`, `/version`, and `/whoami`. Before initialization, only `/help`, `/init`, `/status`, and `/whoami` work. After `/claude` or `/codex`, ordinary messages continue in that provider's isolated session. Retry prompts are retained only in memory and are omitted from durable control-plane state.
+The command set includes `/help`, `/init [name]`, `/chats`, `/chat`, `/import`, `/rename`, `/close`, `/claude`, `/codex`, `/copilot`, `/agent`, `/model`, `/workspace`, `/workspaces`, `/status`, `/running`, `/cancel`, `/retry`, `/reset confirm`, `/history`, `/doctor`, `/health`, `/version`, and `/whoami`. Before initialization, only `/help`, `/init`, `/status`, `/whoami`, and `/import` work. After `/claude` or `/codex`, ordinary messages continue in that provider's isolated session. Retry prompts are retained only in memory and are omitted from durable control-plane state.
 
 Only one gateway process may use the WhatsApp auth directory at a time. A second `npm start` exits with the existing process ID instead of creating a competing WhatsApp session.
 
