@@ -344,7 +344,7 @@ export class WhatsAppChannel implements Channel {
       try {
         const message = await this.receive(payload);
         const importRequest = parseWhatsAppImportCommand(message.text);
-        if (!importRequest && this.onImportSelection && await this.onImportSelection(message)) continue;
+        if (!importRequest && !message.text.trim().startsWith("/") && this.onImportSelection && await this.onImportSelection(message)) continue;
         const document = message.attachments?.find(attachment => attachment.kind === "document");
         if (importRequest && document && this.onImportFile) {
           try {

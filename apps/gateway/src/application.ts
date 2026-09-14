@@ -238,6 +238,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
     ...dependencies.whatsapp,
     onQr: dependencies.whatsapp?.onQr ?? printQr,
     onMessage: async (message, channel) => {
+      if (message.text.trim().startsWith("/")) pendingImportSelections.delete(message.conversationId);
       const result = await controlPlane.handle(message, { id: resolveWhatsAppIdentity(config.env, message.senderId), role: resolveWhatsAppRole(config.env, message.senderId) });
       const delivery = result.metadata?.executionId ? deliveries.get(result.metadata.executionId) : undefined;
       if (delivery && result.metadata?.executionId) {

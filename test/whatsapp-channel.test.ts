@@ -145,6 +145,29 @@ test("routes a pending import selection without sending it to the AI", async () 
   await channel.stop();
 });
 
+test("does not consume slash commands as import selections", async () => {
+  const events = new FakeEvents();
+  let selections = 0;
+  let routed = 0;
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => { routed++; },
+    onImportSelection: async () => { selections++; return true; },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  } as any);
+
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  events.emit("messages.upsert", { messages: [{ key: { id: "slash-command", remoteJid: "chat@s.whatsapp.net" }, message: { conversation: "/chat Silvia que hablamos" } }] });
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.equal(selections, 0);
+  assert.equal(routed, 1);
+  await channel.stop();
+});
+
 test("keeps contact names available for direct imports", async () => {
   const events = new FakeEvents();
   const socket = { ev: events, async sendMessage() {}, async end() {} };
