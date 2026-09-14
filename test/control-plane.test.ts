@@ -77,6 +77,46 @@ test("ambiguous imported chat sources do not invoke the runtime", async () => {
   assert.equal(calls.length, 0);
 });
 
+test("exact imported chat names win over broader partial matches", async () => {
+  const history = historyProvider([
+    { conversationId: "regalo-silvia", displayName: "Regalo Silvia" },
+    { conversationId: "silvia", displayName: "Silvia" }
+  ]);
+  const { control, calls } = setup({ history });
+
+  const result = await control.handle(messages("history-exact", "/chat Silvia que hablamos"), { id: "owner", role: "owner" });
+
+  assert.equal(result.status, undefined);
+  assert.match(calls[0]?.prompt ?? "", /Referenced WhatsApp chat: Silvia \(silvia\)/);
+  assert.equal(calls.length, 1);
+});
+
+test("imported chat matching ignores accents and case", async () => {
+  const history = historyProvider([{ conversationId: "silvia", displayName: "Sílvía" }]);
+  const { control, calls } = setup({ history });
+
+  const result = await control.handle(messages("history-normalized", "/chat SILVIA que hablamos"), { id: "owner", role: "owner" });
+
+  assert.equal(result.status, undefined);
+  assert.equal(calls.length, 1);
+});
+
+test("duplicate exact imported names remain ambiguous", async () => {
+  const history = historyProvider([
+    { conversationId: "silvia-1", displayName: "Silvia" },
+    { conversationId: "silvia-2", displayName: "Silvia" }
+  ]);
+  const { control, calls } = setup({ history });
+
+  const result = await control.handle(messages("history-duplicate-exact", "/chat Silvia que hablamos"), { id: "owner", role: "owner" });
+
+  assert.equal(result.status, "warning");
+  assert.match(result.text, /silvia-1/);
+  assert.match(result.text, /silvia-2/);
+  assert.match(result.text, /nombre completo|ID/i);
+  assert.equal(calls.length, 0);
+});
+
 test("unknown imported chat sources do not invoke the runtime", async () => {
   const { control, calls } = setup({ history: historyProvider([{ conversationId: "viaje", displayName: "Viaje" }]) });
 
@@ -150,6 +190,7 @@ test("help is generated from the command registry and unknown commands do not ex
   const help = await control.handle(messages("help", "/help"), { id: "owner", role: "owner" });
   assert.match(help.text, /SESSION/);
   assert.match(help.text, /\/init \[name\]/);
+  assert.match(help.text, /\/importar/);
   const unknown = await control.handle(messages("unknown", "/does-not-exist"), { id: "owner", role: "owner" });
   assert.match(unknown.text, /Unknown command/);
   assert.equal(calls.length, 0);

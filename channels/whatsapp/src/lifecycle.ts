@@ -1,5 +1,6 @@
 import makeWASocket, {
   DisconnectReason,
+  downloadMediaMessage,
   type AuthenticationState,
   type BaileysEventMap,
   type WASocket
@@ -38,6 +39,14 @@ export type WhatsAppSocket = Pick<WASocket, "sendMessage" | "end"> & { ev: Whats
 export type WhatsAppAuthState = { state: AuthenticationState; saveCreds: () => Promise<void> };
 export type WhatsAppAuthLoader = (path: string) => Promise<WhatsAppAuthState>;
 export type WhatsAppSocketFactory = (state: AuthenticationState) => WhatsAppSocket;
+export type WhatsAppMediaDownloader = (payload: unknown) => Promise<Buffer>;
+
+export interface WhatsAppImportFile {
+  message: Message;
+  fileName: string;
+  mimeType?: string;
+  data: Buffer;
+}
 
 export interface WhatsAppHistorySink {
   upsertChat(chat: HistoryChat): Promise<void>;
@@ -52,6 +61,9 @@ export interface WhatsAppChannelOptions {
   loadAuthState?: WhatsAppAuthLoader;
   createSocket?: WhatsAppSocketFactory;
   historySink?: WhatsAppHistorySink;
+  onImportFile?: (file: WhatsAppImportFile) => Promise<void>;
+  onImportError?: (message: Message, error: unknown) => Promise<void>;
+  downloadMedia?: WhatsAppMediaDownloader;
 }
 
 interface WhatsAppListenerSet {
@@ -119,6 +131,9 @@ export class WhatsAppChannel implements Channel {
   private readonly loadAuthState: WhatsAppAuthLoader;
   private readonly createSocket: WhatsAppSocketFactory;
   private readonly historySink?: WhatsAppHistorySink;
+  private readonly onImportFile?: (file: WhatsAppImportFile) => Promise<void>;
+  private readonly onImportError?: (message: Message, error: unknown) => Promise<void>;
+  private readonly downloadMedia: WhatsAppMediaDownloader;
   private listeners?: WhatsAppListenerSet;
   private readonly legacyDeliver?: (conversationId: string, text: string) => Promise<void>;
   private socket?: WhatsAppSocket;
@@ -139,6 +154,7 @@ export class WhatsAppChannel implements Channel {
       this.logger = defaultLogger;
       this.loadAuthState = async () => { throw new Error("WhatsApp lifecycle is not configured"); };
       this.createSocket = () => { throw new Error("WhatsApp lifecycle is not configured"); };
+      this.downloadMedia = async () => { throw new Error("WhatsApp lifecycle is not configured"); };
       return;
     }
     this.config = options.config;
@@ -158,6 +174,9 @@ export class WhatsAppChannel implements Channel {
       shouldSyncHistoryMessage: () => true
     }));
     this.historySink = options.historySink;
+    this.onImportFile = options.onImportFile;
+    this.onImportError = options.onImportError;
+    this.downloadMedia = options.downloadMedia ?? (payload => downloadMediaMessage(payload as Parameters<typeof downloadMediaMessage>[0], "buffer", {}));
     this.stopping = false;
   }
 
@@ -288,6 +307,21 @@ export class WhatsAppChannel implements Channel {
       if (this.isTrackedOutbound(payload)) continue;
       try {
         const message = await this.receive(payload);
+        const importRequest = parseWhatsAppImportCommand(message.text);
+        const document = message.attachments?.find(attachment => attachment.kind === "document");
+        if (importRequest && document && this.onImportFile) {
+          try {
+            await this.onImportFile({
+              message,
+              fileName: document.fileName ?? `${importRequest.name ?? "whatsapp-export"}.txt`,
+              ...(document.mimeType ? { mimeType: document.mimeType } : {}),
+              data: await this.downloadMedia(payload)
+            });
+          } catch (error) {
+            await this.onImportError?.(message, error);
+          }
+          continue;
+        }
         await this.persistMessage(message);
         await this.onMessage?.(message);
       } catch (error) {
@@ -458,6 +492,11 @@ export class WhatsAppChannel implements Channel {
     socket.ev.removeAllListeners?.("messaging-history.set");
     if (listeners?.socket === socket) this.listeners = undefined;
   }
+}
+
+export function parseWhatsAppImportCommand(text: string): { name?: string } | undefined {
+  const match = text.trim().match(/^\/importar(?:\s+([\s\S]*))?$/i);
+  return match ? (match[1] ? { name: match[1].trim() } : {}) : undefined;
 }
 
 function disconnectStatusCode(error: unknown): number | undefined {

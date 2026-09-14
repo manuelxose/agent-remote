@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 import { isAbsolute, resolve } from "node:path";
 import qrcode from "qrcode-terminal";
 import type { ConversationAgent, Message, Route } from "../../../packages/core/src/index.js";
-import { InMemoryConversationStore, JsonHistoryStore } from "../../../packages/conversations/src/index.js";
+import { InMemoryConversationStore, JsonHistoryStore, parseWhatsAppExport } from "../../../packages/conversations/src/index.js";
 import { ConfiguredModelPolicy, ControlPlane, JsonControlPlaneStore, type Role } from "../../../packages/control-plane/src/index.js";
 import { InMemoryEventBus } from "../../../packages/events/src/index.js";
 import { ConfigurationRouter } from "../../../packages/routing/src/index.js";
@@ -17,7 +17,7 @@ import { DeveloperAgentRuntime } from "../../../runtime/developer-agent/src/inde
 import { JsonDeveloperSessionStore } from "../../../runtime/developer-agent/src/sessions.js";
 import { createWhatsAppGateway, type WhatsAppGatewayApplication, type WhatsAppGatewayOptions } from "./whatsapp.js";
 import { formatOperationalError } from "./doctor.js";
-import { translateWhatsAppMessage } from "../../../channels/whatsapp/src/index.js";
+import { parseWhatsAppImportCommand, translateWhatsAppMessage, type WhatsAppImportFile } from "../../../channels/whatsapp/src/index.js";
 import { resolveDeveloperExecutable } from "../../../runtime/developer-agent/src/process.js";
 import { StreamDelivery, type StreamingDeliveryPolicy } from "../../../packages/control-plane/src/delivery.js";
 import { createPresentationBridge, type PresentationBridge } from "./presentation-bridge.js";
@@ -231,6 +231,25 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
         deliveries.delete(result.metadata.executionId);
       } else await channel.send(message.conversationId, result);
       if (result.metadata?.executionId) controlPlane.markExecutionTransportReply(result.metadata.executionId, true);
+    },
+    onImportFile: async (file: WhatsAppImportFile, channel) => {
+      if (resolveWhatsAppRole(config.env, file.message.senderId) === "viewer") {
+        await channel.send(file.message.conversationId, { text: "You are not authorized to import chat history.", replyTo: file.message.replyReference });
+        return;
+      }
+      const request = parseWhatsAppImportCommand(file.message.text);
+      const fallbackName = file.fileName.replace(/\.[^.]+$/, "").trim() || "WhatsApp export";
+      const name = request?.name || fallbackName;
+      try {
+        const imported = parseWhatsAppExport(name, file.data);
+        await history.importChat(imported.chat, imported.messages);
+        await channel.send(file.message.conversationId, { text: `Imported ${imported.messages.length} messages from ${imported.chat.displayName}. Ask about it with /chat "${imported.chat.displayName}" <question>.`, replyTo: file.message.replyReference });
+      } catch (error) {
+        await channel.send(file.message.conversationId, { text: `Unable to import chat: ${error instanceof Error ? error.message : "invalid export"}`, replyTo: file.message.replyReference });
+      }
+    },
+    onImportError: async (message, _error, channel) => {
+      await channel.send(message.conversationId, { text: "Unable to download the attached export. Try sending the .txt file again.", replyTo: message.replyReference });
     },
     onError: async (error, payload, channel) => {
       const message = messageFromPayload(payload);

@@ -14,5 +14,8 @@ export {
   type WhatsAppLogger,
   type WhatsAppSocket,
   type WhatsAppSocketFactory,
+  type WhatsAppImportFile,
+  type WhatsAppMediaDownloader,
+  parseWhatsAppImportCommand,
   type WhatsAppStatus
 } from "./lifecycle.js";

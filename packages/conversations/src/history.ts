@@ -29,6 +29,7 @@ export interface HistoryQueryResult {
 export interface HistoryStore {
   upsertChat(chat: HistoryChat): Promise<void>;
   upsertMessage(message: Message): Promise<void>;
+  importChat(chat: HistoryChat, messages: Message[]): Promise<void>;
   listChats(channel: string, query?: string, limit?: number): Promise<HistoryChat[]>;
   query(channel: string, conversationId: string, question: string, limits: HistoryQueryLimits): Promise<HistoryQueryResult | undefined>;
 }
@@ -60,10 +61,19 @@ export class InMemoryHistoryStore implements HistoryStore {
     }
   }
 
+  async importChat(chat: HistoryChat, messages: Message[]): Promise<void> {
+    validateImportedMessages(chat, messages);
+    this.chats.set(chatKey(chat.channel, chat.conversationId), cloneChat(chat));
+    for (const message of messages) {
+      const key = messageKey(message);
+      if (!this.messages.has(key)) this.messages.set(key, cloneMessage(message));
+    }
+  }
+
   async listChats(channel: string, query?: string, limit?: number): Promise<HistoryChat[]> {
-    const needle = query?.toLowerCase() ?? "";
+    const needle = normalizeHistorySearch(query ?? "");
     const chats = [...this.chats.values()]
-      .filter(chat => chat.channel === channel && (chat.displayName.toLowerCase().includes(needle) || chat.conversationId.toLowerCase().includes(needle)))
+      .filter(chat => chat.channel === channel && (normalizeHistorySearch(chat.displayName).includes(needle) || normalizeHistorySearch(chat.conversationId).includes(needle)))
       .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
       .slice(0, limit === undefined ? undefined : Math.max(0, Math.floor(limit)));
     return chats.map(cloneChat);
@@ -159,6 +169,35 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
     if (this.droppedSinceCompaction >= compactionSlack) await this.compact();
   }
 
+  override async importChat(chat: HistoryChat, messages: Message[]): Promise<void> {
+    await this.ensureLoaded();
+    validateImportedMessages(chat, messages);
+    const key = chatKey(chat.channel, chat.conversationId);
+    const nextChat = cloneChat(chat);
+    const previousChat = this.chats.get(key);
+    const chatChanged = JSON.stringify(previousChat) !== JSON.stringify(nextChat);
+    const newMessages = messages.filter(message => !this.messages.has(messageKey(message))).map(cloneMessage);
+    if (!chatChanged && !newMessages.length) return;
+
+    const previousMessages = new Map(newMessages.map(message => [messageKey(message), this.messages.get(messageKey(message))]));
+    this.chats.set(key, nextChat);
+    for (const message of newMessages) this.messages.set(messageKey(message), message);
+    try {
+      await this.enqueueRecords([
+        ...(chatChanged ? [{ type: "chat", chat: nextChat }] : []),
+        ...newMessages.map(message => ({ type: "message", message }))
+      ]);
+    } catch (error) {
+      if (previousChat) this.chats.set(key, previousChat); else this.chats.delete(key);
+      for (const [messageKeyValue, previousMessage] of previousMessages) {
+        if (previousMessage) this.messages.set(messageKeyValue, previousMessage); else this.messages.delete(messageKeyValue);
+      }
+      throw error;
+    }
+    this.retainMessages();
+    if (this.droppedSinceCompaction >= compactionSlack) await this.compact();
+  }
+
   override async listChats(channel: string, query?: string, limit?: number): Promise<HistoryChat[]> {
     await this.ensureLoaded();
     return super.listChats(channel, query, limit);
@@ -207,12 +246,16 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
   }
 
   private enqueue(record: object): Promise<void> {
+    return this.enqueueRecords([record]);
+  }
+
+  private enqueueRecords(records: object[]): Promise<void> {
     const write = this.writeQueue.then(async () => {
       await mkdir(dirname(this.path), { recursive: true });
       const file = await open(this.path, "a", 0o600);
       try {
         await this.enforcePermissions();
-        await file.writeFile(`${JSON.stringify(record)}\n`, "utf8");
+        await file.writeFile(`${records.map(record => JSON.stringify(record)).join("\n")}\n`, "utf8");
       } finally {
         await file.close();
       }
@@ -254,6 +297,17 @@ export class JsonHistoryStore extends InMemoryHistoryStore {
 
 function chatKey(channel: string, conversationId: string): string {
   return `${channel}${separator}${conversationId}`;
+}
+
+export function normalizeHistorySearch(value: string): string {
+  return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase("es").trim();
+}
+
+function validateImportedMessages(chat: HistoryChat, messages: Message[]): void {
+  for (const message of messages) {
+    if (message.channel !== chat.channel || message.conversationId !== chat.conversationId) throw new Error("Imported message belongs to a different chat");
+    if (Number.isNaN(message.receivedAt.getTime())) throw new Error("Imported message has an invalid timestamp");
+  }
 }
 
 function messageKey(message: Message): string {

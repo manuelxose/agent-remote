@@ -66,6 +66,38 @@ test("authorized incoming messages reach the supplied gateway handler", async ()
   assert.equal(channel.health().status, "connected");
 });
 
+test("downloads an attached /importar export without routing it to the AI", async () => {
+  const events = new FakeEvents();
+  const imported: any[] = [];
+  let routed = 0;
+  const socket = { ev: events, async sendMessage() {}, async end() {} };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => { routed++; },
+    onImportFile: async file => imported.push(file),
+    downloadMedia: async () => Buffer.from("12/09/2026, 20:10 - Silvia: viaje"),
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  });
+
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  events.emit("messages.upsert", {
+    messages: [{
+      key: { id: "import-1", remoteJid: "chat@s.whatsapp.net" },
+      message: { documentMessage: { fileName: "viaje.txt", mimetype: "text/plain", fileLength: 42, caption: "/importar Viaje" } }
+    }]
+  });
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.equal(routed, 0);
+  assert.equal(imported.length, 1);
+  assert.equal(imported[0].fileName, "viaje.txt");
+  assert.equal(imported[0].message.text, "/importar Viaje");
+  assert.equal(imported[0].data.toString(), "12/09/2026, 20:10 - Silvia: viaje");
+  await channel.stop();
+});
+
 test("long responses are split at the configured WhatsApp size limit", async () => {
   const events = new FakeEvents();
   const sent: unknown[] = [];

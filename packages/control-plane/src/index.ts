@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { AgentResponse, AgentRuntime, ConversationAgent, ConversationContext, Message, MessageOrigin, MessageReference, Route } from "../../core/src/index.js";
 import type { EventBus } from "../../events/src/index.js";
 import { InMemoryEventBus } from "../../events/src/index.js";
-import type { HistoryChat, HistoryQueryLimits, HistoryQueryResult } from "../../conversations/src/index.js";
+import { normalizeHistorySearch, type HistoryChat, type HistoryQueryLimits, type HistoryQueryResult } from "../../conversations/src/index.js";
 import type { WorkspacePolicy } from "../../security/src/index.js";
 import {
   type ControlPlaneRepositories,
@@ -274,6 +274,7 @@ export class ControlPlane {
     add("init", "Initialize or reactivate the current managed chat.", "/init [name]", "SESSION", context => this.init(context), { requiresInitialization: false, requiredRole: "operator", states: ["UNINITIALIZED", "READY_NO_AGENT", "IDLE", "ERROR", "CLOSED"] });
     add("chats", "List managed chats owned by the current identity.", "/chats", "SESSION", context => this.chats(context));
     add("chat", "Select an owned managed chat or ask about an imported chat.", "/chat <name|id> | /chat <source> <question>", "SESSION", context => this.chat(context), { requiredRole: "operator" });
+    add("importar", "Import a WhatsApp text export into searchable chat history.", "/importar [name] (attach a WhatsApp .txt export)", "SESSION", async () => ({ text: "Attach the WhatsApp .txt export to /importar [name]. Imported chats can then be queried with /chat <name> <question>.", status: "warning" }), { requiresInitialization: false, requiredRole: "operator" });
     add("rename", "Rename the current managed chat.", "/rename <name>", "SESSION", context => this.rename(context), { states: ["READY_NO_AGENT", "IDLE", "ERROR"] });
     add("close", "Close the current managed chat without deleting provider sessions.", "/close", "SESSION", context => this.close(context), { requiredRole: "owner", states: ["READY_NO_AGENT", "IDLE", "ERROR"] });
     add("reset", "Start a fresh provider context for the active agent.", "/reset confirm", "SESSION", context => this.reset(context), { requiredRole: "operator", states: ["READY_NO_AGENT", "IDLE", "ERROR"] });
@@ -351,7 +352,8 @@ export class ControlPlane {
       return { text: `Imported chats\n\n${chats.map(chat => `${chat.displayName} (${chat.conversationId})`).join("\n")}` };
     }
     const sessions = await this.repositories.listByOwner(context.identity.id);
-    const selected = sessions.find(item => item.channel === context.message.channel && (item.logicalSessionId === context.args || item.displayName.toLowerCase() === context.args.toLowerCase()));
+    const normalizedArgs = normalizeHistorySearch(context.args);
+    const selected = sessions.find(item => item.channel === context.message.channel && (item.logicalSessionId === context.args || normalizeHistorySearch(item.displayName) === normalizedArgs));
     if (selected) {
       await this.repositories.setSelection(context.identity.id, context.message.channel, selected.logicalSessionId);
       return { text: `Active chat: ${selected.displayName}\nAgent: ${selected.activeAgent ?? "none"}\nWorkspace: ${selected.workspace}` };
@@ -364,9 +366,16 @@ export class ControlPlane {
   private async historyChat(context: CommandContext, source: string, question: string): Promise<CommandResult> {
     if (context.session?.status === "CLOSED") return this.rejected(context.message.id, "This chat is closed. Use /init first.");
     if (!this.options.history) return { text: "Imported chat history is not configured.", status: "error" };
-    const matches = await this.options.history.listChats(context.message.channel, source, 30);
-    if (!matches.length) return { text: `Imported chat not found: ${source}`, status: "warning" };
-    if (matches.length > 1) return { text: `Multiple imported chats match '${source}':\n${matches.map(chat => `${chat.displayName} (${chat.conversationId})`).join("\n")}`, status: "warning" };
+    const chats = await this.options.history.listChats(context.message.channel, undefined, 1000);
+    const normalizedSource = normalizeHistorySearch(source);
+    const partialMatches = chats.filter(chat => normalizeHistorySearch(chat.displayName).includes(normalizedSource) || normalizeHistorySearch(chat.conversationId).includes(normalizedSource));
+    const exactMatches = partialMatches.filter(chat => normalizeHistorySearch(chat.displayName) === normalizedSource || normalizeHistorySearch(chat.conversationId) === normalizedSource);
+    const matches = exactMatches.length ? exactMatches : partialMatches;
+    if (!matches.length) return { text: `Imported chat not found: ${source}\nTo add it, send /importar <name> with the WhatsApp .txt export attached.`, status: "warning" };
+    if (matches.length > 1) return {
+      text: `Multiple imported chats match '${source}'. Choose one with its full name or ID:\n${matches.map((chat, index) => `${index + 1}. ${chat.displayName} (${chat.conversationId})`).join("\n")}\nExample: /chat "${matches[0].displayName}" ${question}`,
+      status: "warning"
+    };
     if (!context.session?.activeAgent) return { text: "Select an agent first: /claude, /codex, or /copilot.", status: "warning" };
     if (context.session.status === "CANCELLING") return { text: "This chat is cancelling. Try again when it returns to idle.", status: "warning" };
     if (!this.accepting) return { text: "Gateway is shutting down; no new executions are accepted.", status: "warning" };
