@@ -274,6 +274,68 @@ test("does not claim complete history when WhatsApp returns an empty page", asyn
   }
 });
 
+test("full history import continues after a short non-empty page", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "agent-remote-history-short-page-"));
+  const routesPath = join(directory, "routes.json");
+  await writeFile(routesPath, "{}");
+  const events = new FakeEvents();
+  const replies: string[] = [];
+  let requestCount = 0;
+  const socket = {
+    ev: events,
+    async sendMessage(_conversationId: string, payload: { text: string }) { replies.push(payload.text); return { key: { id: "out" } }; },
+    async sendPresenceUpdate() {},
+    async fetchMessageHistory() {
+      requestCount += 1;
+      const count = requestCount === 1 ? 45 : requestCount === 2 ? 10 : 0;
+      setImmediate(() => events.emit("messaging-history.set", {
+        chats: [], contacts: [], peerDataRequestSessionId: `page-${requestCount}`,
+        messages: Array.from({ length: count }, (_, index) => ({
+          key: { id: `older-${requestCount}-${index}`, remoteJid: "protes@g.us" },
+          messageTimestamp: 100 - requestCount * 50 - index,
+          message: { conversation: `older ${requestCount}-${index}` }
+        }))
+      }));
+      return `page-${requestCount}`;
+    },
+    async end() {}
+  };
+  const config = loadApplicationConfig({
+    AGENT_REMOTE_ROUTES_PATH: routesPath,
+    AGENT_REMOTE_WORKSPACE_ROOTS: process.cwd(),
+    AGENT_REMOTE_HISTORY_PATH: join(directory, "history.jsonl"),
+    WHATSAPP_AUTH_PATH: join(directory, "auth"),
+    WHATSAPP_ALLOWED_USERS: "owner@s.whatsapp.net"
+  }, directory);
+  const application = createApplication(config, {
+    whatsapp: {
+      loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+      createSocket: () => socket,
+      logger: { info() {}, warn() {}, error() {} }
+    }
+  } as any);
+
+  try {
+    await application.start();
+    events.emit("connection.update", { connection: "open" });
+    events.emit("chats.upsert", [{ id: "protes@g.us", name: "Protes", lastMessage: { key: { id: "oldest", remoteJid: "protes@g.us" }, messageTimestamp: 100 } }]);
+    events.emit("messaging-history.set", {
+      chats: [{ id: "protes@g.us", subject: "Protes" }], contacts: [],
+      messages: [{ key: { id: "oldest", remoteJid: "protes@g.us" }, messageTimestamp: 100, message: { conversation: "known" } }]
+    });
+    await settle();
+    events.emit("messages.upsert", { messages: [{ key: { id: "import", remoteJid: "owner@s.whatsapp.net" }, message: { conversation: "/import Protes completo" } }] });
+    for (let index = 0; index < 100 && replies.length === 0; index += 1) await new Promise(resolve => setTimeout(resolve, 5));
+
+    const reply = replies.at(-1) ?? "";
+    assert.equal(requestCount, 3);
+    assert.match(reply, /55 nuevos en 3 bloques/);
+    assert.doesNotMatch(reply, /bloque final|No quedan más/i);
+  } finally {
+    await application.stop();
+  }
+});
+
 test("gateway presents a successful execution without a processing acknowledgement", async () => {
   const adapter = {
     id: "codex",

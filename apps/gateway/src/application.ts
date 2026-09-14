@@ -225,7 +225,6 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
     if (mode) {
       let batches = 0;
       let downloaded = 0;
-      let complete = false;
       let emptyPage = false;
       let timedOut = false;
       while (mode === "full" || batches === 0) {
@@ -241,10 +240,6 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
           emptyPage = true;
           break;
         }
-        if (page.messageCount < historyPageSize) {
-          complete = true;
-          break;
-        }
         if (batches >= 100) break;
       }
       const updated = await history.query("whatsapp", selected.conversationId, "", { maxMessages: 1, maxCharacters: 1 });
@@ -253,15 +248,15 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
         return;
       }
       const imported = updated?.importedMessageCount ?? result?.importedMessageCount ?? 0;
-      const suffix = complete
-        ? " WhatsApp ha entregado un bloque final; no se han recibido más mensajes en esta descarga."
-        : emptyPage
-          ? " WhatsApp no entregó mensajes adicionales en esta solicitud; no puedo confirmar que no haya más. Reintenta /import " + selected.displayName + " más."
-          : timedOut
-            ? " WhatsApp no confirmó el bloque solicitado; no puedo confirmar que no haya más. Reintenta /import " + selected.displayName + " más."
+      const suffix = emptyPage
+        ? " WhatsApp no entregó otro bloque; no puedo confirmar que no haya más."
+        : timedOut
+          ? " WhatsApp no confirmó el siguiente bloque; no puedo confirmar que no haya más."
+          : batches >= 100
+            ? " Se alcanzó el límite de seguridad de 100 bloques; puedes continuar con otro /import ... más."
             : " La descarga puede continuar con otro /import ... más.";
       const text = mode === "full"
-        ? "Historial completo solicitado para " + selected.displayName + ": " + imported + " mensajes disponibles (" + downloaded + " nuevos en " + batches + " bloques)." + suffix
+        ? "Descarga de historial solicitada para " + selected.displayName + ": " + imported + " mensajes disponibles (" + downloaded + " nuevos en " + batches + " bloques)." + suffix
         : "Historial ampliado para " + selected.displayName + ": " + imported + " mensajes disponibles (" + downloaded + " nuevos).";
       await channel.send(message.conversationId, { text, replyTo: message.replyReference });
       return;
