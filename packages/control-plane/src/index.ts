@@ -372,6 +372,10 @@ export class ControlPlane {
     const exactMatches = partialMatches.filter(chat => normalizeHistorySearch(chat.displayName) === normalizedSource || normalizeHistorySearch(chat.conversationId) === normalizedSource);
     const matches = exactMatches.length ? exactMatches : partialMatches;
     if (!matches.length) return { text: `Imported chat not found: ${source}\nTo add it, send /importar <name> with the WhatsApp .txt export attached.`, status: "warning" };
+    if (!exactMatches.length) return {
+      text: `No exact imported chat matches '${source}'. Multiple imported chats may match partially:\n${matches.map((chat, index) => `${index + 1}. ${chat.displayName} (${chat.conversationId})`).join("\n")}\nRepeat with the full name or ID if one is correct. If the chat is missing, send /importar <name> with the WhatsApp .txt export attached.`,
+      status: "warning"
+    };
     if (matches.length > 1) return {
       text: `Multiple imported chats match '${source}'. Choose one with its full name or ID:\n${matches.map((chat, index) => `${index + 1}. ${chat.displayName} (${chat.conversationId})`).join("\n")}\nExample: /chat "${matches[0].displayName}" ${question}`,
       status: "warning"

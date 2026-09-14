@@ -12,7 +12,7 @@
 ## Global Constraints
 
 - Preserve existing authorization and initialization behavior for normal AI messages.
-- Never silently choose among multiple exact or partial chat matches.
+- Never silently choose among multiple exact matches or any partial-only chat match.
 - Do not add dependencies or re-pair WhatsApp automatically.
 - Reject oversized/malformed imports before persistence and keep imported data out of `onMessage`.
 - Use `apply_patch` for edits and leave one focused runnable test per non-trivial behavior.
@@ -20,8 +20,8 @@
 ## Task 1: Make chat matching deterministic
 
 1. Add case/diacritic-insensitive normalization for chat names and IDs in the conversations matching path.
-2. Update control-plane history lookup to prefer exact normalized display-name or conversation-ID matches over partial matches.
-3. Return a bounded, readable candidate list when more than one match remains, including stable conversation IDs and the command form to retry.
+2. Update control-plane history lookup to prefer exact normalized display-name or conversation-ID matches over partial matches; never silently select a partial-only candidate.
+3. Return a bounded, readable candidate list for partial or duplicate matches, including stable conversation IDs and the command form to retry.
 4. Add tests for exact-vs-partial (`Silvia` vs `Regalo Silvia`), accents/case, duplicate names, IDs, and no-match behavior.
 5. Run the focused control-plane/conversations tests.
 

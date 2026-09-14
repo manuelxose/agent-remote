@@ -91,6 +91,19 @@ test("exact imported chat names win over broader partial matches", async () => {
   assert.equal(calls.length, 1);
 });
 
+test("a lone partial imported chat is not selected silently", async () => {
+  const history = historyProvider([{ conversationId: "regalo-silvia", displayName: "Regalo Silvia" }]);
+  const { control, calls } = setup({ history });
+
+  const result = await control.handle(messages("history-partial-only", "/chat Silvia que hablamos"), { id: "owner", role: "owner" });
+
+  assert.equal(result.status, "warning");
+  assert.match(result.text, /No exact imported chat/i);
+  assert.match(result.text, /Regalo Silvia/);
+  assert.match(result.text, /\/importar/);
+  assert.equal(calls.length, 0);
+});
+
 test("imported chat matching ignores accents and case", async () => {
   const history = historyProvider([{ conversationId: "silvia", displayName: "Sílvía" }]);
   const { control, calls } = setup({ history });

@@ -40,10 +40,11 @@ fallback for a chat absent from the index.
 
 `/chat Silvia que hemos hablado` first checks an exact imported display name.
 It must select `Silvia` even when `Regalo Silvia` also exists. If no exact
-match exists and more than one partial match exists, the response lists each
-candidate with a number, display name, kind, and stable conversation ID, then
-asks the user to repeat the command using the full quoted name or ID. The
-agent is not invoked while the source is ambiguous.
+match exists, the response lists every partial candidate with a number,
+display name, kind, and stable conversation ID, then asks the user to repeat
+the command using the full quoted name or ID; a partial-only candidate is
+never selected silently. The agent is not invoked while the source is
+ambiguous.
 
 Examples:
 
