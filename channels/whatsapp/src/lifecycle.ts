@@ -51,6 +51,7 @@ export interface WhatsAppImportFile {
 export interface WhatsAppImportRequest {
   message: Message;
   name?: string;
+  mode?: "more" | "full";
 }
 
 export interface WhatsAppHistorySink {
@@ -71,6 +72,11 @@ export interface WhatsAppChannelOptions {
   onImportSelection?: (message: Message) => Promise<boolean>;
   onImportError?: (message: Message, error: unknown) => Promise<void>;
   downloadMedia?: WhatsAppMediaDownloader;
+}
+
+export interface WhatsAppHistoryRequestResult {
+  requested: boolean;
+  messageCount?: number;
 }
 
 interface WhatsAppListenerSet {
@@ -161,6 +167,7 @@ export class WhatsAppChannel implements Channel {
   private readonly replyContexts = new Map<string, { conversationId: string; senderId?: string; quoted: unknown; createdAt: number }>();
   private readonly knownChatsById = new Map<string, HistoryChat>();
   private readonly historyAnchors = new Map<string, { key: { remoteJid: string; id: string; fromMe?: boolean }; timestamp: number }>();
+  private readonly historyBatchWaiters = new Map<string, { conversationId: string; resolve: (messageCount: number) => void; timer: ReturnType<typeof setTimeout> }>();
 
   constructor(options: WhatsAppChannelOptions | ((conversationId: string, text: string) => Promise<void>)) {
     if (typeof options === "function") {
@@ -284,6 +291,23 @@ export class WhatsAppChannel implements Channel {
     return true;
   }
 
+  async requestChatHistoryPage(conversationId: string, count = 1000, fallbackAnchor?: { id: string; timestamp: number; fromMe?: boolean }): Promise<WhatsAppHistoryRequestResult> {
+    const anchor = this.historyAnchors.get(conversationId) ?? (fallbackAnchor ? {
+      key: { remoteJid: conversationId, id: fallbackAnchor.id, ...(fallbackAnchor.fromMe === undefined ? {} : { fromMe: fallbackAnchor.fromMe }) },
+      timestamp: fallbackAnchor.timestamp
+    } : undefined);
+    if (!anchor || !this.socket || this.status !== "connected" || typeof this.socket.fetchMessageHistory !== "function") return { requested: false };
+    const requestId = await this.socket.fetchMessageHistory(count, anchor.key, anchor.timestamp);
+    const messageCount = await new Promise<number | undefined>(resolve => {
+      const timer = setTimeout(() => {
+        this.historyBatchWaiters.delete(requestId);
+        resolve(undefined);
+      }, 15_000);
+      this.historyBatchWaiters.set(requestId, { conversationId, resolve, timer });
+    });
+    return { requested: true, ...(messageCount === undefined ? {} : { messageCount }) };
+  }
+
   agentMessageRegistry(): ReadonlyArray<import("./agent-registry.js").AgentGeneratedMessageMetadata> {
     return this.agentRegistry.snapshot();
   }
@@ -360,7 +384,11 @@ export class WhatsAppChannel implements Channel {
           continue;
         }
         if (importRequest && this.onImportRequest) {
-          await this.onImportRequest({ message, ...(importRequest.name ? { name: importRequest.name } : {}) });
+          await this.onImportRequest({
+            message,
+            ...(importRequest.name ? { name: importRequest.name } : {}),
+            ...(importRequest.mode ? { mode: importRequest.mode } : {})
+          });
           continue;
         }
         await this.persistMessage(message);
@@ -409,6 +437,18 @@ export class WhatsAppChannel implements Channel {
       }
       const message = translateWhatsAppMessage(payload, { allowSelfMessages: true });
       if (message) await this.persistMessage(message);
+    }
+    if (update.peerDataRequestSessionId) {
+      const waiter = this.historyBatchWaiters.get(update.peerDataRequestSessionId);
+      if (waiter) {
+        clearTimeout(waiter.timer);
+        this.historyBatchWaiters.delete(update.peerDataRequestSessionId);
+        const messageCount = update.messages.filter(payload => {
+          const key = (payload as unknown as { key?: { remoteJid?: unknown } }).key;
+          return key?.remoteJid === waiter.conversationId;
+        }).length;
+        waiter.resolve(messageCount);
+      }
     }
   }
 
@@ -613,9 +653,14 @@ export class WhatsAppChannel implements Channel {
   }
 }
 
-export function parseWhatsAppImportCommand(text: string): { name?: string } | undefined {
+export function parseWhatsAppImportCommand(text: string): { name?: string; mode?: "more" | "full" } | undefined {
   const match = text.trim().match(/^\/import(?:ar)?(?:\s+([\s\S]*))?$/i);
-  return match ? (match[1] ? { name: match[1].trim() } : {}) : undefined;
+  if (!match) return undefined;
+  let name = match[1]?.trim();
+  const modeMatch = name?.match(/\s+(más|mas|more|completo|full)$/i);
+  const mode = modeMatch ? (modeMatch[1].toLocaleLowerCase("es").startsWith("m") ? "more" : "full") : undefined;
+  if (modeMatch) name = name!.slice(0, modeMatch.index).trim();
+  return { ...(name ? { name } : {}), ...(mode ? { mode } : {}) };
 }
 
 function disconnectStatusCode(error: unknown): number | undefined {

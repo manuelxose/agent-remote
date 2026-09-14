@@ -16,6 +16,7 @@ export {
   type WhatsAppSocketFactory,
   type WhatsAppImportFile,
   type WhatsAppImportRequest,
+  type WhatsAppHistoryRequestResult,
   type WhatsAppMediaDownloader,
   parseWhatsAppImportCommand,
   type WhatsAppStatus

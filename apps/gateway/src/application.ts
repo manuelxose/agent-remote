@@ -212,12 +212,42 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
     }
   });
   let whatsapp!: WhatsAppGatewayApplication;
-  const pendingImportSelections = new Map<string, { candidates: HistoryChat[]; expiresAt: number }>();
+  const pendingImportSelections = new Map<string, { candidates: HistoryChat[]; expiresAt: number; mode?: "more" | "full" }>();
   const importSelectionTtlMs = 5 * 60_000;
-  const completeImport = async (selected: HistoryChat, message: Message, channel: WhatsAppChannel): Promise<void> => {
-    const result = await history.query("whatsapp", selected.conversationId, "", { maxMessages: 1, maxCharacters: 1 });
-    if (result?.importedMessageCount) {
+  const completeImport = async (selected: HistoryChat, message: Message, channel: WhatsAppChannel, mode?: "more" | "full"): Promise<void> => {
+    const result = await history.query("whatsapp", selected.conversationId, "", { maxMessages: 1, maxCharacters: mode ? 100_000 : 1 });
+    if (!mode && result?.importedMessageCount) {
       await channel.send(message.conversationId, { text: `Conversation imported: ${selected.displayName}. You can ask about it with /chat "${selected.displayName}" <question>.`, replyTo: message.replyReference });
+      return;
+    }
+    const fallbackAnchor = result?.messages[0] ? { id: result.messages[0].id, timestamp: result.messages[0].receivedAt.getTime(), fromMe: false } : undefined;
+    if (mode) {
+      let batches = 0;
+      let downloaded = 0;
+      let complete = false;
+      while (mode === "full" || batches === 0) {
+        const page = await channel.requestChatHistoryPage(selected.conversationId, 1000, batches === 0 ? fallbackAnchor : undefined);
+        if (!page.requested) break;
+        batches++;
+        if (page.messageCount === undefined) break;
+        downloaded += page.messageCount;
+        if (page.messageCount < 1000) {
+          complete = true;
+          break;
+        }
+        if (batches >= 100) break;
+      }
+      const updated = await history.query("whatsapp", selected.conversationId, "", { maxMessages: 1, maxCharacters: 1 });
+      if (!batches) {
+        await channel.send(message.conversationId, { text: "No se pudo solicitar más historial de " + selected.displayName + ": WhatsApp no tiene un mensaje de referencia disponible en este dispositivo.", replyTo: message.replyReference });
+        return;
+      }
+      const imported = updated?.importedMessageCount ?? result?.importedMessageCount ?? 0;
+      const suffix = complete ? " No quedan más mensajes disponibles." : " La descarga puede continuar con otro /import ... más.";
+      const text = mode === "full"
+        ? "Historial completo solicitado para " + selected.displayName + ": " + imported + " mensajes disponibles (" + downloaded + " nuevos en " + batches + " bloques)." + suffix
+        : "Historial ampliado para " + selected.displayName + ": " + imported + " mensajes disponibles (" + downloaded + " nuevos).";
+      await channel.send(message.conversationId, { text, replyTo: message.replyReference });
       return;
     }
     if (await channel.requestChatHistory(selected.conversationId)) {
@@ -274,7 +304,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
         selected = matches[0];
       }
       pendingImportSelections.delete(message.conversationId);
-      await completeImport(selected, message, channel);
+      await completeImport(selected, message, channel, pending.mode);
       return true;
     },
     onImportFile: async (file: WhatsAppImportFile, channel) => {
@@ -305,7 +335,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
       const exact = partial.filter(chat => normalizeHistorySearch(chat.displayName) === source || normalizeHistorySearch(chat.conversationId) === source);
       if (exact.length !== 1) {
         const candidates = exact.length ? exact : partial;
-        if (candidates.length) pendingImportSelections.set(request.message.conversationId, { candidates, expiresAt: Date.now() + importSelectionTtlMs });
+        if (candidates.length) pendingImportSelections.set(request.message.conversationId, { candidates, expiresAt: Date.now() + importSelectionTtlMs, ...(request.mode ? { mode: request.mode } : {}) });
         await channel.send(request.message.conversationId, {
           text: candidates.length
             ? `Choose the conversation by full name or ID:\n${candidates.map((chat, index) => `${index + 1}. ${chat.displayName} (${chat.conversationId})`).join("\n")}`
@@ -315,7 +345,7 @@ export function createApplication(config: ApplicationConfig, dependencies: Appli
         return;
      }
      const selected = exact[0];
-      await completeImport(selected, request.message, channel);
+      await completeImport(selected, request.message, channel, request.mode);
     },
     onImportError: async (message, _error, channel) => {
       await channel.send(message.conversationId, { text: "Unable to download the attached export. Try sending the .txt file again.", replyTo: message.replyReference });

@@ -1,6 +1,6 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { WhatsAppChannel } from "../dist/channels/whatsapp/src/index.js";
+import { parseWhatsAppImportCommand, WhatsAppChannel } from "../dist/channels/whatsapp/src/index.js";
 import { parseWhatsAppConfig } from "../dist/channels/whatsapp/src/config.js";
 import { installLibsignalSessionLogFilter } from "../dist/channels/whatsapp/src/libsignal-logging.js";
 import { InMemoryHistoryStore } from "../dist/packages/conversations/src/index.js";
@@ -120,6 +120,11 @@ test("routes a direct /importar request without an attachment to the importer", 
   assert.equal(requests.length, 1);
   assert.equal(requests[0].name, "Silvia");
   await channel.stop();
+});
+
+test("parses import history depth modifiers", () => {
+  assert.deepEqual(parseWhatsAppImportCommand("/import Sil más"), { name: "Sil", mode: "more" });
+  assert.deepEqual(parseWhatsAppImportCommand("/importar Sil completo"), { name: "Sil", mode: "full" });
 });
 
 test("routes a pending import selection without sending it to the AI", async () => {
@@ -251,6 +256,40 @@ test("requests on-demand history only with a real message anchor", async () => {
   assert.equal(await channel.requestChatHistory("silvia@s.whatsapp.net"), true);
   assert.equal(requests.length, 1);
   assert.equal((requests[0] as any[])[1].id, "oldest-silvia");
+  await channel.stop();
+});
+
+test("waits for an on-demand history page before reporting its size", async () => {
+  const events = new FakeEvents();
+  const socket = {
+    ev: events,
+    async sendMessage() {},
+    async end() {},
+    async fetchMessageHistory() {
+      setTimeout(() => events.emit("messaging-history.set", {
+        chats: [], contacts: [], peerDataRequestSessionId: "request-page",
+        messages: [{ key: { id: "older", remoteJid: "silvia@s.whatsapp.net" }, messageTimestamp: 1, message: { conversation: "older" } }]
+      }), 0);
+      return "request-page";
+    }
+  };
+  const channel = new WhatsAppChannel({
+    config: parseWhatsAppConfig({ WHATSAPP_AUTH_PATH: "/tmp/auth", WHATSAPP_ALLOWED_CHATS: "chat@s.whatsapp.net" }),
+    onMessage: async () => {},
+    historySink: { upsertChat: async () => {}, upsertMessage: async () => {} },
+    loadAuthState: async () => ({ state: {} as any, saveCreds: async () => {} }),
+    createSocket: () => socket
+  } as any);
+
+  await channel.start();
+  events.emit("connection.update", { connection: "open" });
+  events.emit("messaging-history.set", {
+    chats: [{ id: "silvia@s.whatsapp.net", name: "Silvia" }], contacts: [],
+    messages: [{ key: { id: "oldest", remoteJid: "silvia@s.whatsapp.net" }, messageTimestamp: 12, message: { conversation: "newer" } }]
+  });
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.deepEqual(await (channel as any).requestChatHistoryPage("silvia@s.whatsapp.net"), { requested: true, messageCount: 1 });
   await channel.stop();
 });
 
